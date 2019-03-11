@@ -12,8 +12,12 @@ app.url_map.strict_slashes = False  # allow both `get /v1/` and `get /v1`
 
 
 @app.route('/', methods=['GET'])
-@app.route('/dashboard', methods=['GET'])
 def root():
+    return flask.redirect(flask.url_for('dashboard'))
+
+
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
     """Dashboard."""
     return flask.render_template('dashboard/index.html')
 
