@@ -1,0 +1,5 @@
+mypy==0.670
+bandit==1.5.1
+mccabe==0.6.1
+pyflakes==2.1.1
+flake8==3.7.7

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %} | KBase</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/tachyons.min.css') }}'>
+    {% endblock %}
+  </head>
+
+  <body class='flex flex-column' style='min-height: 100vh;'>
+    {# Top nav bar #}
+    <div class='w-100 ph4 pv1 flex justify-between bb bw2 b--black-10'>
+      <div class='flex items-center'>
+        <a class='dim dib pv1 mr4 b' href="{{ url_for('root') }}">
+          <img src="{{ url_for('static', filename='images/kbase_logo.png') }}">
+        </a>
+        {# See js/index.js for code highlighting the nav item using 'data-hl-nav' #}
+        <a data-hl-nav='/dashboard' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('root') }}"> Dashboard </a>
+        <a data-hl-nav='/narratives' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('narratives') }}">Narratives</a>
+        <a data-hl-nav='/catalog' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('catalog') }}">Catalog</a>
+        <a data-hl-nav='/search' class='dim dib pv1 no-underline b' href="{{ url_for('search') }}">Search</a>
+      </div>
+      <div class='flex items-center'>
+        {# See js/index.js for code highlighting the nav item using 'data-hl-nav' #}
+        <a data-hl-nav='/notifications' class='dim pv1 no-underline mr4 b' href="{{ url_for('notifications') }}">Notifications</a>
+        <a data-hl-nav='/account' class='dim pv1 no-underline b' href="{{ url_for('account') }}">Account</a>
+      </div>
+    </div>
+
+    <div style='flex-grow: 1;'>
+      {% block content %}{% endblock %}
+    </div>
+
+    <div class='bt bw2 b--black-10 ph4 pv2 mt4'>
+      <ul class='list flex pa0 o-70'>
+        <li class='mr4 black-80'> © 2019 DOE KBase </li>
+        <li class='mr4'><a class='b dim no-underline' href='http://kbase.us/what-is-kbase/' target='_blank'>About KBase</a></li>
+        <li class='mr4'><a class='b dim no-underline' href='https://kbase.us/new-to-kbase/' target='_blank'>Help</a></li>
+        <li class='mr4'><a class='b dim no-underline' href='https://kbase.us/contact-us/' target='_blank'>Contact</a></li>
+        <li class='mr4'><a class='b dim no-underline' href='https://status.kbase.us/' target='_blank'>Server Status</a></li>
+      </ul>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/build/bundle.js') }}" type='text/javascript'></script>
+    {% block js %} {% endblock %}
+  </body>
+</html>
+

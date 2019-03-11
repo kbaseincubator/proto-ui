@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+<section class='flex pt2'>
+
+  <ul class="list pa0 ml3" style="position: sticky; top: 1rem; align-self: flex-start;">
+    <li class="pointer mb2 bg-dark-blue white b br2 pa2 flex justify-between"> 
+      <span class='mr4'>Unread</span>
+      <span>2</span>
+    </li>
+    <li class="hover-bg-light-gray mb2 br2 pointer pa2 flex justify-between"> 
+      <span class='mr4'>Read</span>
+      <span>24</span>
+    </li>
+    <li class="hover-bg-light-gray br2 pointer pa2 flex justify-between bt b--black-10 pt3"> 
+      <span class='mr4'>KBase MAGs</span>
+      <span>3</span>
+    </li>
+  </ul>
+
+  <div class="pt3 pl4 mw7 flex-auto">
+
+    <div class="ba b--black-20 br2">
+      <h2 class="ma0 bg-light-gray pa3 f4">User feed</h2>
+      <div class="pa3">
+        <div class="flex justify-between">
+          <span>
+            James Jeffryes has been added to  cool_kids.
+          </span>
+          <span class="black-60">
+            8 days ago
+          </span>
+        </div>
+        <div class="dtr mt2 pt2 bt b--black-10 flex justify-between">
+          <span>
+            James Jeffryes has been added to  cool_kids.
+          </span>
+          <span class="black-60">
+            8 days ago
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba b--black-20 br2 mt4">
+      <h2 class="ma0 bg-light-gray pa3 f4">KBase MAGs</h2>
+      <div class="pa3">
+        <div class="flex justify-between">
+          <span>
+            James Jeffryes has been added to  cool_kids.
+          </span>
+          <span class="black-60">
+            8 days ago
+          </span>
+        </div>
+        <div class="dtr mt2 pt2 bt b--black-10 flex justify-between">
+          <span>
+            James Jeffryes has been added to  cool_kids.
+          </span>
+          <span class="black-60">
+            8 days ago
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %} {# ends 'content' #}

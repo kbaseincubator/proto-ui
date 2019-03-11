@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run css && webpack",
+    "watch": "npm run css && webpack --watch",
+    "css": "cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/css"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.15.1",
+    "eslint-config-google": "^0.12.0",
+    "eslint-plugin-react": "^7.12.4",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "@kbase/base-css": "0.0.1",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  }
+}

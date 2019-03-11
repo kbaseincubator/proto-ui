@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        DEVELOPMENT: 1
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEVELOPMENT=1
+    ports:
+      - 5000:5000
+    volumes:
+      - ${PWD}:/app
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile-node
+      args:
+        DEVELOPMENT: 1
+    volumes:
+      - ${PWD}:/app
+    command: npm run watch
