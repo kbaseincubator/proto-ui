@@ -1,2 +1,15 @@
 node_modules
 src/static/**/bundle.*
+
+# Environment variables
+.env
+
+# Caches and temp dirs
+/build/
+/dist/
+*.pyc
+.mypy_cache/
+.cache/
+tmp/*
+coverage_report/
+.coverage
