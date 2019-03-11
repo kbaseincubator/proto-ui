@@ -1,5 +1,4 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
+console.log('hello world!');
 
 // Underline the current item in the top-nav. Plain JS.
 const pathname = document.location.pathname;
@@ -8,13 +7,3 @@ document.querySelectorAll('[data-hl-nav]').forEach((node) => {
     node.classList.add('bb', 'bw1', 'b--blue');
   }
 });
-
-class Hello extends React.Component {
-  render() {
-    return (
-      <h1> Hello world </h1>
-    );
-  }
-}
-
-ReactDOM.render(<Hello />, document.getElementById('root'));
