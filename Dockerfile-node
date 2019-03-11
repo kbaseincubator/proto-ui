@@ -5,4 +5,3 @@ FROM node:8-alpine
 WORKDIR /app
 COPY ./package.json ./webpack.config.js /app/
 COPY ./src/static /app/src/static
-RUN npm i && npm run build

@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run css && webpack",
-    "watch": "npm run css && webpack --watch",
+    "build": "npm install && npm run css && webpack",
+    "watch": "npm install && npm run css && webpack --watch",
     "css": "cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/css"
   },
   "license": "MIT",
