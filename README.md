@@ -1,4 +1,4 @@
-# KBase Pages
+# KBase React + Python UI
 
 * React
 * Webpack
