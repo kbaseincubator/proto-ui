@@ -4,7 +4,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && npm run css && webpack",
     "watch": "npm install && npm run css && webpack --watch",
-    "css": "cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/css"
+    "css": "cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/css/tachyons.min.css"
   },
   "license": "MIT",
   "devDependencies": {
