@@ -14,4 +14,8 @@ Install `docker` and `docker-compose` first.
 
 ## Troubleshooting
 
+If a docker server crashes, or if you install a new npm package, run:
+* `docker-compose restart web` to restart the flask server
+* `docker-compose restart node` to restart the node server
+
 Run `make reset` to do a hard reset of your docker build, deleting containers and volumes.

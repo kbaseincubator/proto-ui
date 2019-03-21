@@ -16,17 +16,10 @@ def root():
     return flask.redirect(flask.url_for('dashboard'))
 
 
-# iframe content pages
-@app.route('/iframe/biochem', methods=['GET'])
-def iframe_biochem():
-    """Biochemistry search iframe."""
-    return flask.render_template('iframe/biochem/index.html')
-
-
-@app.route('/iframe/dashboard', methods=['GET'])
-def iframe_dashboard():
-    """Dashboard iframe."""
-    return flask.render_template('iframe/dashboard/index.html')
+@app.route('/iframe/<path:path>', methods=['GET'])
+def iframe_content(path):
+    """Iframe content pages."""
+    return flask.render_template('iframe/index.html')
 
 
 @app.route('/dashboard', methods=['GET'])

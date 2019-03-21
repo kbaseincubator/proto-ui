@@ -1,11 +1,16 @@
 const path = require('path');
 const dir = path.resolve(__dirname);
+
 module.exports = {
+  mode: process.env.DEVELOPMENT ? 'development' : 'production',
   entry: dir + '/src/static/js/index.js',
   output: {
-    // filename: '[name].[contenthash].bundle.js',
     filename: 'bundle.js',
     path: dir + '/src/static/js/build',
+  },
+  devServer: {
+    contentBase: dir + '/docs',
+    port: 8080
   },
   module: {
     rules: [
@@ -15,10 +20,10 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-          },
-        },
-      },
-    ],
-  },
+            presets: ['@babel/preset-env', '@babel/preset-react', 'mobx'],
+          }
+        }
+      }
+    ]
+  }
 };
