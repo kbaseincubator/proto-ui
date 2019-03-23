@@ -1,13 +1,18 @@
-// Narrative list header with tabs
+// Narrative list filters
+import PropTypes from 'prop-types';
 import React from 'react';
-// import {observable} from 'mobx';
 
-// Filter state
-export class FiltersState {
-}
+import {FilterDropdown} from '../../FilterDropdown';
 
 // Filter view
-export function Filters () {
+export function Filters ({state}) {
+  const onSearch = ev => {
+    const term = ev.currentTarget.value;
+    state.search(term);
+  }
+  const onSortSelect = option => {
+    state.sortBy(option);
+  }
   return (
     <div className='bg-light-gray flex justify-between'>
       {/* Left-aligned actions */}
@@ -18,14 +23,26 @@ export function Filters () {
             className='w5-l pa2 br2 ba b--solid b--black-20'
             type='text'
             placeholder='Search'
+            onInput={onSearch}
             style={{ paddingLeft: '2rem' }} />
         </div>
       </div>
 
       {/* Right-aligned actions */}
       <div className='pa2'>
-        <a className='dim dib pa3 pointer'>Sort <i className="fas fa-caret-down"></i></a>
+        <FilterDropdown
+          txt='Author'
+          selected='Any'
+          items={['Any', 'user1', 'user2', 'user3']} />
+        <FilterDropdown
+          txt='Sort'
+          selected='Newest'
+          onSortSelect={onSortSelect}
+          items={['Newest', 'Oldest', 'Recently updated', 'Least recently updated']} />
       </div>
     </div>
   );
+}
+Filters.propTypes = {
+  state: PropTypes.object
 }

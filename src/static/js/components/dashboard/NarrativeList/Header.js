@@ -1,11 +1,15 @@
 // Narrative list header with tabs
 import PropTypes from 'prop-types';
 import React from 'react';
-import {observable} from 'mobx';
+import {observable, action} from 'mobx';
 import {observer} from 'mobx-react';
 
 // Header state
 export class HeaderState {
+  constructor(itemList) {
+    this.itemList = itemList;
+  }
+
   tabs = [
     'My narratives',
     'Shared with me',
@@ -14,9 +18,10 @@ export class HeaderState {
   ];
   @observable selectedTab = 0;  // index into the tabs
 
-  selectTab(idx) {
+  @action selectTab(idx) {
     if (idx === this.selectedTab) return
     this.selectedTab = idx;
+    this.itemList.fetchItems();
   }
 }
 
@@ -35,7 +40,8 @@ export const Header = observer(({state}) => {
           { 
             state.tabs.map((tabText, idx) => {
               const className = state.selectedTab === idx ? tabClasses.active : tabClasses.inactive;
-              return <li key={tabText} className={className} onClick={() => state.selectTab(idx)}>
+              return <li key={tabText} className={className} onClick={() => state.selectTab(idx)}
+                         style={{userSelect: 'none'}}>
                 { tabText }
               </li>
             })

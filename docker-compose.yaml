@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile-node
       args:
         DEVELOPMENT: 1
+    ports:
+      - 8888:8888
     volumes:
       - ${PWD}:/app
     command: npm run watch
