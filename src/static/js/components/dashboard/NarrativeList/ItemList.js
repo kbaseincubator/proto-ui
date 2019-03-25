@@ -5,7 +5,11 @@ import * as timeago from 'timeago.js';
 import {computed, observable, action} from 'mobx';
 import {observer} from 'mobx-react';
 
+// Components
 import {PaginationState} from '../../Pagination';
+
+// Utils
+import {sortBy} from '../../../utils/sortBy';
 
 // Class for a single narrative result
 export class ItemState {
@@ -98,18 +102,20 @@ export class ItemListState {
 
   @action sortBy(option) {
     if (option === 'Newest') {
-      this.items = this.items.sort((a, b) => {
-        if (a.data.created_at < b.data.created_at) return -1;
-        if (a.data.created_at > b.data.created_at) return 1;
-        return 0;
-      });
+      window.items = this.items
+      this.items = sortBy(this.items, i => i.data.created_at).reverse();
     } else if (option === 'Oldest') {
-      this.items = this.items.sort((a, b) => {
-        if (a.data.created_at > b.data.created_at) return -1;
-        if (a.data.created_at < b.data.created_at) return 1;
-        return 0;
-      });
+      this.items = sortBy(this.items, i => i.data.created_at);
+    } else if (option === 'Recently updated') {
+      this.items = sortBy(this.items, i => i.data.saved_at).reverse();
+    } else if (option === 'Least recently updated') {
+      this.items = sortBy(this.items, i => i.data.saved_at);
+    } else {
+      return
     }
+    // Jump to the first page, and the select the first item
+    this.pagination.jump(0);
+    this.selectItem(this.itemPage[0]);
   }
 
   // Get the slice of the current page of items
@@ -166,7 +172,7 @@ const itemView = (state, item) => {
 function generateRandomItems (count) {
   let items = [];
   const randNum = (max) => Math.floor(Math.random() * max);
-  const randTime = () => Date.now() - randNum(100000000);
+  const randTime = () => Date.now() - randNum(1000000000);
   const randString = (len) => Math.random().toString(36).substring(len);
   for (let i = 0; i < count; i++) {
     items.push(new ItemState({
