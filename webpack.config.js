@@ -1,6 +1,4 @@
-const webpack = require('webpack');
 const path = require('path');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const dir = path.resolve(__dirname);
 const inDevelopment = Boolean(process.env.DEVELOPMENT);
 
@@ -10,11 +8,11 @@ module.exports = {
   entry: dir + '/src/static/js/index.js',
   output: {
     filename: 'bundle.js',
-    path: dir + '/src/static/js/build',
+    path: dir + '/src/static/build/js',
   },
   devServer: {
     contentBase: dir + '/docs',
-    port: 8080
+    port: 8080,
   },
   module: {
     rules: [
@@ -24,13 +22,15 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react', 'mobx'],
-          }
-        }
-      }
-    ]
+            presets: [
+              '@babel/preset-env',
+            ],
+            plugins: [
+              ['@babel/transform-react-jsx', {'pragma': 'h'}],
+            ],
+          },
+        },
+      },
+    ],
   },
-  plugins: [
-    new webpack.ContextReplacementPlugin(/^\.\/locale$/, /moment%/)
-  ]
 };

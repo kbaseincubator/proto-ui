@@ -1,37 +1,55 @@
-// npm
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {observer} from 'mobx-react';
+/** @jsx h */
+import {render, h, Component} from 'preact';
 
 // Components
-import {Dashboard, DashboardState} from './components/dashboard';
+import {Dashboard} from './components/dashboard';
 import {ObjectRelations} from './components/object_relations';
 
 // Underline the current item in the top-nav. Plain JS.
 document.querySelectorAll('[data-hl-nav]').forEach((node) => {
-  if (document.location.pathname.indexOf(node.getAttribute('data-hl-nav')) === 0) {
+  const p = document.location.pathname;
+  if (p.indexOf(node.getAttribute('data-hl-nav')) === 0) {
     node.classList.add('bb', 'bw1', 'b--blue');
   }
 });
 
 const container = document.getElementById('react-root');
 if (container) {
+  // Global page wrapper
+  class Page extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {root: props.root.createState()};
+    }
+
+    updateRoot(updater) {
+      this.setState(Object.assign(this.state, {
+        root: updater(this.state.root),
+      }));
+    }
+
+    render() {
+      const RootComponent = this.props.root;
+      return (
+        <RootComponent
+          {...this.state.root}
+          handleUpdate={(up) => this.updateRoot(up)} />
+      );
+    }
+  }
+
   // Simple routing by looking at pathname
   const pn = document.location.pathname;
   const routes = {
-    '/iframe/dashboard': () => ({
-      state: DashboardState,
-      node: Dashboard
-    }),
-    '/iframe/object_relations': () => ({
-      node: ObjectRelations
-    })
-  }
+    '/iframe/dashboard': {
+      component: Dashboard,
+    },
+    '/iframe/object_relations': {
+      component: ObjectRelations,
+    },
+  };
   if (pn in routes) {
-    const handler = routes[pn]();
-    const topComponent = observer(handler.node);
-    const topState = new handler.state();
-    const node = React.createElement(topComponent, {state: topState});
-    ReactDOM.render(node, container);
+    const topComponent = routes[pn].component;
+    render(<Page root={topComponent} />, container);
   }
 }

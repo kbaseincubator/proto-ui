@@ -4,7 +4,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && npm run css && webpack",
     "watch": "npm install && npm run css && webpack --watch --progress --colors",
-    "css": "cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/css/tachyons.min.css"
+    "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css"
   },
   "license": "MIT",
   "devDependencies": {
@@ -13,20 +13,16 @@
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
-    "babel-preset-mobx": "^2.0.0",
     "eslint": "^5.15.3",
-    "eslint-plugin-react": "^7.12.4",
+    "eslint-config-google": "^0.12.0",
+    "preact-compat": "^3.18.4",
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.1.0",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1"
+    "webpack-cli": "^3.2.3"
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
-    "mobx": "^5.9.0",
-    "mobx-react": "^5.4.3",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
+    "preact": "^8.4.2",
     "timeago.js": "^4.0.0-beta.2"
   }
 }

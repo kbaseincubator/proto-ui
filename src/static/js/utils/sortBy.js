@@ -7,5 +7,5 @@ export function sortBy(arr, fn) {
     if (fa < fb) return -1;
     if (fa > fb) return 1;
     return 0;
-  })
+  });
 }

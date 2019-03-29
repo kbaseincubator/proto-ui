@@ -1,3 +1,4 @@
+/*
 // Pagination component
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -80,7 +81,8 @@ function PageLink ({i, state}) {
   const onClick = () => state.jump(i);
   return (
     <a
-      className='b dim pointer dib bt bb br b--black-20 bg-white black-70 pv2 ph3' style={{userSelect: 'none'}}
+      className='b dim pointer dib bt bb br b--black-20 bg-white black-70 pv2 ph3'
+      style={{userSelect: 'none'}}
       onClick={onClick}>
       {i + 1}
     </a>
@@ -148,3 +150,4 @@ function NextBtn ({state}) {
 NextBtn.propTypes = {
   state: PropTypes.object
 }
+*/

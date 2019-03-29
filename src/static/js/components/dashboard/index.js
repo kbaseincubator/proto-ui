@@ -1,22 +1,22 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import {observable} from 'mobx';
+import {Component, h} from 'preact';
 
 // Components
-import {NarrativeList, NarrativeListState} from './NarrativeList';
+import {NarrativeList} from './NarrativeList';
 
-export class DashboardState {
-  @observable narrativeList = new NarrativeListState();
-}
+// Utils
+import {updateProp} from '../../utils/updateProp';
 
-export function Dashboard({state}) {
-  return (
-    <section className='ph4 mt3 mw8 center'>
-      <NarrativeList state={ state.narrativeList } />
-    </section>
-  );
-}
+export class Dashboard extends Component {
+  static createState() {
+    return {narrativeList: NarrativeList.createState()};
+  }
 
-Dashboard.propTypes = {
-  state: PropTypes.object
+  render() {
+    const {narrativeList} = this.props;
+    return (
+      <section className='ph4 mt3 mw8 center'>
+        <NarrativeList {...narrativeList} handleUpdate={updateProp(this, 'narrativeList')} />
+      </section>
+    );
+  }
 }

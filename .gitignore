@@ -1,8 +1,7 @@
 node_modules
 
 # JS and CSS bundle/build output
-src/static/**/bundle.*
-src/static/css/tachyons.min.css
+src/static/build/*
 
 # Environment variables
 .env

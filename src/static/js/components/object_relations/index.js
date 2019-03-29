@@ -1,7 +1,10 @@
-import React from 'react';
+/** @jsx h */
+import {h, Component} from 'preact';
 
-export function ObjectRelations() {
-  return (
-    <div> Hello from object relations </div>
-  );
+export class ObjectRelations extends Component {
+  render() {
+    return (
+      <div> Hello from object relations </div>
+    );
+  }
 }

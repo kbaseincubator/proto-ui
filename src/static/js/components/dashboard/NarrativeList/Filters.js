@@ -1,48 +1,51 @@
 // Narrative list filters
-import PropTypes from 'prop-types';
-import React from 'react';
+import {Component, h} from 'preact';
 
+// Components
 import {FilterDropdown} from '../../FilterDropdown';
+import {SearchInput} from '../../SearchInput';
 
-// Filter view
-export function Filters ({state}) {
-  const onSearch = ev => {
-    const term = ev.currentTarget.value;
-    state.search(term);
+// Utils
+import {updateProp} from '../../../utils/updateProp';
+
+export class Filters extends Component {
+  static createState() {
+    return {
+      searchTerm: '',
+      author: FilterDropdown.createState({
+        txt: 'Author',
+        selected: 'Any',
+        items: ['Any', 'user1', 'user2', 'user3'],
+      }),
+      sort: FilterDropdown.createState({
+        txt: 'Sort',
+        selected: 'Newest',
+        items: [
+          'Newest',
+          'Oldest',
+          'Recently updated',
+          'Least recently updated',
+        ],
+      }),
+      search: SearchInput.createState(),
+    };
   }
-  const onSortSelect = option => {
-    state.sortBy(option);
-  }
-  return (
-    <div className='bg-light-gray flex justify-between'>
-      {/* Left-aligned actions */}
-      <div className='pa3'>
-        <div className='relative'>
-          <i className='fas fa-search black-30 absolute' style={{top: '0.65rem', left: '0.5rem'}}></i>
-          <input
-            className='w5-l pa2 br2 ba b--solid b--black-20'
-            type='text'
-            placeholder='Search'
-            onInput={onSearch}
-            style={{ paddingLeft: '2rem' }} />
+
+  render() {
+    const {author, sort, search} = this.props;
+    return (
+      <div className='bg-light-gray flex justify-between'>
+        {/* Left-aligned actions */}
+        <div className='pa3'>
+          <SearchInput {...search} handleUpdate={updateProp(this, 'search')} />
+        </div>
+
+        {/* Right-aligned actions */}
+        <div className='pa2'>
+          <FilterDropdown {...author} handleUpdate={updateProp(this, 'author')} />
+          <FilterDropdown {...sort} handleUpdate={updateProp(this, 'sort')} />
         </div>
       </div>
-
-      {/* Right-aligned actions */}
-      <div className='pa2'>
-        <FilterDropdown
-          txt='Author'
-          selected='Any'
-          items={['Any', 'user1', 'user2', 'user3']} />
-        <FilterDropdown
-          txt='Sort'
-          selected='Newest'
-          onSortSelect={onSortSelect}
-          items={['Newest', 'Oldest', 'Recently updated', 'Least recently updated']} />
-      </div>
-    </div>
-  );
-}
-Filters.propTypes = {
-  state: PropTypes.object
+    );
+  }
 }
