@@ -1,5 +1,6 @@
-// Narrative list filters
+// NPM
 import {Component, h} from 'preact';
+import mitt from 'mitt';
 
 // Components
 import {FilterDropdown} from '../../FilterDropdown';
@@ -9,41 +10,55 @@ import {SearchInput} from '../../SearchInput';
 import {updateProp} from '../../../utils/updateProp';
 
 export class Filters extends Component {
-  static createState() {
-    return {
-      searchTerm: '',
-      author: FilterDropdown.createState({
-        txt: 'Author',
-        selected: 'Any',
-        items: ['Any', 'user1', 'user2', 'user3'],
-      }),
-      sort: FilterDropdown.createState({
-        txt: 'Sort',
-        selected: 'Newest',
-        items: [
-          'Newest',
-          'Oldest',
-          'Recently updated',
-          'Least recently updated',
-        ],
-      }),
-      search: SearchInput.createState(),
+  static createState({update}) {
+    const state = {update, searchTerm: '', emitter: mitt()};
+    state.sort = FilterDropdown.createState({
+      txt: 'Sorting',
+      selected: 'Newest',
+      items: [
+        'Newest',
+        'Oldest',
+        'Recently updated',
+        'Least recently updated',
+      ],
+      update: updateProp(state, 'sort')
+    });
+    state.search = SearchInput.createState({
+      update: updateProp(state, 'search')
+    });
+    state.search.emitter.on('searched', (value) => {
+      Filters.handleSearch(value, state);
+    });
+    state.sort.emitter.on('selected', (sortBy) => {
+      // Bubble up the sort selection to the parent (NarrativeList)
+      state.emitter.emit('sortBy', sortBy);
+    });
+    return state;
+  }
+
+  static handleSearch (val, state) {
+    const updater = () => {
+      state.update(Object.assign(state, {searchTerm: val}));
+      state.emitter.emit('searched', val);
     };
+    if (this._timeout) {
+      clearTimeout(this._timeout);
+    }
+    this._timeout = setTimeout(updater, 100);
   }
 
   render() {
-    const {author, sort, search} = this.props;
+    const {author, sort, search} = this.props.state;
     return (
       <div className='bg-light-gray flex justify-between'>
         {/* Left-aligned actions */}
         <div className='pa3'>
-          <SearchInput {...search} handleUpdate={updateProp(this, 'search')} />
+          <SearchInput state={search} />
         </div>
 
         {/* Right-aligned actions */}
         <div className='pa2'>
-          <FilterDropdown {...author} handleUpdate={updateProp(this, 'author')} />
-          <FilterDropdown {...sort} handleUpdate={updateProp(this, 'sort')} />
+          <FilterDropdown state={sort} />
         </div>
       </div>
     );

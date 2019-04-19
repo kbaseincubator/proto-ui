@@ -1,6 +1,15 @@
 /** @jsx h */
 import {render, h, Component} from 'preact';
 
+// Global env data
+window._env = {
+  token: 'GIJLFHAVDMXPAD4VKROUA36HYWSK26GP',  // XXX TODO REMOVE ME
+  username: 'jayrbolton',
+  kbase_endpoint: 'https://ci.kbase.us/services',
+  narrative: 'https://ci.kbase.us',
+  searchapi: 'https://ci.kbase.us/services/searchapi2/rpc',
+}
+
 // Components
 import {Dashboard} from './components/dashboard';
 import {ObjectRelations} from './components/object_relations';
@@ -13,28 +22,23 @@ document.querySelectorAll('[data-hl-nav]').forEach((node) => {
   }
 });
 
+// Render the Preact page component based on pathname
 const container = document.getElementById('react-root');
 if (container) {
   // Global page wrapper
   class Page extends Component {
     constructor(props) {
-      super(props);
-      this.state = {root: props.root.createState()};
+      super();
+      this.state = {
+        root: props.root.createState({
+          update: root => this.setState({root})
+        })
+      };
     }
 
-    updateRoot(updater) {
-      this.setState(Object.assign(this.state, {
-        root: updater(this.state.root),
-      }));
-    }
-
-    render() {
-      const RootComponent = this.props.root;
-      return (
-        <RootComponent
-          {...this.state.root}
-          handleUpdate={(up) => this.updateRoot(up)} />
-      );
+    render(props, state) {
+      const RootComponent = props.root;
+      return (<RootComponent state={state.root} />);
     }
   }
 

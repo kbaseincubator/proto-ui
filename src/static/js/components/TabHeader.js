@@ -1,5 +1,6 @@
 // Narrative list header with tabs
 import {Component, h} from 'preact';
+import mitt from 'mitt';
 
 /**
  * Horizontal tab navigation above a section.
@@ -12,28 +13,23 @@ import {Component, h} from 'preact';
  *   - onTabSelect(tabIDX)
  */
 export class TabHeader extends Component {
-  static createState({tabs = [], selectedIdx = 0}) {
-    return {selectedIdx, tabs};
+  static createState({tabs = [], selectedIdx = 0, update}) {
+    return {selectedIdx, tabs, update, emitter: mitt()};
   }
 
   // User clicks or taps a new tab
-  select(idx) {
-    if (!this.props.handleUpdate) {
+  static select(idx, state) {
+    if (state.selectedIdx === idx) {
       return;
     }
-    this.props.handleUpdate((state) => {
-      if (state.selectedIdx === idx) {
-        return state;
-      }
-      if (this.props.onTabSelect) {
-        this.props.onTabSelect(idx);
-      }
-      return Object.assign(state, {selectedIdx: idx});
-    });
+    const newState = Object.assign(state, {selectedIdx: idx});
+    state.update(newState);
+    state.emitter.emit('tabSelected', newState);
   }
 
   render() {
-    const {tabs, selectedIdx} = this.props;
+    const state = this.props.state;
+    const {tabs, selectedIdx} = state;
     return (
       <div className='pt2'>
         <ul className='list pa0 ma0 flex items-center' style={{position: 'relative', top: '1px'}}>
@@ -42,7 +38,7 @@ export class TabHeader extends Component {
               const className = selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
               return (
                 <li key={tabText} className={className}
-                  onClick={() => this.select(idx)}
+                  onClick={() => TabHeader.select(idx, state)}
                   style={{userSelect: 'none'}}>
                   {tabText}
                 </li>

@@ -1,80 +1,71 @@
 // Filter dropdown component
 import {Component, h} from 'preact';
+import mitt from 'mitt';
 
 
 export class FilterDropdown extends Component {
-  static createState({txt, items, selected, isOpen = false}) {
-    return {txt, selected, isOpen, items, mounted: false};
+  static createState({txt, items, selected, isOpen = false, update}) {
+    return {txt, items, selected, isOpen, update, emitter: mitt()};
   }
 
   // Add a document event handler to close the dropdown on click outside
   componentDidMount() {
-    document.addEventListener('click', (ev) => this.handleDocumentClick(ev), false);
+    this.docListener = ev => this.handleDocumentClick(ev);
+    document.addEventListener('click', this.docListener, false);
   }
-  componentWillUnmount() {
-    document.removeEventListener('click', (ev) => this.handleDocumentClick(ev), false);
-    this.mounted = false;
+  costatelUnmount() {
+    document.removeEventListener('click', this.docListener, false);
   }
 
   handleDocumentClick(ev) {
-    if (!this.props.handleUpdate) {
-      return;
+    // Check if we are clicking on this dropdown element (this.base)
+    const withinDropdown = this.base.contains(ev.target);
+    const state = this.props.state;
+    if (!withinDropdown && state.isOpen) {
+      const newState = Object.assign(state, {isOpen: false});
+      state.update(newState);
     }
-    this.props.handleUpdate((state) => {
-      const withinDropdown = this.base.contains(ev.target);
-      if (!withinDropdown && state.isOpen) {
-        return Object.assign(state, {isOpen: false});
-      }
-      return state;
-    });
   }
 
-  handleMouseDown(ev) {
+  static handleMouseDown(ev, state) {
     if (ev.type === 'mousedown' && ev.button !== 0) return;
-    ev.stopPropagation();
     ev.preventDefault();
-    if (!this.props.handleUpdate || this.props.disabled) {
+    if (state.disabled) {
       return;
     }
-    this.props.handleUpdate((state) => {
-      const isOpen = !state.isOpen;
-      if (this.props.onToggle) {
-        this.props.onToggle(isOpen);
-      }
-      return Object.assign(state, {isOpen});
-    });
+    const isOpen = !state.isOpen;
+    const newState = Object.assign(state, {isOpen});
+    state.update(newState);
+    state.emitter.emit('toggled', isOpen);
   }
 
-  selectItem(value) {
-    this.props.handleUpdate((state) => {
-      return Object.assign(state, {
-        selected: value,
-        isOpen: false,
-      });
-    });
-    if (this.onSortSelect) {
-      this.onSortSelect(value);
-    }
+  static selectItem(value, state) {
+    const newState = Object.assign(state, {selected: value, isOpen: false});
+    state.update(newState)
+    state.emitter.emit('selected', value);
   }
 
   render() {
-    const {txt, isOpen, items} = this.props;
+    const state = this.props.state;
+    const {txt, selected, isOpen, items} = state;
     let dropdownItems = '';
     if (isOpen) {
       dropdownItems = (
         <div
           className='dib bg-light-gray ba b--black-20 shadow-3 br2'
-          style={{position: 'absolute', right: '0', top: '100%', zIndex: '1', width: '14rem'}}>
+          style={{position: 'absolute', right: '0', top: '80%', zIndex: '1', width: '14rem'}}>
           { items.map((i) => itemView(this, i)) }
         </div>
       );
     }
+    let iconClass = 'ml1 fas ' + (isOpen ? 'fa-caret-up' : 'fa-caret-down');
     return (
       <div className='dib relative'>
         <a className='dim dib pa3 pointer'
-          onClick={(ev) => this.handleMouseDown(ev)}>
+          onClick={(ev) => FilterDropdown.handleMouseDown(ev, state)}>
           { txt }
-          <i className="ml1 fas fa-caret-down"></i>
+          { selected ? ': ' + selected : '' }
+          <i className={iconClass}></i>
         </a>
         {dropdownItems}
       </div>
@@ -84,7 +75,8 @@ export class FilterDropdown extends Component {
 
 // View for a single dropdown item
 function itemView(component, item) {
-  const {selected} = component.props;
+  const state = component.props.state;
+  const {selected} = state;
   let icon;
   if (selected === item) {
     icon = (<i className='fas fa-check mr1 dib' style={{width: '1.5rem'}}></i>);
@@ -93,7 +85,7 @@ function itemView(component, item) {
   }
   return (
     <a className='db pa2 pointer hover-bg-blue hover-white'
-      onClick={() => component.selectItem(item)}
+      onClick={() => FilterDropdown.selectItem(item, state)}
       key={item}>
       {icon}
       {item}

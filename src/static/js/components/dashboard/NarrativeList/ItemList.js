@@ -1,5 +1,7 @@
 // Narrative list header with tabs
 import {Component, h} from 'preact';
+import * as timeago from 'timeago.js';
+import mitt from 'mitt';
 
 // Components
 // import {PaginationState} from '../../Pagination';
@@ -8,80 +10,80 @@ import {Component, h} from 'preact';
 import {sortBy} from '../../../utils/sortBy';
 
 export class ItemList extends Component {
-  static createState() {
+  static createState({update}) {
     // TODO 'show more' style pagination
-    return {items: [], activeItem: null};
+    return {
+      update,
+      term: '',
+      sortBy: 'Newest',
+      category: 'own',
+      emitter: mitt(),
+      esResults: null,
+      activeItem: null,
+      itemDetails: null
+    };
   }
 
-  fetchItems() {
-    if (!this.props.handleUpdate) {
-      return;
-    }
-    const totalItems = Math.floor(5 + Math.random() * 100);
-    const items = generateRandomItems(totalItems);
-    const activeItem = items[0];
-    // Switch item details to the top of the current page
-    // this.pagination.setTotalItems(totalItems);
-    // this.pagination.jump(0);
-    this.handleUpdate((state) => {
-      return Object.assign(state, {items, activeItem});
-    });
-    if (this.props.onFetchItems) {
-      this.props.onFetchItems(items);
-    }
-    if (this.props.onActivateItem) {
-      this.props.onActivateItem(activeItem);
-    }
-  }
-
-  search(term) {
-    if (!this.props.handleUpdate) {
-      return;
-    }
-    this.handleUpdate((state) => {
-      const items = {state};
-      if (term.trim() === '') {
-        // Show all items. Clear out search.
-        items.forEach((item) => {
-          item.hidden = false;
+  static fetchItems(state) {
+    const {emitter, update} = state;
+    search(state.term, state.sortBy, state.category)
+      .then(esResults => {
+        const newState = Object.assign(state, {
+          esResults,
+          activeItem: esResults.hits.hits[0]
         });
-      } else {
-        // Simple substring search.
-        const t = term.toLowerCase();
-        items.forEach((item) => {
-          const title = item.data.title;
-          item.hidden = title.toLowerCase().indexOf(t) === -1;
-        });
-      }
-      const activeItem = items[0];
-      return Object.assign(state, {items, activeItem});
-    });
+        update(newState);
+        emitter.emit('fetched', esResults);
+      });
   }
 
-  sortBy(option) {
-    if (!this.handleUpdate) {
-      return;
+  static selectItem(item, state) {
+    const {emitter, update} = state;
+    update(Object.assign(state, {activeItem: item}));
+    emitter.emit('selected', item);
+  }
+
+  static searchBy(term, state) {
+    const newState = Object.assign(state, {term});
+    state.update(newState);
+    ItemList.fetchItems(newState);
+  }
+
+  static sortBy(sortBy, state) {
+    const newState = Object.assign(state, {sortBy});
+    state.update(newState);
+    ItemList.fetchItems(newState);
+  }
+
+  // Apply a search filter based on a tab name ("my narratives", "shared with me", etc)
+  static applyCategory(catName, state) {
+    // map from tab text to a more canonical name
+    const categoryMap = {
+      'My narratives': 'own',
+      'Shared with me': 'shared',
+      'Tutorials': 'tutorials',
+      'Public': 'public' 
     }
-    this.handleUpdate((state) => {
-      const {items} = state;
-      if (option === 'Newest') {
-        sortBy(items, (i) => i.data.created_at).reverse();
-      } else if (option === 'Oldest') {
-        sortBy(items, (i) => i.data.created_at);
-      } else if (option === 'Recently updated') {
-        sortBy(items, (i) => i.data.saved_at).reverse();
-      } else if (option === 'Least recently updated') {
-        sortBy(items, (i) => i.data.saved_at);
-      } else {
-        return;
-      }
-      const activeItem = items[0];
-      return Object.assign(state, {items, activeItem});
-    });
+    if (!(catName in categoryMap)) {
+      console.log('Known category names:', Object.keys(categoryMap));
+      throw new Error('Invalid category name: ' + catName);
+    }
+    const newState = Object.assign(state, {category: categoryMap[catName]})
+    state.update(newState);
+    ItemList.fetchItems(newState);
+  }
+
+  // Fetch items immediately on pageload
+  componentDidMount() {
+    ItemList.fetchItems(this.props.state);
   }
 
   render() {
-    const {items} = this.props;
+    const {esResults} = this.props.state;
+    if (!esResults || !esResults.hits || !esResults.hits.hits || !esResults.hits.hits.length) {
+      return (<div className='w-40'></div>);
+    }
+    const items = esResults.hits.hits;
     return (
       <div className='w-40'>
         { items.map((item) => itemView(this, item)) }
@@ -92,16 +94,19 @@ export class ItemList extends Component {
 
 // view for a single narrative item
 const itemView = (component, item) => {
-  const status = item.isActive ? 'active' : 'inactive';
+  const state = component.props.state;
+  const status = state.activeItem === item ? 'active' : 'inactive';
   const css = itemClasses[status];
-  const {data} = item;
+  const data = item._source;
+  const savedAgo = data.timestamp
+  // Action to select an item to view details
   return (
-    <div onClick={() => component.selectItem(item)} key={ data.id } className='br b--black-20'>
+    <div onClick={() => ItemList.selectItem(item, state)} key={ data.upa } className='br b--black-20'>
       <div className={css.outer}>
         <div className={css.inner}>
-          <h4 className='ma0 mb2 pa0 f5'>{ data.title }</h4>
+          <h4 className='ma0 mb2 pa0 f5'>{ data.name }</h4>
           {/* TODO author compute to detect "you" */}
-          <p className='ma0 pa0 f6'>Updated { item.savedAgo } by { data.author }</p>
+          <p className='ma0 pa0 f6 black-60'>Updated { timeago.format(data.timestamp) } by { data.creator }</p>
         </div>
       </div>
     </div>
@@ -111,31 +116,70 @@ const itemView = (component, item) => {
 // Active and inactive classnames for the item listing
 const itemClasses = {
   active: {
-    inner: 'pv3 br bw2 b--blue',
+    inner: 'pv3 pr3 br bw2 b--blue',
     outer: 'bb b--black-20',
   },
   inactive: {
-    inner: 'pv3',
+    inner: 'pv3 pr3',
     outer: 'bb b--black-20 dim black-70 pointer',
   },
 };
 
-function generateRandomItems(count) {
-  const items = [];
-  const randNum = (max) => Math.floor(Math.random() * max);
-  const randTime = () => Date.now() - randNum(1000000000);
-  const randString = (len) => Math.random().toString(36).substring(len);
-  for (let i = 0; i < count; i++) {
-    items.push({
-      title: 'Narrative ' + randString(7),
-      saved_at: randTime(),
-      created_at: randTime(),
-      author: 'author-' + randString(7),
-      total_cells: randNum(20),
-      visibility: Math.random() > 0.5 ? 'public' : 'private',
-      share_count: randNum(20),
-      id: randNum(1000000),
-    });
+// `category` can be one of:
+//   - 'own' - narratives created by the current user
+//   - 'shared' - narratives shared with the current user
+//   - 'tutorials' - public narratives that are tutorials
+//   - 'public' - all public narratives
+function search(term, sortBy, category) {
+  const query = {
+    'bool': {'must': []}
   }
-  return items;
+  if (term) {
+    query['bool']['must'].push({
+      multi_match: {
+        query: term,
+        fields: ['name', 'markdown_text', 'creator', 'app_names']
+      }
+    })
+  }
+  if (category === 'own') {
+    // Apply a filter on the creator to match the current username
+    query['bool']['must'].push({'term': {'creator': window._env.username}});
+  } else if (category === 'public') {
+    query['bool']['must'].push({'term': {'is_public': true}});
+  }
+
+  if (sortBy) {
+    const sort = [];
+    if (sortBy === 'Newest') {
+      sort.push({timestamp: {order: 'desc'}});
+    } else if (sortBy === 'Oldest') {
+      sort.push({timestamp: {order: 'asc'}});
+    }
+    return searchObjects(query, sort);
+  } else {
+    return searchObjects(query);
+  }
+}
+
+// Make a request to the search API to fetch narratives
+function searchObjects(query, sort) {
+  const params = {
+    indexes: ['narrative'],
+    size: 20,
+    query
+  }
+  if (sort) {
+    params.sort = sort;
+  }
+  return fetch(window._env.searchapi, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({method: 'search_objects', params}),
+    headers: {Authorization: window._env.token}
+  })
+    .then(resp => resp.json())
+    .catch(err => console.error('Failed fetching search results:', err))
 }
