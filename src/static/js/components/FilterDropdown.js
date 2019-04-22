@@ -3,6 +3,10 @@ import {Component, h} from 'preact';
 import mitt from 'mitt';
 
 
+// methods:
+//  - selectItem (val) - select the value for the dropdown
+// emits:
+//  - selected (val)
 export class FilterDropdown extends Component {
   static createState({txt, items, selected, isOpen = false, update}) {
     return {txt, items, selected, isOpen, update, emitter: mitt()};
@@ -13,7 +17,7 @@ export class FilterDropdown extends Component {
     this.docListener = ev => this.handleDocumentClick(ev);
     document.addEventListener('click', this.docListener, false);
   }
-  costatelUnmount() {
+  componentWillUnmount() {
     document.removeEventListener('click', this.docListener, false);
   }
 
@@ -27,7 +31,8 @@ export class FilterDropdown extends Component {
     }
   }
 
-  static handleMouseDown(ev, state) {
+  handleMouseDown(ev) {
+    const state = this.props.state;
     if (ev.type === 'mousedown' && ev.button !== 0) return;
     ev.preventDefault();
     if (state.disabled) {
@@ -36,7 +41,6 @@ export class FilterDropdown extends Component {
     const isOpen = !state.isOpen;
     const newState = Object.assign(state, {isOpen});
     state.update(newState);
-    state.emitter.emit('toggled', isOpen);
   }
 
   static selectItem(value, state) {
@@ -62,7 +66,7 @@ export class FilterDropdown extends Component {
     return (
       <div className='dib relative'>
         <a className='dim dib pa3 pointer'
-          onClick={(ev) => FilterDropdown.handleMouseDown(ev, state)}>
+          onClick={(ev) => this.handleMouseDown(ev)}>
           { txt }
           { selected ? ': ' + selected : '' }
           <i className={iconClass}></i>

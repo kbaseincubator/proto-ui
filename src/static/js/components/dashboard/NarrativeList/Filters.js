@@ -9,9 +9,16 @@ import {SearchInput} from '../../SearchInput';
 // Utils
 import {updateProp} from '../../../utils/updateProp';
 
+// Filter bar for searching and sorting data results
+// methods:
+//   searchBy - set the search value
+//   sortBy - set the sort value
+// emits:
+//  - sortBy (val)
+//  - searchBy (val)
 export class Filters extends Component {
   static createState({update}) {
-    const state = {update, searchTerm: '', emitter: mitt()};
+    const state = {update, emitter: mitt()};
     state.sort = FilterDropdown.createState({
       txt: 'Sorting',
       selected: 'Newest',
@@ -23,28 +30,24 @@ export class Filters extends Component {
       ],
       update: updateProp(state, 'sort')
     });
-    state.search = SearchInput.createState({
-      update: updateProp(state, 'search')
-    });
+    state.search = SearchInput.createState({update: updateProp(state, 'search')});
+    // Bubble up the search event
     state.search.emitter.on('searched', (value) => {
-      Filters.handleSearch(value, state);
+      state.emitter.emit('searchBy', value);
     });
+    // Bubble up the sort selection event
     state.sort.emitter.on('selected', (sortBy) => {
-      // Bubble up the sort selection to the parent (NarrativeList)
       state.emitter.emit('sortBy', sortBy);
     });
     return state;
   }
 
-  static handleSearch (val, state) {
-    const updater = () => {
-      state.update(Object.assign(state, {searchTerm: val}));
-      state.emitter.emit('searched', val);
-    };
-    if (this._timeout) {
-      clearTimeout(this._timeout);
-    }
-    this._timeout = setTimeout(updater, 100);
+  static searchBy(val, state) {
+    SearchInput.setVal(val, state.search);
+  }
+
+  static toggleLoading(state) {
+    SearchInput.toggleLoading(state.search);
   }
 
   render() {

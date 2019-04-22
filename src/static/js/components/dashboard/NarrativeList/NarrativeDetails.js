@@ -15,30 +15,29 @@ export class NarrativeDetails extends Component {
   static activate(item, state) {
     // Make an item active
     const newState = Object.assign(state, {activeItem: item});
-    state.update(state);
+    state.update(newState);
     state.emitter.emit('activated', item);
   }
 
   render() {
     const {activeItem} = this.props.state;
     if (!activeItem) {
-      return (
-        <div className='pa3 pv5'>No results found</div>
-      );
+      return (<div></div>);
     }
     const data = activeItem._source;
     const wsid = data.upa.split(':')[0];
+    const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     return (
       <div className='w-60 h-100 bg-white pv2 ph3' style={{position: 'sticky', top: '1rem'}}>
-        <h4 className='mt0 pa0 f4'>
-          <a className='blue pointer'>
+        <h4 className='mt0 pa0 pt2 f4'>
+          <a className='blue pointer no-underline' href={narrativeHref}>
             { data.name }
           </a>
         </h4>
 
         <div className='flex mb3'>
           <a className='pointer dim ba b--black-30 pa2 br2 dib mr2 black-80 no-underline'
-            href={window._env.narrative + '/narrative/' + wsid} >
+            href={narrativeHref}>
             <i className="mr1 fas fa-external-link-alt"></i>
             Open
           </a>
@@ -58,7 +57,7 @@ export class NarrativeDetails extends Component {
             <dd className="dib ml0 grau tr black-70">{ data.creator }</dd>
           </dl>
           <dl className="ma0 flex justify-between bb b--black-20 pv2">
-            <dt className="dib b">Creation date</dt>
+            <dt className="dib b">Last saved</dt>
             <dd className="dib ml0 grau tr black-70">{ readableDate(data.timestamp) }</dd>
           </dl>
           <dl className="ma0 flex justify-between bb b--black-20 pv2">
