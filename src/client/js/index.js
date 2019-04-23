@@ -1,26 +1,27 @@
-/** @jsx h */
-import {render, h, Component} from 'preact';
+// Underline the current item in the top-nav. Plain JS.
+document.querySelectorAll('[data-hl-nav]').forEach((node) => {
+  //        <li class='ph3 pv2 b bg-light-gray br bw2 b--green'>
+  //        <li class='ph3 pv2 pointer dim'>
+  const p = document.location.pathname;
+  if (p.indexOf(node.getAttribute('data-hl-nav')) === 0) {
+    node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
+  }
+});
 
 // Global env data
 window._env = {
-  token: 'GIJLFHAVDMXPAD4VKROUA36HYWSK26GP',  // XXX TODO REMOVE ME
-  username: 'jayrbolton',
   kbase_endpoint: 'https://ci.kbase.us/services',
   narrative: 'https://ci.kbase.us',
   searchapi: 'https://ci.kbase.us/services/searchapi2/rpc',
-}
+};
+
+// Initialize React components
+
+import {render, h, Component} from 'preact';
 
 // Components
 import {Dashboard} from './components/dashboard';
 import {ObjectRelations} from './components/object_relations';
-
-// Underline the current item in the top-nav. Plain JS.
-document.querySelectorAll('[data-hl-nav]').forEach((node) => {
-  const p = document.location.pathname;
-  if (p.indexOf(node.getAttribute('data-hl-nav')) === 0) {
-    node.classList.add('bb', 'bw1', 'b--blue');
-  }
-});
 
 // Render the Preact page component based on pathname
 const container = document.getElementById('react-root');
@@ -31,8 +32,8 @@ if (container) {
       super();
       this.state = {
         root: props.root.createState({
-          update: root => this.setState({root})
-        })
+          update: (root) => this.setState({root}),
+        }),
       };
     }
 
@@ -45,6 +46,9 @@ if (container) {
   // Simple routing by looking at pathname
   const pn = document.location.pathname;
   const routes = {
+    '/dashboard': {
+      component: Dashboard,
+    },
     '/iframe/dashboard': {
       component: Dashboard,
     },

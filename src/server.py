@@ -1,95 +1,107 @@
 """The main entrypoint for running the Flask server."""
-import flask
-import os
-from uuid import uuid4
+import sanic
 import traceback
+import jinja2
 
-app = flask.Flask(__name__, static_folder='static')
-app.config['DEBUG'] = os.environ.get('DEVELOPMENT')
-app.config['TEMPLATES_AUTO_RELOAD'] = os.environ.get('DEVELOPMENT')
-app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', str(uuid4()))
-app.url_map.strict_slashes = False  # allow both `get /v1/` and `get /v1`
+app = sanic.Sanic()
+app.static('/static', '/app/src/static')
+
+jinja_env = jinja2.Environment(
+    loader=jinja2.PackageLoader('src', 'templates'),
+    autoescape=jinja2.select_autoescape(['html'])
+)
 
 
 @app.route('/', methods=['GET'])
-def root():
-    return flask.redirect(flask.url_for('dashboard'))
+def root(request):
+    return sanic.response.redirect('/dashboard')
 
 
 @app.route('/iframe/<path:path>', methods=['GET'])
-def iframe_content(path):
+def iframe_content(request, path):
     """Iframe content pages."""
-    return flask.render_template('iframe/index.html')
+    return _render_template('iframe/index.html')
 
 
 @app.route('/dashboard', methods=['GET'])
-def dashboard():
+def dashboard(request):
     """Dashboard."""
-    return flask.render_template('dashboard/index.html')
+    return _render_template('dashboard/index.html')
 
 
 @app.route('/notifications', methods=['GET'])
-def notifications():
+def notifications(request):
     """Notifications."""
-    return flask.render_template('notifications/index.html')
+    return _render_template('notifications/index.html')
 
 
 @app.route('/narratives', methods=['GET'])
-def narratives():
+def narratives(request):
     """Dashboard."""
-    return flask.render_template('narratives/index.html')
+    return _render_template('narratives/index.html')
 
 
 @app.route('/catalog', methods=['GET'])
-def catalog():
+def catalog(request):
     """Catalog."""
-    return flask.render_template('catalog/index.html')
+    return _render_template('catalog/index.html')
 
 
 @app.route('/search', methods=['GET'])
-def search():
+def search(request):
     """Search."""
-    return flask.render_template('search/index.html')
+    return _render_template('search/index.html')
 
 
 @app.route('/account', methods=['GET'])
-def account():
+def account(request):
     """Account settings."""
-    return flask.render_template('account/index.html')
+    return _render_template('account/index.html')
 
 
 @app.route('/account/jobs', methods=['GET'])
-def jobs():
+def jobs(request):
     """Running SDK jobs."""
-    return flask.render_template('account/jobs.html')
+    return _render_template('account/jobs.html')
 
 
 @app.route('/orgs', methods=['GET'])
-def orgs():
+def orgs(request):
     """Organizations."""
-    return flask.render_template('orgs/index.html')
+    return _render_template('orgs/index.html')
 
 
-@app.errorhandler(404)
-def page_not_found(err):
+@app.exception(sanic.exceptions.NotFound)
+def page_not_found(request, err):
     """404 not found."""
-    return (flask.render_template('404.html'), 404)
+    return (_render_template('404.html'), 404)
 
 
-@app.errorhandler(Exception)
-@app.errorhandler(500)
-def server_error(err):
+@app.exception(Exception)
+def server_error(request, err):
     """Any other unhandled exceptions show a 500 error page."""
     print('=' * 80)
     print('500 Unexpected Server Error')
     print('-' * 80)
     traceback.print_exc()
     print('=' * 80)
-    return (flask.render_template('500.html'), 500)
+    return _render_template('500.html', status=500)
 
 
-@app.after_request
-def after_request(response):
-    """Actions to perform on the response after the request handler finishes running."""
-    print(' '.join([flask.request.method, flask.request.path, '->', response.status]))
-    return response
+def _render_template(path, status=200):
+    """
+    Render a jinja template and return it as a sanic html response.
+    """
+    template = jinja_env.get_template(path)
+    html = template.render(
+        app=app,
+    )
+    return sanic.response.html(html, status=status)
+
+
+if __name__ == '__main__':
+    app.run(
+        host='0.0.0.0',  # nosec
+        port=5000,
+        workers=8
+    )

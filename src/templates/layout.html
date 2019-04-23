@@ -3,47 +3,86 @@
   <head>
     {% block head %}
     <title>{% block title %}{% endblock %} | KBase</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ app.url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
-    <link rel='stylesheet' href='{{ url_for('static', filename='build/tachyons.min.css') }}'>
+    <link rel='stylesheet' href='{{ app.url_for('static', filename='build/tachyons.min.css') }}'>
     {% endblock %}
   </head>
 
   <body class='flex flex-column' style='min-height: 100vh;'>
+
     {# Top nav bar #}
-    <div class='w-100 ph4 pv1 flex justify-between bb bw2 b--black-10'>
-      <div class='flex items-center'>
-        <a class='dim dib pv1 mr4 b' href="{{ url_for('root') }}">
-          <img src="{{ url_for('static', filename='images/kbase_logo.png') }}">
-        </a>
-        {# See js/index.js for code highlighting the nav item using 'data-hl-nav' #}
-        <a data-hl-nav='/dashboard' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('root') }}"> Dashboard </a>
-        <a data-hl-nav='/narratives' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('narratives') }}">Narratives</a>
-        <a data-hl-nav='/catalog' class='dim dib pv1 no-underline mr4 b' href="{{ url_for('catalog') }}">Catalog</a>
-        <a data-hl-nav='/search' class='dim dib pv1 no-underline b' href="{{ url_for('search') }}">Search</a>
-      </div>
-      <div class='flex items-center'>
-        {# See js/index.js for code highlighting the nav item using 'data-hl-nav' #}
-        <a data-hl-nav='/notifications' class='dim pv1 no-underline mr4 b' href="{{ url_for('notifications') }}">Notifications</a>
-        <a data-hl-nav='/account' class='dim pv1 no-underline b' href="{{ url_for('account') }}">Account</a>
-      </div>
-    </div>
 
-    <div style='flex-grow: 1;'>
-      {% block content %}{% endblock %}
-    </div>
+    <!-- START top-level navigation -->
+    <div
+      class='fixed top-0 left-0 shadow-4 h-100 flex flex-column justify-between bg-washed-blue'
+      style='width:12rem; box-shadow:-1px 2px 8px 0 rgba( 0, 0, 0, .2 ); overflow-y:auto;'>
+      <ul class='list pa0'>
+        <li class='ph3 pb3 pointer dim'>
+          <a href='/dashboard'>
+            <img src='http://kbase.us/wp-content/uploads/2014/11/kbase-logo-web.png' alt='KBase logo'>
+          </a>
+        </li>
+        <li>
+          <a data-hl-nav='/dashboard' href='/dashboard' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="fas fa-tachometer-alt black-60 tc mr1" style='width:1.5rem'></i>
+            Dashboard
+          </a>
+        </li>
+          <a data-hl-nav='/search' href='/search' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="fas fa-search black-60 dib tc mr1" style='width:1.5rem'></i>
+            Search
+          </a>
+        </li>
+        <li>
+          <a data-hl-nav='/orgs' href='/orgs' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="dib fas fa-users black-60 dib tc mr1" style='width:1.5rem'></i>
+            Orgs
+          </a>
+        </li>
+        <li>
+          <a data-hl-nav='/catalog' href='/catalog' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="dib fas fa-book black-60 dib tc mr1" style='width:1.5rem'></i>
+            Catalog
+          </a>
+        </li>
+        <li>
+          <a data-hl-nav='/notifications' href='/notifications' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="fas fa-bell black-60 dib tc mr1" style='width:1.5rem'></i>
+            Notifications
+          </a>
+        </li>
+        <li>
+          <a data-hl-nav='/account' href='/account' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+            <i class="fas fa-user-circle black-60 dib tc mr1" style='width:1.5rem'></i>
+            Account
+          </a>
+        </li>
+      </ul>
 
-    <div class='bt bw2 b--black-10 ph4 pv2 mt4'>
-      <ul class='list flex pa0 o-70'>
-        <li class='mr4 black-80'> © 2019 DOE KBase </li>
-        <li class='mr4'><a class='b dim no-underline' href='http://kbase.us/what-is-kbase/' target='_blank'>About KBase</a></li>
-        <li class='mr4'><a class='b dim no-underline' href='https://kbase.us/new-to-kbase/' target='_blank'>Help</a></li>
-        <li class='mr4'><a class='b dim no-underline' href='https://kbase.us/contact-us/' target='_blank'>Contact</a></li>
-        <li class='mr4'><a class='b dim no-underline' href='https://status.kbase.us/' target='_blank'>Server Status</a></li>
+      <ul class='list pa0 bt b--black-10 pt2'>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://kbase.us/new-to-kbase/'>Help</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='http://kbase.us/what-is-kbase/'>About KBase</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://kbase.us/contact-us/'>Contact</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://status.kbase.us/'>Server Status</a>
+        </li>
       </ul>
     </div>
+    <!-- END top-level navigation -->
 
-    <script src="{{ url_for('static', filename='build/js/bundle.js') }}" type='text/javascript'></script>
+    <main class='ph4 mt3 mw8' style='margin-left:12rem'>
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ app.url_for('static', filename='build/bundle.js') }}" type='text/javascript'></script>
     {% block js %} {% endblock %}
   </body>
 </html>

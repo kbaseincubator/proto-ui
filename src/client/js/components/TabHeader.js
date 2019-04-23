@@ -20,9 +20,6 @@ export class TabHeader extends Component {
 
   // Select a new tab to activate
   static select(idx, state) {
-    if (state.selectedIdx === idx) {
-      return;
-    }
     const newState = Object.assign(state, {
       selectedIdx: idx,
       selected: state.tabs[idx],
@@ -33,6 +30,9 @@ export class TabHeader extends Component {
   // Handle click event on a tab element
   handleClickTab(idx) {
     const state = this.props.state;
+    if (idx === state.selectedIdx) {
+      return;
+    }
     TabHeader.select(idx, state);
     state.emitter.emit('tabSelected', state.tabs[idx]);
   }

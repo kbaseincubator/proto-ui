@@ -5,14 +5,10 @@ const inDevelopment = Boolean(process.env.DEVELOPMENT);
 module.exports = {
   mode: inDevelopment ? 'development' : 'production',
   devtool: inDevelopment ? 'cheap-module-source-map' : 'hidden-source-map',
-  entry: dir + '/src/static/js/index.js',
+  entry: dir + '/src/client/js/index.js',
   output: {
     filename: 'bundle.js',
-    path: dir + '/src/static/build/js',
-  },
-  devServer: {
-    contentBase: dir + '/docs',
-    port: 8080,
+    path: dir + '/src/static/build',
   },
   module: {
     rules: [
