@@ -24,19 +24,20 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
     // Apply a filter on the creator to match the current username
     options.query.bool.must.push({term: {creator: window._env.username}});
     options.auth = true;
-  } else if (category === 'public') {
+  } else if (category === 'public' || category === 'tutorials') {
     // Only show public narratives
     options.query.bool.must.push({term: {is_public: true}});
     options.auth = false;
-  } else if (category === 'tutorials') {
-    options.query.bool.must.push({
-      bool: {
-        should: [
-          {match: {name: 'tutorial'}},
-          {match: {name: 'narratorial'}},
-        ],
-      },
-    });
+    if (category === 'tutorials') {
+      options.query.bool.must.push({
+        bool: {
+          should: [
+            {match: {name: 'tutorial'}},
+            {match: {name: 'narratorial'}},
+          ],
+        },
+      });
+    }
   }
   if (sort) {
     // Sort by timestamp
