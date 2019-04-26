@@ -1,4 +1,8 @@
 
+// Constants
+const SEARCH_FIELDS = ['name', 'creator', 'data_objects'];
+const INDEX_NAME = 'narrative';
+
 // Search narratives using elasticsearch
 // `term` is a search term
 // `sortBy` can be one of "Newest" or "Oldest"
@@ -14,10 +18,7 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
   if (term) {
     // Multi-match on narrative fields for the given search term
     options.query.bool.must.push({
-      multi_match: {
-        query: term,
-        fields: ['name', 'markdown_text', 'creator', 'app_names'],
-      },
+      multi_match: {query: term, fields: SEARCH_FIELDS},
     });
   }
   if (category === 'own') {
@@ -38,6 +39,12 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
         },
       });
     }
+  } else if (category === 'shared') {
+    // Must be in the shared users list
+    options.query.bool.must.push({term: {shared_users: window._env.username}});
+    // Must not be the creator
+    options.query.bool.must_not = {term: {creator: window._env.username}};
+    options.auth = true;
   }
   if (sort) {
     // Sort by timestamp
@@ -53,7 +60,7 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
 // Make a request to the search API to fetch narratives
 export function makeRequest({query, skip = 0, sort, auth = true, pageSize}) {
   const params = {
-    indexes: ['narrative'],
+    indexes: [INDEX_NAME],
     size: pageSize,
     query,
     from: skip,
