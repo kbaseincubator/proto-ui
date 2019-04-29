@@ -11,15 +11,15 @@ export class Dashboard extends Component {
   static createState({update}) {
     const state = {update};
     state.narrativeList = NarrativeList.createState({
-      update: updateProp(state, 'narrativeList')
-    })
+      update: updateProp(state, 'narrativeList'),
+    });
     return state;
   }
 
   render(props) {
     const {narrativeList} = props.state;
     return (
-      <section className='ph4 mt3 mw8 center'>
+      <section className='ph4 mt3'>
         <NarrativeList state={narrativeList} />
       </section>
     );

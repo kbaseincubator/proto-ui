@@ -1,27 +1,42 @@
 import {Component, h} from 'preact';
 import mitt from 'mitt';
 
+// Components
+import {NarrativeExtendedDetails} from './NarrativeExtendedDetails';
+
 // Utils
 import {readableDate} from '../../../utils/readableDate';
+import {updateProp} from '../../../utils/updateProp';
 
 /**
  * Narrative details side panel in the narrative listing.
  */
 export class NarrativeDetails extends Component {
   static createState({update}) {
-    return {activeItem: null, update, emitter: mitt()};
+    const state = {
+      activeItem: null,
+      update,
+      emitter: mitt(),
+    };
+    state.extendedDetails = NarrativeExtendedDetails.createState({
+      update: updateProp(state, 'extendedDetails'),
+    });
+    return state;
   }
 
-  static activate(item, state) {
+  static activate(narrative, state) {
     // Make an item active
-    const newState = Object.assign(state, {activeItem: item});
+    const extendedDetails = NarrativeExtendedDetails.setNarrative(narrative, state.extendedDetails);
+    const newState = Object.assign(state, {
+      activeItem: narrative,
+      extendedDetails,
+    });
     state.update(newState);
-    state.emitter.emit('activated', item);
   }
 
   render() {
     const state = this.props.state;
-    const {activeItem} = state;
+    const {activeItem, extendedDetails} = state;
     if (!activeItem) {
       return (<div></div>);
     }
@@ -63,7 +78,7 @@ export class NarrativeDetails extends Component {
           </div>
         */}
         {basicDetailsView(data)}
-        {extendedDetailsView(data, state)}
+        <NarrativeExtendedDetails state={extendedDetails} />
       </div>
     );
   }
@@ -79,8 +94,8 @@ function basicDetailsView(data) {
         <dd className="dib ml0 grau tr black-70">{ data.creator }</dd>
       </dl>
       <dl className="ma0 flex justify-between bb b--black-20 pv2">
-        <dt className="dib b">Last saved</dt>
-        <dd className="dib ml0 grau tr black-70">{ readableDate(data.timestamp) }</dd>
+        <dt className="dib b">Created on</dt>
+        <dd className="dib ml0 grau tr black-70">{ readableDate(data.creation_date) }</dd>
       </dl>
       <dl className="ma0 flex justify-between bb b--black-20 pv2">
         <dt className="dib b">Total cells</dt>
@@ -92,55 +107,8 @@ function basicDetailsView(data) {
       </dl>
       <dl className="ma0 flex justify-between pv2">
         <dt className="dib b">Shared</dt>
-        <dd className="dib ml0 grau tr black-70">{ data.shared ? 'Yes' : 'No' }</dd>
+        <dd className="dib ml0 grau tr black-70">{ data.shared_users.length ? 'Yes' : 'No' }</dd>
       </dl>
-    </div>
-  );
-}
-
-// Further details about the narratives, such as markdown content and apps
-// Receives the NarrativeDetails state object
-function extendedDetailsView(data, state) {
-  let preview = '';
-  if (data.markdown_text && data.markdown_text.length) {
-    // Style rules for the text preview box
-    const textStyle = {
-      whiteSpace: 'pre-wrap',
-      maxHeight: '12rem',
-      textOverflow: 'ellipsis',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-    };
-    preview = (
-      <div>
-        <h3>Text Preview</h3>
-        <div className='f6 pa2 bg-black-05 ba b--black-10' style={textStyle}>
-          {data.markdown_text}
-        </div>
-      </div>
-    );
-  }
-  let appNames = '';
-  if (data.app_names && data.app_names.length) {
-    let names = data.app_names;
-    if (names.length > 20) {
-      names = names.slice(0, 20);
-      const diff = data.app_names.length - 20;
-      names.push(`(and ${diff} more...)`);
-    }
-    appNames = (
-      <div>
-        <h3>App Runs</h3>
-        <ul>
-          { names.map((str) => (<li key={str}>{str}</li>)) }
-        </ul>
-      </div>
-    );
-  }
-  return (
-    <div>
-      {preview}
-      {appNames}
     </div>
   );
 }

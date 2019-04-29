@@ -25,7 +25,7 @@ export class NarrativeList extends Component {
         'Tutorials',
         'Public',
       ],
-      selectedIdx: 0,
+      selectedIdx: 3,
       update: updateProp(state, 'tabs'),
     });
     state.narrativeDetails = NarrativeDetails.createState({

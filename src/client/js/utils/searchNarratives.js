@@ -47,9 +47,15 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
     options.auth = true;
   }
   if (sort) {
-    // Sort by timestamp
-    const order = (sort === 'Newest') ? 'desc' : 'asc';
-    options.sort = [{timestamp: {order}}, '_score'];
+    if (sort === 'Newest') {
+      options.sort = [{creation_date: {order: 'desc'}}, '_score'];
+    } else if (sort === 'Oldest') {
+      options.sort = [{creation_date: {order: 'asc'}}, '_score'];
+    } else if (sort === 'Least recently updated') {
+      options.sort = [{timestamp: {order: 'asc'}}, '_score'];
+    } else if (sort === 'Recently updated') {
+      options.sort = [{timestamp: {order: 'desc'}}, '_score'];
+    }
   }
   if (skip) {
     options.skip = skip;
