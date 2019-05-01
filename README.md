@@ -1,10 +1,9 @@
 # KBase React + Python UI
 
-* React
+* Preact
 * Webpack
 * Tachyons
-* Flask and jinja2
-* Gunicorn & gevent
+* Sanic with jinja2
 
 ## Development
 
@@ -14,7 +13,7 @@ Install `docker` and `docker-compose` first.
 
 ## Troubleshooting
 
-If a docker server crashes, or if you install a new npm package, run:
+If a docker server crashes, or if you install a new npm package, run `make reset`.
 * `docker-compose restart web` to restart the flask server
 * `docker-compose restart node` to restart the node server
 
