@@ -7,14 +7,39 @@
 
 ## Development
 
+### Run the server
+
 Install `docker` and `docker-compose` first.
 
 **Start the server** with `make serve`. On the very first run, it will take a few minutes to install the npm and pip dependencies. Point your browser to **`localhost:5000`**.
 
-## Troubleshooting
+### Troubleshooting
 
 If a docker server crashes, or if you install a new npm package, run `make reset`.
 * `docker-compose restart web` to restart the flask server
 * `docker-compose restart node` to restart the node server
 
 Run `make reset` to do a hard reset of your docker build, deleting containers and volumes.
+
+## Dockerfiles
+
+There are a few dockerfiles:
+
+* `Dockerfile` - prod image
+* `Dockerfile-python` - development python image
+* `Dockerfile-node` - development js/css watcher
+* `docker-compose.yaml` - development docker-compose config
+
+## Build image
+
+Run:
+
+```sh
+IMAGE_NAME=kbase/react_ui:{VERSION} sh hooks/build
+```
+
+It can be deployed to docker hub with:
+
+```sh
+docker push kbase/react_ui:{VERSION}
+```

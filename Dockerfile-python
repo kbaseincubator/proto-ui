@@ -1,15 +1,3 @@
-# For installing npm dependencies and building static css/js
-FROM node:8-alpine
-
-# Install npm dependencies and build static css/js
-WORKDIR /app
-COPY ./package-lock.json ./package.json ./webpack.config.js /app/
-COPY ./src/client /app/src/client
-COPY ./src/static /app/src/static
-
-RUN npm run build && rm -rf node_modules
-
-# Set up python
 FROM python:3.7-alpine
 
 # Install pip dependencies
@@ -23,5 +11,4 @@ RUN apk --update add --virtual build-dependencies python-dev build-base && \
     if [ "$DEVELOPMENT" ]; then pip install --no-cache-dir -r dev-requirements.txt; fi && \
     apk del build-dependencies
 
-COPY . /app
 CMD ["sh", "scripts/start_server.sh"]

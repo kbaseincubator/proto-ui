@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && npm run css && webpack",
+    "build": "npm install && npm run css && webpack --mode production",
     "watch": "npm install && npm run css && webpack --watch --progress --colors",
     "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css"
   },
