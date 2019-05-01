@@ -46,7 +46,6 @@ export class ItemList extends Component {
   // Append a new page of items to the existing items
   static appendItems(items, totalItems, state) {
     const hasMore = totalItems > (items.length + state.items.length);
-    console.log('hasMore', hasMore);
     const newState = Object.assign(state, {
       items: state.items.concat(items),
       totalItems,

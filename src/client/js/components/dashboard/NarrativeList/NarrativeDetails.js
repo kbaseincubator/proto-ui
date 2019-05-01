@@ -2,11 +2,12 @@ import {Component, h} from 'preact';
 import mitt from 'mitt';
 
 // Components
-import {NarrativeExtendedDetails} from './NarrativeExtendedDetails';
+import {MiniTabs} from '../../MiniTabs';
 
 // Utils
 import {readableDate} from '../../../utils/readableDate';
 import {updateProp} from '../../../utils/updateProp';
+import {getWSTypeName} from '../../../utils/getWSTypeName';
 
 /**
  * Narrative details side panel in the narrative listing.
@@ -18,33 +19,41 @@ export class NarrativeDetails extends Component {
       update,
       emitter: mitt(),
     };
-    state.extendedDetails = NarrativeExtendedDetails.createState({
-      update: updateProp(state, 'extendedDetails'),
+    state.tabs = MiniTabs.createState({
+      tabs: ['Overview', 'Data', 'Preview'],
+      update: updateProp(state, 'tabs'),
+      selectedIdx: 0,
     });
     return state;
   }
 
   static activate(narrative, state) {
     // Make an item active
-    const extendedDetails = NarrativeExtendedDetails.setNarrative(narrative, state.extendedDetails);
-    const newState = Object.assign(state, {
-      activeItem: narrative,
-      extendedDetails,
-    });
+    const newState = Object.assign(state, {activeItem: narrative});
     state.update(newState);
   }
 
   render() {
     const state = this.props.state;
-    const {activeItem, extendedDetails} = state;
+    const {activeItem, tabs} = state;
     if (!activeItem) {
       return (<div></div>);
     }
     const data = activeItem._source;
-    const wsid = data.upa.split(':')[0];
+    const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
+    let content = '';
+    // Choose which content to show based on selected tab
+    if (tabs.selectedIdx === 0) {
+      // Show overview
+      content = basicDetailsView(data);
+    } else if (tabs.selectedIdx === 1) {
+      content = dataView(data);
+    } else if (tabs.selectedIdx === 2) {
+      content = cellPreview(data);
+    }
     return (
-      <div className='w-60 h-100 bg-white pv2 ph3' style={{position: 'sticky', top: '1rem'}}>
+      <div className='w-60 h-100 bg-white pv2 ph3' style={{top: '1rem', position: 'sticky'}}>
 
         <div className='flex justify-between mb3'>
           <h4 className='ma0 pa0 pt2 f4'>
@@ -77,8 +86,8 @@ export class NarrativeDetails extends Component {
           </a>
           </div>
         */}
-        {basicDetailsView(data)}
-        <NarrativeExtendedDetails state={extendedDetails} />
+        <MiniTabs state={tabs} className='mb3' />
+        {content}
       </div>
     );
   }
@@ -87,28 +96,151 @@ export class NarrativeDetails extends Component {
 // Basic details, such as author, dates, etc.
 // Receives the narrative data from elasticsearch results for a single entry.
 function basicDetailsView(data) {
+  const sharedWith = data.shared_users.filter((u) => u !== window._env.username);
   return (
     <div className='mb3'>
-      <dl className="ma0 flex justify-between bb b--black-20 pv2">
-        <dt className="dib b">Author</dt>
-        <dd className="dib ml0 grau tr black-70">{ data.creator }</dd>
-      </dl>
-      <dl className="ma0 flex justify-between bb b--black-20 pv2">
-        <dt className="dib b">Created on</dt>
-        <dd className="dib ml0 grau tr black-70">{ readableDate(data.creation_date) }</dd>
-      </dl>
-      <dl className="ma0 flex justify-between bb b--black-20 pv2">
-        <dt className="dib b">Total cells</dt>
-        <dd className="dib ml0 grau tr black-70">{ data.total_cells }</dd>
-      </dl>
-      <dl className="ma0 flex justify-between bb b--black-20 pv2">
-        <dt className="dib b">Visibility</dt>
-        <dd className="dib ml0 grau tr black-70">{ data.is_public ? 'Public' : 'Private' }</dd>
-      </dl>
-      <dl className="ma0 flex justify-between pv2">
-        <dt className="dib b">Shared</dt>
-        <dd className="dib ml0 grau tr black-70">{ data.shared_users.length ? 'Yes' : 'No' }</dd>
-      </dl>
+      {dl('Author', data.creator)}
+      {dl('Created on', readableDate(data.creation_date))}
+      {dl('Total cells', data.total_cells)}
+      {dl('Data objects', data.data_objects.length)}
+      {dl('Visibility', data.is_public ? 'Public' : 'Private')}
+      {data.is_public || !sharedWith.length ? '' : dl('Shared with', sharedWith.join(', '))}
+    </div>
+  );
+}
+
+// Dictionary term and definition for overview section
+function dl(key, val) {
+  return (
+    <dl className="ma0 flex justify-between bb b--black-20 pv2">
+      <dt className="dib b">{key}</dt>
+      <dd className="dib ml0 grau tr black-70">{val}</dd>
+    </dl>
+  );
+}
+
+// Preview of all notebook cells in the narrative
+function cellPreview(data) {
+  const leftWidth = 18;
+  const maxLength = 16;
+  // TODO move this into the component class
+  const truncated = data.cells.reduce((all, each) => {
+    const prev = all[all.length - 1];
+    if (each.cell_type === 'widget' || !each.cell_type.trim().length) {
+      // Filter out widgets for now
+      // Also, filter out blank cell types
+      return all;
+    } else if (prev && each.cell_type === prev.cell_type && each.desc === prev.desc) {
+      // If a previous cell has the same content, increase the previous quantity and don't append
+      prev.count = prev.count || 1;
+      prev.count += 1;
+    } else {
+      // Append a new cell
+      if (!each.desc.trim().length) {
+        // Show some text for empty cells
+        each.desc = '(empty)';
+      } else {
+        // Only take the first 4 lines
+        let desc = each.desc.split('\n').slice(0, 3).join('\n');
+        // Append ellipsis if we've shortened it
+        if (desc.length < each.desc.length) {
+          desc += '...';
+        }
+        each.desc = desc;
+      }
+      all.push(each);
+    }
+    return all;
+  }, []).slice(0, maxLength);
+  const rows = truncated.map((cell, idx) => {
+    const faClass = cellIcons[cell.cell_type];
+    return (
+      <div key={idx} className='dt-row mb2' style={{justifyContent: 'space-evenly'}}>
+        <span className='dtc pv2 pr2' style={{width: leftWidth + '%'}}>
+          <i
+            style={{width: '1.5rem'}}
+            className={(faClass || '') + ' dib mr2 light-blue tc'}></i>
+          <span className='b mr1'>
+            {cellNames[cell.cell_type] || cell.cell_type || ''}
+          </span>
+          <span className='black-60 f6'>
+            {cell.count ? ' ×' + cell.count : ''}
+          </span>
+        </span>
+        <span className='dtc pa2 truncate black-70' style={{width: (100 - leftWidth) + '%'}}>
+          {cell.desc}
+        </span>
+      </div>
+    );
+  });
+  return (
+    <div>
+      <p className='black-60'>{data.cells.length} total cells in the narrative:</p>
+      <div className='dt dt--fixed'>
+        {rows}
+      </div>
+      {viewFullNarrativeLink(data)}
+    </div>
+  );
+}
+
+// Font-awesome class names for each narrative cell type
+const cellIcons = {
+  code_cell: 'fas fa-code',
+  kbase_app: 'fas fa-cube',
+  markdown: 'fas fa-paragraph',
+  widget: 'fas fa-wrench',
+  data: 'fas fa-database',
+};
+
+// Human readable names for each cell type.
+const cellNames = {
+  code_cell: 'Code',
+  markdown: 'Text',
+  kbase_app: 'App',
+  widget: 'Widget',
+  data: 'Data',
+};
+
+function viewFullNarrativeLink(data) {
+  const wsid = data.access_group;
+  const narrativeHref = window._env.narrative + '/narrative/' + wsid;
+  return (
+    <p><a className='no-underline' href={narrativeHref}>View the full narrative</a></p>
+  );
+}
+
+// Overview of data objects in the narrative
+function dataView(data) {
+  const rows = data.data_objects
+      .slice(0, 50)
+      .map((obj) => {
+        obj.readableType = getWSTypeName(obj.obj_type);
+        return obj;
+      })
+      .sort((a, b) => a.readableType.localeCompare(b.readableType))
+      .map((obj) => dataViewRow(data, obj));
+  return (
+    <div className='dt dt--fixed'>
+      {rows}
+      {viewFullNarrativeLink(data)}
+    </div>
+  );
+}
+
+// View for each row in the data listing for the narrative
+function dataViewRow(data, obj) {
+  const key = obj.name + obj.obj_type;
+  const leftWidth = 40; // percentage
+  return (
+    <div key={key} className='dt-row'>
+      <span className='dib mr2 dtc b pa2 truncate' style={{width: leftWidth + '%'}}>
+        <i className='fas fa-database dib mr2 green'></i>
+        {obj.readableType}
+      </span>
+      <span className='dib dtc pa2 black-60 truncate' style={{width: (100 - leftWidth) + '%'}}>
+        {obj.name}
+      </span>
     </div>
   );
 }
