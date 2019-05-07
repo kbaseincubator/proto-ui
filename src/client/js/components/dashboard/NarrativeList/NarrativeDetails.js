@@ -58,7 +58,7 @@ export class NarrativeDetails extends Component {
         <div className='flex justify-between mb3'>
           <h4 className='ma0 pa0 pt2 f4'>
             <a className='blue pointer no-underline dim' href={narrativeHref}>
-              { data.name }
+              { data.name || 'Untitled' }
               <i className='fas fa-external-link-alt ml2 black-20'></i>
             </a>
           </h4>
@@ -221,8 +221,11 @@ function dataView(data) {
       .sort((a, b) => a.readableType.localeCompare(b.readableType))
       .map((obj) => dataViewRow(data, obj));
   return (
-    <div className='dt dt--fixed'>
-      {rows}
+    <div>
+      <p className='black-60'>{data.data_objects.length} total objects in the narrative:</p>
+      <div className='dt dt--fixed'>
+        {rows}
+      </div>
       {viewFullNarrativeLink(data)}
     </div>
   );

@@ -11,4 +11,5 @@ export COMMIT=${TRAVIS_COMMIT:-`git rev-parse --short HEAD`}
 docker build --build-arg BUILD_DATE=$DATE \
              --build-arg VCS_REF=$COMMIT \
              --build-arg BRANCH=$BRANCH \
+             --no-cache \
              -t ${IMAGE_NAME} .

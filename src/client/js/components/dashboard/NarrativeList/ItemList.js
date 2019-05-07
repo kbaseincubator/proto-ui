@@ -152,7 +152,7 @@ const itemView = (component, item) => {
       className='br b--black-20'>
       <div className={css.outer}>
         <div className={css.inner}>
-          <h4 className='ma0 mb2 pa0 f5'>{ data.name }</h4>
+          <h4 className='ma0 mb2 pa0 f5'>{ data.name || 'Untitled' }</h4>
           <p className='ma0 pa0 f6'>
             Updated { timeago.format(data.timestamp) } by { data.creator }
           </p>
