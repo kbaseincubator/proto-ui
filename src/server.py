@@ -64,6 +64,9 @@ async def orgs(request):
 @html_routes.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
     """404 not found."""
+    print('404 ---')
+    print(f'URL: {request.url}')
+    print(err)
     return _render_template('404.html', status=404)
 
 
