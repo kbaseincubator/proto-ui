@@ -78,7 +78,7 @@ export function makeRequest({query, skip = 0, sort, auth = true, pageSize}) {
   if (auth) {
     headers['Authorization'] = window._env.token;
   }
-  return fetch(window._env.searchapi, {
+  return fetch(window._env.kbase_endpoint + '/searchapi2/rpc', {
     method: 'POST',
     headers,
     body: JSON.stringify({method: 'search_objects', params}),
