@@ -20,7 +20,7 @@ jinja_env = jinja2.Environment(
 
 @app.route('/', methods=['GET'])
 async def root(request):
-    return sanic.response.redirect(app.url_for('dashboard'))
+    return sanic.response.redirect(_url_for('dashboard'))
 
 
 @app.route('/iframe/<path:path>', methods=['GET'])

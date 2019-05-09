@@ -4,7 +4,7 @@ import {ObjectRelations} from './components/object_relations';
 
 // Constants
 const PATHNAME = document.location.pathname
-    .replace(window._env.url_prefix, '') // Remove global url prefix
+    .replace(new RegExp('/' + window._env.url_prefix), '') // Remove global url prefix
     .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
@@ -48,5 +48,7 @@ if (CONTAINER) {
   if (PATHNAME in routes) {
     const topComponent = routes[PATHNAME].component;
     render(<Page root={topComponent} />, CONTAINER);
+  } else {
+    console.error(`Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(routes)}`); // eslint-disable-line
   }
 }
