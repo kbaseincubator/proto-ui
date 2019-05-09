@@ -30,7 +30,9 @@ There are a few dockerfiles:
 * `Dockerfile-node` - development js/css watcher
 * `docker-compose.yaml` - development docker-compose config
 
-## Build image
+## Deployment
+
+### Build image
 
 Run:
 
@@ -43,3 +45,9 @@ It can be deployed to docker hub with:
 ```sh
 docker push kbase/react_ui:{VERSION}
 ```
+
+### Environment config
+
+These environment variables can be set:
+
+- `URL_PREFIX` - path prefix for all links and asset urls (css, js, images) that get generated in the app. Used when behind an nginx proxy.

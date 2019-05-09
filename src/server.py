@@ -4,73 +4,75 @@ import sanic
 import traceback
 import jinja2
 
-# Configure all html routes under a configurable prefix
-html_routes = sanic.Blueprint('html_routes', url_prefix=os.environ.get('URL_PREFIX'))
-html_routes.static('/static', '/app/src/static', name='static')
+# Initialize the Sanic app object
+app = sanic.Sanic('kbase-ui', strict_slashes=False)
+app.config.URL_PREFIX = os.environ.get('URL_PREFIX', '').strip('/')
+app.config.KBASE_ENDPOINT = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
+app.config.KBASE_UI_ROOT = os.environ.get('KBASE_UI_ROOT', 'https://ci.kbase.us')
+app.static('/static', '/app/src/static')
 
+# Initialize the Jinja2 templating object
 jinja_env = jinja2.Environment(
     loader=jinja2.PackageLoader('src', 'templates'),
     autoescape=jinja2.select_autoescape(['html'])
 )
 
 
-@html_routes.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 async def root(request):
-    return sanic.response.redirect(app.url_for('html_routes.dashboard'))
+    return sanic.response.redirect(app.url_for('dashboard'))
 
 
-@html_routes.route('/iframe/<path:path>', methods=['GET'])
+@app.route('/iframe/<path:path>', methods=['GET'])
 async def iframe_content(request, path):
     """Iframe content pages."""
-    return _render_template('iframe/index.html')
+    return _render_template('iframe/index.html', request)
 
 
-@html_routes.route('/dashboard', methods=['GET'])
+@app.route('/dashboard', methods=['GET'])
 async def dashboard(request):
     """Dashboard."""
-    return _render_template('dashboard/index.html')
+    return _render_template('dashboard/index.html', request)
 
 
-@html_routes.route('/notifications', methods=['GET'])
+@app.route('/notifications', methods=['GET'])
 async def notifications(request):
     """Notifications."""
-    return _render_template('notifications/index.html')
+    return _render_template('notifications/index.html', request)
 
 
-@html_routes.route('/catalog', methods=['GET'])
+@app.route('/catalog', methods=['GET'])
 async def catalog(request):
     """Catalog."""
-    return _render_template('catalog/index.html')
+    return _render_template('catalog/index.html', request)
 
 
-@html_routes.route('/search', methods=['GET'])
+@app.route('/search', methods=['GET'])
 async def search(request):
     """Search."""
-    return _render_template('search/index.html')
+    return _render_template('search/index.html', request)
 
 
-@html_routes.route('/account', methods=['GET'])
+@app.route('/account', methods=['GET'])
 async def account(request):
     """Account settings."""
-    return _render_template('account/index.html')
+    return _render_template('account/index.html', request)
 
 
-@html_routes.route('/orgs', methods=['GET'])
+@app.route('/orgs', methods=['GET'])
 async def orgs(request):
     """Organizations."""
-    return _render_template('orgs/index.html')
+    return _render_template('orgs/index.html', request)
 
 
-@html_routes.exception(sanic.exceptions.NotFound)
+@app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
     """404 not found."""
-    print('404 ---')
-    print(f'URL: {request.url}')
-    print(err)
+    print('404:', request.path)
     return _render_template('404.html', status=404)
 
 
-@html_routes.exception(Exception)
+@app.exception(Exception)
 async def server_error(request, err):
     """Any other unhandled exceptions show a 500 error page."""
     print('=' * 80)
@@ -81,6 +83,17 @@ async def server_error(request, err):
     return _render_template('500.html', status=500)
 
 
+def _url_for(arg, *args, **kwargs):
+    """
+    A wrapper around app.url_for that injects a configurable prefix.
+    For example, if we are serving via nginx proxy at /services/react-ui
+    then we want our links to look like "/services/react-ui/{link_path}"
+    """
+    url = app.url_for(arg, *args, **kwargs)
+    # Note that app.config.URL_PREFIX will have leading and trailing slashes trimmed off
+    return '/' + app.config.URL_PREFIX + url
+
+
 def _render_template(path, args=None, status=200):
     """
     Render a jinja template and return it as a sanic html response.
@@ -89,16 +102,9 @@ def _render_template(path, args=None, status=200):
     if not args:
         args = {}
     args['app'] = app
+    args['url_for'] = _url_for
     html = template.render(**args)
     return sanic.response.html(html, status=status)
-
-
-# Initialize the root application
-app = sanic.Sanic('kbase-ui', strict_slashes=False)
-app.blueprint(html_routes)
-app.config.URL_PREFIX = os.environ.get('URL_PREFIX')
-app.config.KBASE_ENDPOINT = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
-app.config.KBASE_UI_ROOT = os.environ.get('KBASE_UI_ROOT', 'https://ci.kbase.us')
 
 
 if __name__ == '__main__':
