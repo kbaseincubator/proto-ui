@@ -6,7 +6,7 @@ import jinja2
 
 # Initialize the Sanic app object
 app = sanic.Sanic('kbase-ui', strict_slashes=False)
-app.config.URL_PREFIX = os.environ.get('URL_PREFIX', '').strip('/')
+app.config.URL_PREFIX = '/' + os.environ.get('URL_PREFIX', '').strip('/')
 app.config.KBASE_ENDPOINT = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
 app.config.KBASE_UI_ROOT = os.environ.get('KBASE_UI_ROOT', 'https://ci.kbase.us')
 app.static('/static', '/app/src/static')
@@ -90,8 +90,8 @@ def _url_for(arg, *args, **kwargs):
     then we want our links to look like "/services/react-ui/{link_path}"
     """
     url = app.url_for(arg, *args, **kwargs)
-    # Note that app.config.URL_PREFIX will have leading and trailing slashes trimmed off
-    return '/' + app.config.URL_PREFIX + url
+    # Note that app.config.URL_PREFIX will have leading slash and no trailing slash
+    return os.path.join(app.config.URL_PREFIX, url.strip('/'))
 
 
 def _render_template(path, args=None, status=200):
