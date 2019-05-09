@@ -4,7 +4,7 @@ import {ObjectRelations} from './components/object_relations';
 
 // Constants
 const PATHNAME = document.location.pathname
-    .replace(new RegExp('/' + window._env.url_prefix), '') // Remove global url prefix
+    .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
     .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
