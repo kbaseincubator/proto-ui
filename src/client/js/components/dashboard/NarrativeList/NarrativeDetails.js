@@ -58,7 +58,7 @@ export class NarrativeDetails extends Component {
         <div className='flex justify-between mb3'>
           <h4 className='ma0 pa0 pt2 f4'>
             <a className='blue pointer no-underline dim' href={narrativeHref}>
-              { data.name || 'Untitled' }
+              { data.narrative_title || 'Untitled' }
               <i className='fas fa-external-link-alt ml2 black-20'></i>
             </a>
           </h4>

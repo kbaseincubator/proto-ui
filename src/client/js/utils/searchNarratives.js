@@ -1,6 +1,6 @@
 
 // Constants
-const SEARCH_FIELDS = ['name', 'creator', 'data_objects'];
+const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
 const INDEX_NAME = 'narrative';
 
 // Search narratives using elasticsearch
@@ -33,8 +33,8 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
       options.query.bool.must.push({
         bool: {
           should: [
-            {match: {name: 'tutorial'}},
-            {match: {name: 'narratorial'}},
+            {match: {narrative_title: 'tutorial'}},
+            {match: {narrative_title: 'narratorial'}},
           ],
         },
       });

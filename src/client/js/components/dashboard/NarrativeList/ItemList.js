@@ -17,7 +17,6 @@ import mitt from 'mitt';
 //  - selected - user has selected an item in the list
 export class ItemList extends Component {
   static createState({items = [], update}) {
-    // TODO 'show more' style pagination
     return {
       update,
       term: '',
@@ -152,7 +151,7 @@ const itemView = (component, item) => {
       className='br b--black-20'>
       <div className={css.outer}>
         <div className={css.inner}>
-          <h4 className='ma0 mb2 pa0 f5'>{ data.name || 'Untitled' }</h4>
+          <h4 className='ma0 mb2 pa0 f5'>{ data.narrative_title || 'Untitled' }</h4>
           <p className='ma0 pa0 f6'>
             Updated { timeago.format(data.timestamp) } by { data.creator }
           </p>
