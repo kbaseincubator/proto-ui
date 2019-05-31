@@ -6,7 +6,7 @@ import jinja2
 
 # Initialize the Sanic app object
 app = sanic.Sanic('kbase-ui', strict_slashes=False)
-app.config.URL_PREFIX = '/' + os.environ.get('URL_PREFIX', '').strip('/')
+app.config.URL_PREFIX = os.environ.get('URL_PREFIX', '').rstrip('/')
 app.config.KBASE_ENDPOINT = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
 app.config.KBASE_UI_ROOT = os.environ.get('KBASE_UI_ROOT', 'https://ci.kbase.us')
 app.static('/static', '/app/src/static')
