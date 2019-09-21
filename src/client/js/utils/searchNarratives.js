@@ -1,3 +1,4 @@
+import {getToken} from '../utils/auth';
 
 // Constants
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
@@ -15,22 +16,24 @@ const INDEX_NAME = 'narrative';
 // returns a fetch Promise
 export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
   const options = {query: {bool: {must: []}}, pageSize};
+  // Query constraints for "must" conditions
+  const musts = [];
+  // Query constraints for "must not" conditions
+  const mustNots = [];
   if (term) {
     // Multi-match on narrative fields for the given search term
-    options.query.bool.must.push({
-      multi_match: {query: term, fields: SEARCH_FIELDS},
-    });
+    musts.push({multi_match: {query: term, fields: SEARCH_FIELDS}});
   }
   if (category === 'own') {
     // Apply a filter on the creator to match the current username
-    options.query.bool.must.push({term: {creator: window._env.username}});
+    musts.push({term: {creator: window._env.username}});
     options.auth = true;
   } else if (category === 'public' || category === 'tutorials') {
     // Only show public narratives
-    options.query.bool.must.push({term: {is_public: true}});
+    musts.push({term: {is_public: true}});
     options.auth = false;
     if (category === 'tutorials') {
-      options.query.bool.must.push({
+      musts.push({
         bool: {
           should: [
             {match: {narrative_title: 'tutorial'}},
@@ -41,9 +44,9 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
     }
   } else if (category === 'shared') {
     // Must be in the shared users list
-    options.query.bool.must.push({term: {shared_users: window._env.username}});
+    musts.push({term: {shared_users: window._env.username}});
     // Must not be the creator
-    options.query.bool.must_not = {term: {creator: window._env.username}};
+    mustNots.push({term: {creator: window._env.username}});
     options.auth = true;
   }
   if (sort) {
@@ -59,6 +62,12 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
   }
   if (skip) {
     options.skip = skip;
+  }
+  if (musts.length) {
+    options.query.bool.must = musts;
+  }
+  if (mustNots.length) {
+    options.query.bool.must_not = mustNots;
   }
   return makeRequest(options);
 }
@@ -76,7 +85,7 @@ export function makeRequest({query, skip = 0, sort, auth = true, pageSize}) {
     params.sort = sort;
   }
   if (auth) {
-    headers['Authorization'] = window._env.token;
+    headers['Authorization'] = getToken();
   }
   return fetch(window._env.kbase_endpoint + '/searchapi2/rpc', {
     method: 'POST',

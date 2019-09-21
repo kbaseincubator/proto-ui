@@ -1,6 +1,7 @@
 import {render, h, Component} from 'preact';
 import {Dashboard} from './components/dashboard';
 import {ObjectRelations} from './components/object_relations';
+import {getUsername} from './utils/auth';
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -13,6 +14,10 @@ document.querySelectorAll('[data-hl-nav]').forEach((node) => {
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
     node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
   }
+});
+
+getUsername((username) => {
+  window._env.username = username;
 });
 
 // Global page wrapper
