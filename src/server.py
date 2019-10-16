@@ -1,15 +1,19 @@
-"""The main entrypoint for running the Flask server."""
+"""The main entrypoint for running the web server."""
 import os
 import sanic
 import traceback
 import jinja2
 
+from src.utils.config import ServerConf
+
+_CONF = ServerConf()
+
 # Initialize the Sanic app object
 app = sanic.Sanic('kbase-ui', strict_slashes=False)
-app.config.URL_PREFIX = os.environ.get('URL_PREFIX', '').rstrip('/')
-app.config.KBASE_ENDPOINT = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services')
-app.config.KBASE_UI_ROOT = os.environ.get('KBASE_UI_ROOT', 'https://ci.kbase.us')
-app.static('/static', '/app/src/static')
+app.config.URL_PREFIX = _CONF.url_prefix
+app.config.KBASE_ENDPOINT = _CONF.kbase_endpoint
+app.config.KBASE_UI_ROOT = _CONF.kbase_root
+app.static('/static', _CONF.app_root_path + '/src/static')
 
 # Initialize the Jinja2 templating object
 jinja_env = jinja2.Environment(
@@ -90,13 +94,14 @@ def _url_for(arg, *args, **kwargs):
     then we want our links to look like "/services/react-ui/{link_path}"
     """
     url = app.url_for(arg, *args, **kwargs)
-    # Note that app.config.URL_PREFIX will have leading slash and no trailing slash
-    return os.path.join(app.config.URL_PREFIX, url.strip('/'))
+    # Note that _CONF.url_prefix will have leading slash and no trailing slash
+    return os.path.join(_CONF.url_prefix, url.strip('/'))
 
 
 def _render_template(path, args=None, status=200):
     """
     Render a jinja template and return it as a sanic html response.
+    Set some default template variables (eg. `app` and `url_for`).
     """
     template = jinja_env.get_template(path)
     if not args:
@@ -110,8 +115,8 @@ def _render_template(path, args=None, status=200):
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',  # nosec
-        port=os.environ.get('SANIC_PORT', 5000),
-        workers=os.environ.get('WORKERS', 8),
-        access_log=('DEVELOPMENT' in os.environ),
-        debug=('DEVELOPMENT' in os.environ)
+        port=_CONF.server_port,
+        workers=_CONF.n_workers,
+        access_log=_CONF.development,
+        debug=_CONF.development
     )
