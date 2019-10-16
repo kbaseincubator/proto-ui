@@ -1,3 +1,4 @@
+# Python Dockerfile for local development
 FROM python:3.7-alpine
 
 # Install pip dependencies

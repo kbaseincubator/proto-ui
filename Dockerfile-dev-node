@@ -1,3 +1,4 @@
+# Nodejs Dockerfile for local development
 # For installing npm dependencies and building static css/js
 FROM node:8-alpine
 
