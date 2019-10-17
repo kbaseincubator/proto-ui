@@ -2,20 +2,24 @@ import {Component, h} from 'preact';
 
 
 /* Filter dropdown component
- * methods:
- * - selectItem (val) - select the value for the dropdown
+ * props:
+ *
+ * state:
+ * - isOpen
+ * - selectedIdx
+ * props:
+ * - txt - prompt text
+ * - disabled - disable the dropdown
+ * - items - list of strings of dropdown options
  * callbacks:
- * - selected (val)
+ * - onSelect - called when an item gets selected
  */
 export class FilterDropdown extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txt: props.txt,
-      items: props.items,
-      selected: props.selected,
+      selectedIdx: null,
       isOpen: props.isOpen || false,
-      disabled: props.disabled || false,
     };
   }
 
@@ -53,9 +57,9 @@ export class FilterDropdown extends Component {
 
   // Select an item in the dropdown by value
   // Closes the dropdown
-  selectItem(value) {
+  selectItem(idx) {
     this.setState({
-      selected: value,
+      selectedIdx: idx,
       isOpen: false,
     });
     if (this.props.onSelect) {
@@ -64,18 +68,22 @@ export class FilterDropdown extends Component {
   }
 
   render(props) {
-    const {txt, selected, isOpen, items} = this.state;
+    const {txt, items} = props;
     let dropdownItems = '';
-    if (isOpen) {
+    let selected = null;
+    if (this.state.selectedIdx !== null) {
+      selected = items[this.state.selectedIdx];
+    }
+    if (this.state.isOpen) {
       dropdownItems = (
         <div
           className='dib bg-light-gray ba b--black-20 shadow-3 br2'
           style={{position: 'absolute', right: '0', top: '80%', zIndex: '1', width: '14rem'}} >
-          { items.map((i) => itemView(this, i)) }
+          { items.map((item, idx) => itemView(this, item, idx)) }
         </div>
       );
     }
-    const iconClass = 'ml1 fas ' + (isOpen ? 'fa-caret-up' : 'fa-caret-down');
+    const iconClass = 'ml1 fas ' + (this.state.isOpen ? 'fa-caret-up' : 'fa-caret-down');
     return (
       <div className='dib relative'>
         <a className='dim dib pa3 pointer'
@@ -90,18 +98,16 @@ export class FilterDropdown extends Component {
 }
 
 // View for a single dropdown item
-function itemView(component, item) {
-  const state = component.props.state;
-  const {selected} = state;
+function itemView(component, item, idx) {
   let icon;
-  if (selected === item) {
+  if (component.state.selectedIdx === idx) {
     icon = (<i className='fas fa-check mr1 dib' style={{width: '1.5rem'}}></i>);
   } else {
     icon = (<span className='mr1 dib' style={{width: '1.5rem'}}></span>);
   }
   return (
     <a className='db pa2 pointer hover-bg-blue hover-white'
-      onClick={() => FilterDropdown.selectItem(item, state)}
+      onClick={() => component.selectItem(idx)}
       key={item}>
       {icon}
       {item}

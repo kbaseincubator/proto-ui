@@ -56,6 +56,7 @@ export class Filters extends Component {
         <div className='pa2'>
           <FilterDropdown
             onSelect={this.handleFilter}
+            txt={'Sort by'}
             items={dropdownItems} />
         </div>
       </div>
