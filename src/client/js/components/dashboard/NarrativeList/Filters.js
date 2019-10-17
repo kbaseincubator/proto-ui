@@ -1,67 +1,62 @@
 // NPM
 import {Component, h} from 'preact';
-import mitt from 'mitt';
 
 // Components
-import {FilterDropdown} from '../../FilterDropdown';
-import {SearchInput} from '../../SearchInput';
+import {FilterDropdown} from '../../generic/FilterDropdown';
+import {SearchInput} from '../../generic/SearchInput';
 
-// Utils
-import {updateProp} from '../../../utils/updateProp';
-
-// Filter bar for searching and sorting data results
-// methods:
-//   searchBy - set the search value
-//   sortBy - set the sort value
-// emits:
-//  - sortBy (val)
-//  - searchBy (val)
+/* Filter bar for searching and sorting data results
+ * methods:
+ *   searchBy - set the search value
+ *   sortBy - set the sort value
+ * callbacks:
+ *  - onSetSearch - some filter has been applied to trigger a new search
+ */
 export class Filters extends Component {
-  static createState({update}) {
-    const state = {update, emitter: mitt()};
-    state.sort = FilterDropdown.createState({
-      txt: 'Sorting',
-      selected: 'Newest',
-      items: [
-        'Newest',
-        'Oldest',
-        'Recently updated',
-        'Least recently updated',
-      ],
-      update: updateProp(state, 'sort')
-    });
-    state.search = SearchInput.createState({update: updateProp(state, 'search')});
-    // Bubble up the search event
-    state.search.emitter.on('searched', (value) => {
-      state.emitter.emit('searchBy', value);
-    });
-    // Bubble up the sort selection event
-    state.sort.emitter.on('selected', (sortBy) => {
-      state.emitter.emit('sortBy', sortBy);
-    });
-    return state;
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchParams: {
+        term: '',
+        sort: null,
+      },
+    };
   }
 
-  static searchBy(val, state) {
-    SearchInput.setVal(val, state.search);
+  // Handle an onSetVal event from SearchInput
+  handleSearch(val) {
+    const searchParams = this.state.searchParams;
+    searchParams.term = val;
+    this.setState({searchParams});
+    if (this.props.onSetSearch) {
+      this.props.onSetSearch(searchParams);
+    }
   }
 
-  static toggleLoading(state) {
-    SearchInput.toggleLoading(state.search);
+  // Handle an onSelect event from FilterDropdown
+  handleFilter(val) {
+    const searchParams = this.state.searchParams;
+    searchParams.sort = val;
+    this.setState({searchParams});
+    if (this.props.onSetSearch) {
+      this.props.onSetSearch(searchParams);
+    }
   }
 
   render() {
-    const {author, sort, search} = this.props.state;
+    const dropdownItems = ['Newest', 'Oldest', 'Recently updated', 'Least recently updated'];
     return (
       <div className='bg-light-gray flex justify-between'>
-        {/* Left-aligned actions */}
+        {/* Left-aligned actions (eg. search) */}
         <div className='pa3'>
-          <SearchInput state={search} />
+          <SearchInput onSetVal={this.handleSearch} />
         </div>
 
-        {/* Right-aligned actions */}
+        {/* Right-aligned actions (eg. filter dropdown) */}
         <div className='pa2'>
-          <FilterDropdown state={sort} />
+          <FilterDropdown
+            onSelect={this.handleFilter}
+            items={dropdownItems} />
         </div>
       </div>
     );

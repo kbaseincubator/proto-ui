@@ -1,41 +1,35 @@
+// NPM
 import {Component, h} from 'preact';
-import mitt from 'mitt';
 
 // Components
-import {MiniTabs} from '../../MiniTabs';
+import {MiniTabs} from '../../generic/MiniTabs';
 
 // Utils
 import {readableDate} from '../../../utils/readableDate';
-import {updateProp} from '../../../utils/updateProp';
 import {getWSTypeName} from '../../../utils/getWSTypeName';
 
-/**
+/*
  * Narrative details side panel in the narrative listing.
+ * props:
+ * - activeItem - object of detailed narrative data
+ * state:
+ * - selectedTabIdx - index of which mini-tab is selected
+ * callbacks: none
  */
 export class NarrativeDetails extends Component {
-  static createState({update}) {
-    const state = {
-      activeItem: null,
-      update,
-      emitter: mitt(),
-    };
-    state.tabs = MiniTabs.createState({
-      tabs: ['Overview', 'Data', 'Preview'],
-      update: updateProp(state, 'tabs'),
-      selectedIdx: 0,
-    });
-    return state;
+  constructor(props) {
+    super(props);
+    this.state = {selectedTabIdx: props.selectedTabIdx || 0};
   }
 
-  static activate(narrative, state) {
-    // Make an item active
-    const newState = Object.assign(state, {activeItem: narrative});
-    state.update(newState);
+  // Handle the onSelect callback from MiniTabs
+  handleOnTabSelect(idx) {
+    this.setState({selectedTabIdx: idx});
   }
 
   render() {
-    const state = this.props.state;
-    const {activeItem, tabs} = state;
+    const {activeItem} = this.props;
+    const {selectedTabIdx} = this.state;
     if (!activeItem) {
       return (<div></div>);
     }
@@ -44,12 +38,12 @@ export class NarrativeDetails extends Component {
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content = '';
     // Choose which content to show based on selected tab
-    if (tabs.selectedIdx === 0) {
+    if (selectedTabIdx === 0) {
       // Show overview
       content = basicDetailsView(data);
-    } else if (tabs.selectedIdx === 1) {
+    } else if (selectedTabIdx === 1) {
       content = dataView(data);
-    } else if (tabs.selectedIdx === 2) {
+    } else if (selectedTabIdx === 2) {
       content = cellPreview(data);
     }
     return (
@@ -86,7 +80,7 @@ export class NarrativeDetails extends Component {
           </a>
           </div>
         */}
-        <MiniTabs state={tabs} className='mb3' />
+        <MiniTabs tabs={['Overview', 'Data', 'Preview']} className='mb3' />
         {content}
       </div>
     );
@@ -123,7 +117,7 @@ function dl(key, val) {
 function cellPreview(data) {
   const leftWidth = 18;
   const maxLength = 16;
-  // TODO move this into the component class
+  // TODO move this into its own component class
   const truncated = data.cells.reduce((all, each) => {
     const prev = all[all.length - 1];
     if (each.cell_type === 'widget' || !each.cell_type.trim().length) {

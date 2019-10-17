@@ -1,145 +1,133 @@
+// NPM
 import {Component, h} from 'preact';
 
 // Components
-import {TabHeader} from '../../TabHeader';
+import {TabHeader} from '../../generic/TabHeader';
 import {Filters} from './Filters';
 import {ItemList} from './ItemList';
 import {NarrativeDetails} from './NarrativeDetails';
 
 // Utils
-import {updateProp} from '../../../utils/updateProp';
 import {searchNarratives} from '../../../utils/searchNarratives';
 
 // Page length of search results
 const PAGE_SIZE = 20;
+const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
 export class NarrativeList extends Component {
-  static createState({update}) {
-    const state = {update};
-    state.itemList = ItemList.createState({update: updateProp(state, 'itemList')});
-    state.filters = Filters.createState({update: updateProp(state, 'filters')});
-    state.tabs = TabHeader.createState({
-      tabs: [
-        'My narratives',
-        'Shared with me',
-        'Tutorials',
-        'Public',
-      ],
-      selectedIdx: 3,
-      update: updateProp(state, 'tabs'),
-    });
-    state.narrativeDetails = NarrativeDetails.createState({
-      update: updateProp(state, 'narrativeDetails'),
-    });
-    // Whenever the user selects an item in the list, activate it in the details
-    state.itemList.emitter.on('selected', (item) => {
-      NarrativeDetails.activate(item, state.narrativeDetails);
-    });
-    // Events from the filters or tabs that trigger a new search
-    state.filters.emitter.on('searchBy', () => {
-      NarrativeList.newSearch(state);
-    });
-    state.filters.emitter.on('sortBy', () => {
-      NarrativeList.newSearch(state);
-    });
-    state.tabs.emitter.on('tabSelected', () => {
-      // Clear the search results before re-fetching for the new tab
-      ItemList.setItems([], 0, state.itemList);
-      NarrativeDetails.activate(null, state.narrativeDetails);
-      NarrativeList.newSearch(state);
-    });
-    // Handle the ItemList's "load more" click action
-    state.itemList.emitter.on('wantsMore', () => {
-      NarrativeList.loadMore(state);
-    });
-    // Perform an initial search on pageload and set data for the itemList
-    NarrativeList.newSearch(state);
-    return state;
+  constructor(props) {
+    super(props);
+    this.state = {
+      // List of narrative data
+      items: props.items || [],
+      // Currently active narrative result, selected on the left and shown on the right
+      // This is unused if the items array is empty.
+      activeIdx: 0,
+      // parameters to send to the searchNarratives function
+      searchParams: {
+        term: '',
+        sort: null,
+        category: null,
+        skip: 0,
+        pageSize: PAGE_SIZE,
+      },
+    };
   }
 
-  // After receiving search results, overwrite the itemlist and set the
-  // narrative details to the first item. Takes the fetch promise from
-  // performSearch.
-  static newSearch(state) {
-    NarrativeList.performSearch({skip: 0, pageSize: PAGE_SIZE}, state)
-        .then((resp) => {
-          if (resp && resp.hits) {
-            const total = resp.hits.total;
-            const items = resp.hits.hits;
-            ItemList.setItems(items, total, state.itemList);
-            NarrativeDetails.activate(items[0], state.narrativeDetails);
-          }
-        });
+  // Handle an onSetSearch callback from Filters
+  handleSearch({term, sort}) {
+    const searchParams = this.state.searchParams;
+    searchParams.term = term;
+    searchParams.sort = sort;
+    searchParams.skip = 0;
+    this.setState({searchParams});
+    this.performSearch();
   }
 
-  // Load additional results into the itemList (aka the "load more" button)
-  static loadMore(state) {
-    const currentPage = state.itemList.currentPage;
-    ItemList.loading(state.itemList);
-    const skip = currentPage * PAGE_SIZE;
-    NarrativeList.performSearch({pageSize: PAGE_SIZE, skip}, state)
-        .then((resp) => {
-          if (resp && resp.hits) {
-            const total = resp.hits.total;
-            const items = resp.hits.hits;
-            ItemList.appendItems(items, total, state.itemList);
-            ItemList.notLoading(state.itemList);
-          }
-        });
+  // Handle an onSelectTab callback from TabHeader
+  handleTabChange(idx, name) {
+    // Reset the search state and results
+    const searchParams = this.state.searchParams;
+    searchParams.term = '';
+    searchParams.skip = 0;
+    const categoryMap = {
+      'my narratives': 'own',
+      'shared with me': 'shared',
+      'tutorials': 'tutorials',
+      'public': 'public',
+    };
+    // map from tab text to a more canonical name
+    //  filter based on a tab name ("my narratives", "shared with me", etc)
+    searchParams.category = categoryMap[name.toLowerCase()];
+    // (leaving the searchParams.sort param alone)
+    this.setState({
+      items: [],
+      activeIdx: 0,
+      searchParams,
+    });
+    this.performSearch();
+  }
+// Handle the onLoadMore callback from ItemList
+  handleLoadMore() {
+    const searchParams = this.state.searchParams;
+    // Increment the skip size to be a multiple of the page size.
+    searchParams.skip += PAGE_SIZE;
+    this.setState({searchParams});
+    this.performSearch();
   }
 
   // Perform a search and return the Promise for the fetch
-  static performSearch({skip, pageSize}, state) {
-    Filters.toggleLoading(state.filters);
-    ItemList.loading(state.itemList);
-    // map from tab text to a more canonical name
-    const catName = state.tabs.selected;
-    const categoryMap = {
-      'My narratives': 'own',
-      'Shared with me': 'shared',
-      'Tutorials': 'tutorials',
-      'Public': 'public',
-    };
-    // Apply a search filter based on a tab name ("my narratives", "shared with me", etc)
-    if (!(catName in categoryMap)) {
-      throw new Error('Invalid category name: ' + catName);
-    }
-    const term = state.filters.search.value;
-    const sort = state.filters.sort.selected;
-    return searchNarratives({term, sort, category: categoryMap[catName], skip, pageSize})
+  static performSearch() {
+    this.setState({loading: true});
+    const searchParams = this.state.searchParams;
+    return searchNarratives(searchParams)
+        .then((resp) => {
+          if (resp && resp.hits) {
+            const total = resp.hits.total;
+            const items = resp.hits.hits;
+            this.setState({
+              items,
+              totalItems: total,
+            });
+          }
+        })
         .finally(() => {
-          Filters.toggleLoading(state.filters);
-          ItemList.notLoading(state.itemList);
+          this.setState({loading: false, activeIdx: 0});
         });
+    // TODO handle error from server
   }
 
   render(props) {
-    const {tabs, itemList, narrativeDetails, filters} = props.state;
-    const newNarrativeHref = window._env.narrative + '/#narrativemanager/new';
     return (
       <div>
         <div className='flex justify-between'>
           {/* Tab sections */}
           <div className='pt2'>
-            <TabHeader state={tabs} />
+            <TabHeader
+              tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
+              selectedIdx={3} />
           </div>
 
           {/* New narrative button */}
           <a className='pointer dim dib pa2 white br2 b bg-green dib no-underline'
             style={{marginTop: '1rem', height: '2.25rem'}}
-            href={newNarrativeHref}>
+            href={NEW_NARR_URL}>
             <i className="mr1 fas fa-plus"></i> New Narrative
           </a>
         </div>
 
         <div className='ba b--black-20'>
           {/* Search, sort, filter */}
-          <Filters state={filters} />
+          <Filters onSetSearch={this.handleSearch.bind(this)} />
 
           {/* Narrative listing and side-panel details */}
           <div className='flex'>
-            <ItemList state={itemList} />
-            <NarrativeDetails state={narrativeDetails} />
+            <ItemList
+              items={this.state.items}
+              loading={this.state.loading}
+              totalItems={this.state.totalItems} />
+
+            <NarrativeDetails />
           </div>
         </div>
       </div>

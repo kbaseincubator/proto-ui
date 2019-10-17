@@ -1,7 +1,14 @@
 import {render, h, Component} from 'preact';
+
+// Imports for page-specific components
+// path: /dashboard
 import {Dashboard} from './components/dashboard';
+// path: /object_relations
 import {ObjectRelations} from './components/object_relations';
+
+// Utils
 import {getUsername} from './utils/auth';
+
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -9,34 +16,28 @@ const PATHNAME = document.location.pathname
     .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
-// Underline the current item in the top-nav. Plain JS.
+
+// Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach((node) => {
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
     node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
   }
 });
 
+// Set the signed-in username in the global env
 getUsername((username) => {
   window._env.username = username;
 });
 
 // Global page wrapper
 class Page extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      root: props.root.createState({
-        update: (root) => this.setState({root}),
-      }),
-    };
-  }
   render(props, state) {
     const RootComponent = props.root;
-    return (<RootComponent state={state.root} />);
+    return (<RootComponent />);
   }
 }
 
-// Render the Preact page component based on pathname
+// Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname
   const routes = {

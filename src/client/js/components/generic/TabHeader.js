@@ -1,45 +1,58 @@
-// Narrative list header with tabs
+// NPM
 import {Component, h} from 'preact';
-import mitt from 'mitt';
 
 /**
  * Horizontal tab navigation UI.
  *
- * params:
+ * state:
  *   tabs - array of tab titles (default [])
  *   selectedIdx - default selected index (default 0)
+ *   selected - string tab title that is currently selected
  * methods:
  *   select (idx) - activate a tab by index
- * events:
- *   tabSelected (name) - user activated a tab
+ * callbacks:
+ *   onClickTab - a tab was clicked and selected
+ *   onSelectTab - a new tab was selected
  */
 export class TabHeader extends Component {
-  static createState({tabs = [], selectedIdx = 0, update}) {
-    return {selectedIdx, tabs, update, emitter: mitt(), selected: tabs[selectedIdx]};
+  constructor(props) {
+    super(props);
+    const selectedIdx = props.selectedIdx || 0;
+    this.state = {
+      tabs: props.tabs,
+      selectedIdx,
+      selected: props.tabs[selectedIdx],
+    };
   }
 
   // Select a new tab to activate
-  static select(idx, state) {
-    const newState = Object.assign(state, {
+  select(idx) {
+    if (idx >= this.state.tabs.length || idx < 0) {
+      throw Error(`Invalid tab index ${idx}. Max is ${this.state.tabs.length - 1} and min is 0.`);
+    }
+    this.setState({
       selectedIdx: idx,
-      selected: state.tabs[idx],
+      selected: this.state.tabs[idx],
     });
-    state.update(newState);
+    if (this.props.onSelectTab) {
+      this.props.onSelectTab(idx, this.state.tabs[idx]);
+    }
   }
 
   // Handle click event on a tab element
   handleClickTab(idx) {
-    const state = this.props.state;
-    if (idx === state.selectedIdx) {
+    if (idx === this.state.selectedIdx) {
+      // No-op if the tab is already selected
       return;
     }
-    TabHeader.select(idx, state);
-    state.emitter.emit('tabSelected', state.tabs[idx]);
+    this.select(idx);
+    if (this.props.onClickTab) {
+      this.props.onClickTab(this.state);
+    }
   }
 
   render() {
-    const state = this.props.state;
-    const {tabs, selectedIdx} = state;
+    const {tabs, selectedIdx} = this.state;
     return (
       <div className='pt2'>
         <ul className='list pa0 ma0 flex items-center' style={{position: 'relative', top: '1px'}}>
@@ -61,7 +74,7 @@ export class TabHeader extends Component {
   }
 }
 
-// Active and inactive tab styles
+// Active and inactive tab styles using Tachyons classes
 const tabClasses = {
   active: 'dib pv3 ph3 br--top br2 bt bl br b bg-light-gray b--black-20',
   inactive: 'dib pv3 pointer br--top br2 dim ph3 b--black-10 black-80',

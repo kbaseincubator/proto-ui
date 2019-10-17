@@ -1,89 +1,56 @@
-// Narrative list header with tabs
+// NPM
 import {Component, h} from 'preact';
 import * as timeago from 'timeago.js';
-import mitt from 'mitt';
 
-// Simple UI for a list of selectable search results
-// params:
-//  - items - array of objects
-// methods:
-//  - setItems
-//  - appendItems
-//  - loading
-//  - notLoading
-//  - selectItem
-// events:
-//  - wantsMore - user wants to load more results
-//  - selected - user has selected an item in the list
+/* Simple UI for a list of selectable search results
+ * props:
+ * - items
+ * - loading
+ * - totalItems
+ * state:
+ * - selectedIdx - Index of search result currently selected
+ * callbacks:
+ *  - onSelectItem - called when a new result is activated
+ *  - onLoadMore - called when the "load more" button is clicked
+ */
 export class ItemList extends Component {
-  static createState({items = [], update}) {
-    return {
-      update,
-      term: '',
-      loading: true,
-      emitter: mitt(),
-      items: [],
-      totalItems: 0,
-      activeItem: null,
-      hasMore: false,
-      currentPage: 1,
+  constructor(props) {
+    super(props);
+    this.state = {
+      // Nullable index of which result item the user has activated
+      selectedIdx: null,
     };
   }
 
-  // Set (and overwrite) the search results
-  // Resets the active item to the first in the results
-  static setItems(items, totalItems, state) {
-    const hasMore = totalItems > items.length;
-    state.update(Object.assign(state, {
-      items,
-      totalItems,
-      activeItem: items[0],
-      hasMore,
-    }));
-  }
-
-  // Append a new page of items to the existing items
-  static appendItems(items, totalItems, state) {
-    const hasMore = totalItems > (items.length + state.items.length);
-    const newState = Object.assign(state, {
-      items: state.items.concat(items),
-      totalItems,
-      hasMore,
-      currentPage: state.currentPage + 1,
+  selectItem(idx) {
+    if (idx < 0 || idx >= this.props.items.length) {
+      throw new Error(`Invalid index for ItemList: ${idx}.
+        Max is ${this.props.items.length - 1} and min is 0.`);
+    }
+    this.setState({
+      selectedIdx: idx,
     });
-    state.update(newState);
-  }
-
-  static loading(state) {
-    state.update(Object.assign(state, {loading: true}));
-  }
-
-  static notLoading(state) {
-    state.update(Object.assign(state, {loading: false}));
-  }
-
-  static selectItem(item, state) {
-    state.update(Object.assign(state, {activeItem: item}));
+    if (this.props.onSelectItem) {
+      this.props.onSelectItem(this);
+    }
   }
 
   // Handle click event on the "load more" button
   handleClickLoadMore(ev) {
-    const state = this.props.state;
-    state.emitter.emit('wantsMore');
+    if (this.props.onLoadMore) {
+      this.props.onLoadMore();
+    }
   }
 
   // Handle click event on an individual item
-  handleClickItem(item) {
-    const state = this.props.state;
-    ItemList.selectItem(item, state);
-    state.emitter.emit('selected', item);
+  handleClickItem(idx) {
+    this.selectItem(idx);
   }
 
   render() {
-    const state = this.props.state;
-    const {items} = state;
+    const {items} = this.props;
     if (!items || !items.length) {
-      if (state.loading) {
+      if (this.props.loading) {
         // No results but still loading:
         return (
           <div className='w-100 tc black-50'>
@@ -112,8 +79,9 @@ export class ItemList extends Component {
 }
 
 function hasMoreButton(component) {
-  const state = component.props.state;
-  if (!state.hasMore) {
+  const props = component.props;
+  const hasMore = props.items.length < props.totalItems;
+  if (!hasMore) {
     return (
       <span
         className='black-50 pa3 dib tc'>
@@ -121,7 +89,7 @@ function hasMoreButton(component) {
       </span>
     );
   }
-  if (state.loading) {
+  if (props.loading) {
     return (
       <span className='black-60 pa3 tc dib'>
         <i className="fas fa-cog fa-spin mr2"></i>
@@ -132,16 +100,16 @@ function hasMoreButton(component) {
   return (
     <a
       className='tc pa3 dib pointer blue dim b'
-      onClick={(ev) => component.handleClickLoadMore(ev)}>
-      Load more ({state.totalItems - state.items.length} remaining)
+      onClick={(ev) => props.handleClickLoadMore(ev)} >
+      Load more ({props.totalItems - props.items.length} remaining)
     </a>
   );
 }
 
 // view for a single narrative item
-const itemView = (component, item) => {
-  const state = component.props.state;
-  const status = state.activeItem === item ? 'active' : 'inactive';
+const itemView = (component, item, idx) => {
+  const state = component.state;
+  const status = state.selectedIdx === idx ? 'active' : 'inactive';
   const css = itemClasses[status];
   const data = item._source;
   // Action to select an item to view details

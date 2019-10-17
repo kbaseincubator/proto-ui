@@ -1,37 +1,27 @@
 // Small version of horizontal, top tabs
 import {Component, h} from 'preact';
-import mitt from 'mitt';
 
 export class MiniTabs extends Component {
-  static createState({update, tabs=[], selectedIdx}) {
-    if (selectedIdx > (tabs.length - 1)) {
-      throw new Error('Invalid default index for MiniTabs: ' + selectedIdx);
-    }
-    const state = {
-      emitter: mitt(),
-      update,
-      tabs,
-      selectedIdx,
-      selected: tabs[selectedIdx],
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedIdx: props.selectedIdx || 0,
     };
-    return state;
   }
 
-  static select(idx, state) {
-    const newState = Object.assign(state, {
-      selectedIdx: idx,
-      selected: state.tabs[idx],
-    });
-    state.update(newState);
-  }
-
-  handleClickTab(idx) {
-    const state = this.props.state;
-    if (idx === state.selectedIdx) {
+  // Select a new tab by index
+  select(idx) {
+    if (idx == this.state.selectedIdx) {
       return;
     }
-    MiniTabs.select(idx, state);
-    state.emitter.emit('tabSelected', state.tabs[idx]);
+    if (idx < 0 || idx >= this.props.tabs.length) {
+      throw new Error(`Invalid tab index ${idx}. Min is 0
+        and max is ${this.props.tabs.length - 1}.`);
+    }
+    this.setState({selectedIdx: idx});
+    if (this.props.onSelect) {
+      this.props.onSelect(idx);
+    }
   }
 
   render() {
@@ -45,7 +35,7 @@ export class MiniTabs extends Component {
             const className = selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
             return (
               <li key={tabText} className={className}
-                onClick={() => this.handleClickTab(idx)}
+                onClick={() => this.select(idx)}
                 style={{userSelect: 'none'}}>
                 {tabText}
               </li>

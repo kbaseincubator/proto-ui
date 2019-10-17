@@ -4,24 +4,15 @@ import {Component, h} from 'preact';
 // Components
 import {NarrativeList} from './NarrativeList';
 
-// Utils
-import {updateProp} from '../../utils/updateProp';
-
 export class Dashboard extends Component {
-  static createState({update}) {
-    const state = {update};
-    state.narrativeList = NarrativeList.createState({
-      update: updateProp(state, 'narrativeList'),
-    });
-    return state;
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
   render(props) {
-    const {narrativeList} = props.state;
     return (
-      <section className='ph4 mt3'>
-        <NarrativeList state={narrativeList} />
-      </section>
+      <section className='ph4 mt3'> <NarrativeList /> </section>
     );
   }
 }
