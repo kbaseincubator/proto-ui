@@ -1,13 +1,13 @@
 import {Component, h} from 'preact';
 
-/* Filter dropdown component
+/**
+ * Filter dropdown component
+ * props:
+ * - disabled - bool to disable the dropdown
+ * - items - arr of string of dropdown options
  * state:
  * - isOpen
  * - selectedIdx
- * props:
- * - txt - prompt text
- * - disabled - bool to disable the dropdown
- * - items - arr of string of dropdown options
  * callbacks:
  * - onSelect - called when an item gets selected
  */
@@ -65,7 +65,7 @@ export class FilterDropdown extends Component {
   }
 
   render(props) {
-    const {txt, items} = props;
+    const {items} = props;
     let dropdownItems = '';
     let selected = null;
     selected = items[this.state.selectedIdx];
@@ -83,8 +83,7 @@ export class FilterDropdown extends Component {
       <div className='dib relative'>
         <a className='dim dib pa3 pointer'
           onClick={(ev) => this.handleMouseDown(ev)}>
-          { txt }
-          { selected ? ': ' + selected : '' }
+          { ': ' + selected }
           <i className={iconClass}></i>
         </a>
         {dropdownItems} </div>

@@ -2,15 +2,12 @@ import {Component, h} from 'preact';
 
 /**
  * Horizontal tab navigation UI.
- *
+ * props:
+ * - tabs - array of tab titles (default [])
  * state:
- *   tabs - array of tab titles (default [])
- *   selectedIdx - default selected index (default 0)
- *   selected - string tab title that is currently selected
- * methods:
- *   select (idx) - activate a tab by index
+ * - selectedIdx - default selected index (default 0)
  * callbacks:
- *   onSelectTab - a new tab was selected
+ * - onSelectTab - a new tab was selected
  */
 export class TabHeader extends Component {
   constructor(props) {
@@ -19,7 +16,6 @@ export class TabHeader extends Component {
     this.state = {
       tabs: props.tabs,
       selectedIdx,
-      selected: props.tabs[selectedIdx],
     };
   }
 
@@ -28,10 +24,7 @@ export class TabHeader extends Component {
     if (idx >= this.state.tabs.length || idx < 0) {
       throw Error(`Invalid tab index ${idx}. Max is ${this.state.tabs.length - 1} and min is 0.`);
     }
-    this.setState({
-      selectedIdx: idx,
-      selected: this.state.tabs[idx],
-    });
+    this.setState({selectedIdx: idx});
     if (this.props.onSelectTab) {
       this.props.onSelectTab(idx, this.state.tabs[idx]);
     }
@@ -46,8 +39,9 @@ export class TabHeader extends Component {
     this.select(idx);
   }
 
-  render() {
-    const {tabs, selectedIdx} = this.state;
+  render(props) {
+    const {tabs} = props;
+    const {selectedIdx} = this.state;
     return (
       <div className='pt2'>
         <ul className='list pa0 ma0 flex items-center' style={{position: 'relative', top: '1px'}}>

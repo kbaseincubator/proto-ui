@@ -1,16 +1,20 @@
-// NPM
 import {Component, h} from 'preact';
 
 // Components
 import {FilterDropdown} from '../../generic/FilterDropdown';
 import {SearchInput} from '../../generic/SearchInput';
 
-/* Filter bar for searching and sorting data results
- * methods:
- *   searchBy - set the search value
- *   sortBy - set the sort value
+/**
+ * Filter bar for searching and sorting data results
+ * state:
+ * searchParams:
+ * - subset of parameters to send up to the NarrativeList component, which in
+ *   turn sends them to the searchNarratives util
+ * props:
+ * - loading - bool - whether we are currently loading stuff (will put the
+ *   search input in a loading state)
  * callbacks:
- *  - onSetSearch - some filter has been applied to trigger a new search
+ * - onSetSearch - some filter has been applied to trigger a new search
  */
 export class Filters extends Component {
   constructor(props) {

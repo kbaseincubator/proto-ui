@@ -1,8 +1,8 @@
-// NPM
 import {Component, h} from 'preact';
 import * as timeago from 'timeago.js';
 
-/* Simple UI for a list of selectable search results
+/**
+ * Simple UI for a list of selectable search results
  * props:
  * - items
  * - loading

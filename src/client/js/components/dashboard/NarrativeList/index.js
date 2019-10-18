@@ -13,6 +13,17 @@ import {searchNarratives} from '../../../utils/searchNarratives';
 const PAGE_SIZE = 20;
 const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
+/**
+ * This is a parent component to everything in the narrative browser (tabs,
+ * filters, search results, details, etc)
+ * state:
+ *  - search params - obj - params to send to searchNarratives
+ *  - activeIdx - currently activated narrative details
+ *  - loading - whether we are loading data from the server
+ *  - items - list of objects of narrative details
+ * props: none
+ * callbacks: none
+ */
 export class NarrativeList extends Component {
   constructor(props) {
     super(props);

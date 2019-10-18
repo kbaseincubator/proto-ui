@@ -1,4 +1,3 @@
-// NPM
 import {Component, h} from 'preact';
 
 // Components
@@ -8,7 +7,7 @@ import {MiniTabs} from '../../generic/MiniTabs';
 import {readableDate} from '../../../utils/readableDate';
 import {getWSTypeName} from '../../../utils/getWSTypeName';
 
-/*
+/**
  * Narrative details side panel in the narrative listing.
  * props:
  * - activeItem - object of detailed narrative data

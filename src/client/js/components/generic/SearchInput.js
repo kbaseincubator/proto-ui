@@ -1,4 +1,3 @@
-// NPM
 import {Component, h} from 'preact';
 
 // Milliseconds to wait before calling the "setVal" method and "onSetVal"

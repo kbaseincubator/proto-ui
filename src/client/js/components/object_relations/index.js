@@ -1,4 +1,3 @@
-/** @jsx h */
 import {h, Component} from 'preact';
 
 export class ObjectRelations extends Component {

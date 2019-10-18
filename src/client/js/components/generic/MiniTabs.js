@@ -1,4 +1,3 @@
-// Small version of horizontal, top tabs
 import {Component, h} from 'preact';
 
 /**
