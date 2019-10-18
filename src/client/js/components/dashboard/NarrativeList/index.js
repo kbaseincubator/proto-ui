@@ -17,6 +17,7 @@ export class NarrativeList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       // List of narrative data
       items: props.items || [],
       // Currently active narrative result, selected on the left and shown on the right
@@ -131,7 +132,7 @@ export class NarrativeList extends Component {
 
         <div className='ba b--black-20'>
           {/* Search, sort, filter */}
-          <Filters onSetSearch={this.handleSearch.bind(this)} />
+          <Filters onSetSearch={this.handleSearch.bind(this)} loading={this.state.loading} />
 
           {/* Narrative listing and side-panel details */}
           <div className='flex'>

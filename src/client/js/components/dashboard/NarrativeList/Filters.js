@@ -34,7 +34,7 @@ export class Filters extends Component {
   }
 
   // Handle an onSelect event from FilterDropdown
-  handleFilter(val) {
+  handleFilter(idx, val) {
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({searchParams});
@@ -43,19 +43,19 @@ export class Filters extends Component {
     }
   }
 
-  render() {
+  render(props) {
     const dropdownItems = ['Newest', 'Oldest', 'Recently updated', 'Least recently updated'];
     return (
       <div className='bg-light-gray flex justify-between'>
         {/* Left-aligned actions (eg. search) */}
         <div className='pa3'>
-          <SearchInput onSetVal={this.handleSearch} />
+          <SearchInput loading={Boolean(props.loading)} onSetVal={this.handleSearch.bind(this)} />
         </div>
 
         {/* Right-aligned actions (eg. filter dropdown) */}
         <div className='pa2'>
           <FilterDropdown
-            onSelect={this.handleFilter}
+            onSelect={this.handleFilter.bind(this)}
             txt={'Sorting by'}
             items={dropdownItems} />
         </div>

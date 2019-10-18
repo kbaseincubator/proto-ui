@@ -1,16 +1,13 @@
 import {Component, h} from 'preact';
 
-
 /* Filter dropdown component
- * props:
- *
  * state:
  * - isOpen
  * - selectedIdx
  * props:
  * - txt - prompt text
- * - disabled - disable the dropdown
- * - items - list of strings of dropdown options
+ * - disabled - bool to disable the dropdown
+ * - items - arr of string of dropdown options
  * callbacks:
  * - onSelect - called when an item gets selected
  */
@@ -63,7 +60,7 @@ export class FilterDropdown extends Component {
       isOpen: false,
     });
     if (this.props.onSelect) {
-      this.props.onSelect(this.state);
+      this.props.onSelect(idx, this.props.items[idx]);
     }
   }
 
