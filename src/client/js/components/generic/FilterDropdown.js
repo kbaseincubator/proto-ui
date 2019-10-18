@@ -3,6 +3,7 @@ import {Component, h} from 'preact';
 /**
  * Filter dropdown component
  * props:
+ * - txt - prompt for the dropdown options
  * - disabled - bool to disable the dropdown
  * - items - arr of string of dropdown options
  * state:
@@ -83,7 +84,7 @@ export class FilterDropdown extends Component {
       <div className='dib relative'>
         <a className='dim dib pa3 pointer'
           onClick={(ev) => this.handleMouseDown(ev)}>
-          { ': ' + selected }
+          { props.txt + ': ' + selected }
           <i className={iconClass}></i>
         </a>
         {dropdownItems} </div>
