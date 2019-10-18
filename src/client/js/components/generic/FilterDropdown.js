@@ -18,7 +18,7 @@ export class FilterDropdown extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedIdx: null,
+      selectedIdx: props.selectedIdx || 0,
       isOpen: props.isOpen || false,
     };
   }
@@ -71,9 +71,7 @@ export class FilterDropdown extends Component {
     const {txt, items} = props;
     let dropdownItems = '';
     let selected = null;
-    if (this.state.selectedIdx !== null) {
-      selected = items[this.state.selectedIdx];
-    }
+    selected = items[this.state.selectedIdx];
     if (this.state.isOpen) {
       dropdownItems = (
         <div

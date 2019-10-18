@@ -27,11 +27,15 @@ export class NarrativeList extends Component {
       searchParams: {
         term: '',
         sort: null,
-        category: null,
+        category: 'own',
         skip: 0,
         pageSize: PAGE_SIZE,
       },
     };
+  }
+
+  componentDidMount() {
+    this.performSearch();
   }
 
   // Handle an onSetSearch callback from Filters
@@ -67,7 +71,8 @@ export class NarrativeList extends Component {
     });
     this.performSearch();
   }
-// Handle the onLoadMore callback from ItemList
+
+  // Handle the onLoadMore callback from ItemList
   handleLoadMore() {
     const searchParams = this.state.searchParams;
     // Increment the skip size to be a multiple of the page size.
@@ -77,7 +82,7 @@ export class NarrativeList extends Component {
   }
 
   // Perform a search and return the Promise for the fetch
-  static performSearch() {
+  performSearch() {
     this.setState({loading: true});
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
@@ -105,7 +110,7 @@ export class NarrativeList extends Component {
           <div className='pt2'>
             <TabHeader
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
-              selectedIdx={3} />
+              selectedIdx={0} />
           </div>
 
           {/* New narrative button */}
