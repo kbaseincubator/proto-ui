@@ -26,8 +26,8 @@ Run `make reset` to do a hard reset of your docker build, deleting containers an
 There are a few dockerfiles:
 
 * `Dockerfile` - prod image
-* `Dockerfile-python` - development python image
-* `Dockerfile-node` - development js/css watcher
+* `dev/Dockerfile-python` - development python image
+* `dev/Dockerfile-node` - development js/css watcher
 * `docker-compose.yaml` - development docker-compose config
 
 ## Deployment
