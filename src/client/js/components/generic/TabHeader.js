@@ -1,4 +1,3 @@
-// NPM
 import {Component, h} from 'preact';
 
 /**
@@ -11,7 +10,6 @@ import {Component, h} from 'preact';
  * methods:
  *   select (idx) - activate a tab by index
  * callbacks:
- *   onClickTab - a tab was clicked and selected
  *   onSelectTab - a new tab was selected
  */
 export class TabHeader extends Component {
@@ -46,9 +44,6 @@ export class TabHeader extends Component {
       return;
     }
     this.select(idx);
-    if (this.props.onClickTab) {
-      this.props.onClickTab(this.state);
-    }
   }
 
   render() {

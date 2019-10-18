@@ -1,4 +1,3 @@
-// NPM
 import {Component, h} from 'preact';
 
 // Components
@@ -81,6 +80,12 @@ export class NarrativeList extends Component {
     this.performSearch();
   }
 
+  // Handle an onSelectItem callback from ItemList
+  // Receives the index of the selected item
+  handleSelectItem(idx) {
+    this.setState({activeIdx: idx});
+  }
+
   // Perform a search and return the Promise for the fetch
   performSearch() {
     this.setState({loading: true});
@@ -90,10 +95,12 @@ export class NarrativeList extends Component {
           if (resp && resp.hits) {
             const total = resp.hits.total;
             const items = resp.hits.hits;
-            this.setState({
-              items,
-              totalItems: total,
-            });
+            // If we are loading a subsequent page, append to items. Otherwise, replace them.
+            if (searchParams.skip > 0) {
+              this.setState({items: this.state.items.concat(items), totalItems: total});
+            } else {
+              this.setState({items, totalItems: total});
+            }
           }
         })
         .finally(() => {
@@ -110,6 +117,7 @@ export class NarrativeList extends Component {
           <div className='pt2'>
             <TabHeader
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
+              onSelectTab={this.handleTabChange.bind(this)}
               selectedIdx={0} />
           </div>
 
@@ -130,9 +138,11 @@ export class NarrativeList extends Component {
             <ItemList
               items={this.state.items}
               loading={this.state.loading}
-              totalItems={this.state.totalItems} />
+              totalItems={this.state.totalItems}
+              onLoadMore={this.handleLoadMore.bind(this)}
+              onSelectItem={this.handleSelectItem.bind(this)} />
 
-            <NarrativeDetails />
+            <NarrativeDetails activeItem={this.state.items[this.state.activeIdx]} />
           </div>
         </div>
       </div>

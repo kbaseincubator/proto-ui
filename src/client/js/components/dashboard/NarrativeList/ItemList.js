@@ -17,8 +17,8 @@ export class ItemList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Nullable index of which result item the user has activated
-      selectedIdx: null,
+      // Index of which result item the user has activated
+      selectedIdx: 0,
     };
   }
 
@@ -27,11 +27,9 @@ export class ItemList extends Component {
       throw new Error(`Invalid index for ItemList: ${idx}.
         Max is ${this.props.items.length - 1} and min is 0.`);
     }
-    this.setState({
-      selectedIdx: idx,
-    });
+    this.setState({selectedIdx: idx});
     if (this.props.onSelectItem) {
-      this.props.onSelectItem(this);
+      this.props.onSelectItem(idx);
     }
   }
 
@@ -71,7 +69,7 @@ export class ItemList extends Component {
     }
     return (
       <div className='w-40'>
-        { items.map((item) => itemView(this, item)) }
+        { items.map((item, idx) => itemView(this, item, idx)) }
         { hasMoreButton(this) }
       </div>
     );
@@ -100,7 +98,7 @@ function hasMoreButton(component) {
   return (
     <a
       className='tc pa3 dib pointer blue dim b'
-      onClick={(ev) => props.handleClickLoadMore(ev)} >
+      onClick={(ev) => component.handleClickLoadMore(ev)} >
       Load more ({props.totalItems - props.items.length} remaining)
     </a>
   );
@@ -114,7 +112,7 @@ const itemView = (component, item, idx) => {
   const data = item._source;
   // Action to select an item to view details
   return (
-    <div onClick={() => component.handleClickItem(item)}
+    <div onClick={() => component.handleClickItem(idx)}
       key={ data.upa }
       className='br b--black-20'>
       <div className={css.outer}>

@@ -19,7 +19,10 @@ import {getWSTypeName} from '../../../utils/getWSTypeName';
 export class NarrativeDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {selectedTabIdx: props.selectedTabIdx || 0};
+    this.state = {
+      // Index of the selected tab within MiniTabs
+      selectedTabIdx: props.selectedTabIdx || 0,
+    };
   }
 
   // Handle the onSelect callback from MiniTabs
@@ -27,12 +30,12 @@ export class NarrativeDetails extends Component {
     this.setState({selectedTabIdx: idx});
   }
 
-  render() {
-    const {activeItem} = this.props;
-    const {selectedTabIdx} = this.state;
+  render(props) {
+    const {activeItem} = props;
     if (!activeItem) {
       return (<div></div>);
     }
+    const {selectedTabIdx} = this.state;
     const data = activeItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
@@ -80,7 +83,10 @@ export class NarrativeDetails extends Component {
           </a>
           </div>
         */}
-        <MiniTabs tabs={['Overview', 'Data', 'Preview']} className='mb3' />
+        <MiniTabs
+          tabs={['Overview', 'Data', 'Preview']}
+          onSelect={this.handleOnTabSelect.bind(this)}
+          className='mb3' />
         {content}
       </div>
     );
