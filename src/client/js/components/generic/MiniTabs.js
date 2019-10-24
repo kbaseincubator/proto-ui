@@ -1,4 +1,4 @@
-import {Component, h} from 'preact';
+import React, {Component} from 'react';
 
 /**
  * Small horizontal, in-page tab navigation.

@@ -13,17 +13,15 @@
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
-    "eslint": "^5.15.3",
-    "eslint-config-google": "^0.12.0",
+    "eslint": "^6.5.1",
+    "eslint-config-google": "^0.14.0",
     "eslint-plugin-react": "^7.16.0",
-    "preact-compat": "^3.18.4",
     "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
-    "preact": "^8.4.2",
     "timeago.js": "^4.0.0-beta.2",
     "react": "16.11.0",
     "react-dom": "16.11.0"

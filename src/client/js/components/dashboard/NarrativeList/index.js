@@ -1,4 +1,5 @@
-import {Component, h} from 'preact';
+import React, {Component} from 'react';
+
 
 // Components
 import {TabHeader} from '../../generic/TabHeader';
