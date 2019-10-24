@@ -1,4 +1,4 @@
-import {Component, h} from 'preact';
+import React, {Component} from 'react';
 
 // Milliseconds to wait before calling the "setVal" method and "onSetVal"
 // callback

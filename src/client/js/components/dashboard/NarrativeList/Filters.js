@@ -1,4 +1,5 @@
-import {Component, h} from 'preact';
+// import {Component, h} from 'preact';
+import React, {Component} from 'react';
 
 // Components
 import {FilterDropdown} from '../../generic/FilterDropdown';

@@ -1,4 +1,4 @@
-import {render, h, Component} from 'preact';
+import React, {Component} from 'react';
 
 // Imports for page-specific components
 // path: /dashboard
