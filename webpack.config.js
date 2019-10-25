@@ -20,6 +20,6 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx'],
+    extensions: ['.tsx', '.js', '.jsx'],
   },
 };
