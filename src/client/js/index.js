@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 
 // Imports for page-specific components
 // path: /dashboard
@@ -53,7 +54,7 @@ if (CONTAINER) {
   };
   if (PATHNAME in routes) {
     const topComponent = routes[PATHNAME].component;
-    render(<Page root={topComponent} />, CONTAINER);
+    ReactDOM.render(<Page root={topComponent} />, CONTAINER);
   } else {
     console.error(`Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(routes)}`); // eslint-disable-line
   }
