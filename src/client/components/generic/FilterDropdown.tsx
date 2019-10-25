@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
 
+interface Props {
+  onSelect: (idx:number, val:string) => void;
+  txt:string;
+  items: Array<string>;
+}
 /**
  * Filter dropdown component
  * props:
@@ -12,8 +17,8 @@ import React, {Component} from 'react';
  * callbacks:
  * - onSelect - called when an item gets selected
  */
-export class FilterDropdown extends Component {
-  constructor(props) {
+export class FilterDropdown extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
       selectedIdx: props.selectedIdx || 0,
@@ -55,7 +60,7 @@ export class FilterDropdown extends Component {
 
   // Select an item in the dropdown by value
   // Closes the dropdown
-  selectItem(idx) {
+  selectItem(idx:number) {
     this.setState({
       selectedIdx: idx,
       isOpen: false,
