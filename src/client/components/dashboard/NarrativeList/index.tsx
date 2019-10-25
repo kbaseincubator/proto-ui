@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-
 // Components
 import {TabHeader} from '../../generic/TabHeader';
 import {Filters} from './Filters';
@@ -14,6 +13,26 @@ import {searchNarratives} from '../../../utils/searchNarratives';
 const PAGE_SIZE = 20;
 const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
+
+interface State {
+  loading: boolean;
+  items: Array<string>;
+  totalItems?: number;
+  activeIdx: number;
+  searchParams: {
+    term: string;
+    sort: string;
+    category: string;
+    skip: number;
+    pageSize: number;
+  },
+}
+
+
+interface StringKeyValuePair {
+  [key: string]: string
+}
+
 /**
  * This is a parent component to everything in the narrative browser (tabs,
  * filters, search results, details, etc)
@@ -25,8 +44,8 @@ const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
  * props: none
  * callbacks: none
  */
-export class NarrativeList extends Component {
-  constructor(props) {
+export class NarrativeList extends Component<any, State> {
+  constructor(props:any) {
     super(props);
     this.state = {
       loading: false,
@@ -61,12 +80,12 @@ export class NarrativeList extends Component {
   }
 
   // Handle an onSelectTab callback from TabHeader
-  handleTabChange(idx, name) {
+  handleTabChange(idx:number, name:string) {
     // Reset the search state and results
     const searchParams = this.state.searchParams;
     searchParams.term = '';
     searchParams.skip = 0;
-    const categoryMap = {
+    const categoryMap:StringKeyValuePair = {
       'my narratives': 'own',
       'shared with me': 'shared',
       'tutorials': 'tutorials',
@@ -95,7 +114,7 @@ export class NarrativeList extends Component {
 
   // Handle an onSelectItem callback from ItemList
   // Receives the index of the selected item
-  handleSelectItem(idx) {
+  handleSelectItem(idx:number) {
     this.setState({activeIdx: idx});
   }
 
@@ -104,7 +123,7 @@ export class NarrativeList extends Component {
     this.setState({loading: true});
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
-        .then((resp) => {
+        .then((resp:any) => {
           if (resp && resp.hits) {
             const total = resp.hits.total;
             const items = resp.hits.hits;
@@ -122,7 +141,7 @@ export class NarrativeList extends Component {
     // TODO handle error from server
   }
 
-  render(props) {
+  render() {
     return (
       <div>
         <div className='flex justify-between'>
@@ -131,7 +150,8 @@ export class NarrativeList extends Component {
             <TabHeader
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
               onSelectTab={this.handleTabChange.bind(this)}
-              selectedIdx={0} />
+              selectedIdx={0} 
+            />
           </div>
 
           {/* New narrative button */}

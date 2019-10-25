@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 // Components
-import {NarrativeList} from './NarrativeList';
+import {NarrativeList} from './NarrativeList/index';
 
 /**
  * Parent page component for the dashboard page
@@ -10,12 +10,12 @@ import {NarrativeList} from './NarrativeList';
  * callbacks: none
  */
 export class Dashboard extends Component {
-  constructor(props) {
+  constructor(props:any) {
     super(props);
     this.state = {};
   }
 
-  render(props) {
+  render() {
     return (
       <section className='ph4 mt3'> <NarrativeList /> </section>
     );
