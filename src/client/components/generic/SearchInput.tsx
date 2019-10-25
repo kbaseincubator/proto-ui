@@ -12,6 +12,7 @@ interface Props {
 interface State {
   value: string;
 }
+
 /**
  * Generic search text input with a loading state
  * props:
@@ -29,7 +30,7 @@ export class SearchInput extends Component<Props, State> {
       value: '',
     };
   }
-
+  timeout: number | null;
   setVal(value:string) {
     this.setState({value});
     if (this.props.onSetVal) {
