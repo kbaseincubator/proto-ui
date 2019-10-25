@@ -35,7 +35,7 @@ export class FilterDropdown extends Component {
     // Check if we are clicking on this dropdown element (this.base)
     const withinDropdown = this.base.contains(ev.target);
     if (!withinDropdown && this.state.isOpen) {
-      this.updateState({isOpen: false});
+      this.setState({isOpen: false});
     }
   }
 

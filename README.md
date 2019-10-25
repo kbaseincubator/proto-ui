@@ -7,6 +7,13 @@
 
 ## Development
 
+### Prerequisites
+
+1. Install docker: https://docs.docker.com/install/
+1. Install docker-compose: https://docs.docker.com/compose/install/
+1. Install Node 10: https://github.com/nvm-sh/nvm
+1. Install yarn: https://yarnpkg.com/en/docs/install
+
 ### Run the server
 
 Install `docker` and `docker-compose` first.
