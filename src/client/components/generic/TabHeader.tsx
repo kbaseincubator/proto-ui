@@ -1,4 +1,4 @@
-import {Component, h} from 'preact';
+import React, {Component} from 'react';
 
 /**
  * Horizontal tab navigation UI.

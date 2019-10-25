@@ -1,4 +1,4 @@
-import {h, Component} from 'preact';
+import React, {Component} from 'react';
 
 export class ObjectRelations extends Component {
   render() {

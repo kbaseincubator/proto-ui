@@ -1,4 +1,4 @@
-import {Component, h} from 'preact';
+import React, {Component} from 'react';
 import * as timeago from 'timeago.js';
 
 /**

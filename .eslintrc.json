@@ -19,8 +19,7 @@
   },
   "settings": {
     "react": {
-      "version": "latest",
-      "pragma": "h"
+      "version": "latest"
     }
   },
   "rules": {
