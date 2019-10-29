@@ -9,7 +9,6 @@ import {ObjectRelations} from './components/object_relations';
 // Utils
 import {getUsername} from './utils/auth';
 
-
 // Constants
 const PATHNAME = document.location.pathname
     .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
@@ -25,7 +24,7 @@ document.querySelectorAll('[data-hl-nav]').forEach((node) => {
 });
 
 // Set the signed-in username in the global env
-getUsername((username) => {
+getUsername((username:string) => {
   window._env.username = username;
 });
 

@@ -7,6 +7,10 @@ import {MiniTabs} from '../../generic/MiniTabs';
 import {readableDate} from '../../../utils/readableDate';
 import {getWSTypeName} from '../../../utils/getWSTypeName';
 
+
+interface Props {
+  activeItem:{}
+}
 /**
  * Narrative details side panel in the narrative listing.
  * props:
@@ -16,7 +20,7 @@ import {getWSTypeName} from '../../../utils/getWSTypeName';
  * callbacks: none
  */
 export class NarrativeDetails extends Component {
-  constructor(props) {
+  constructor(props:Props) {
     super(props);
     this.state = {
       // Index of the selected tab within MiniTabs

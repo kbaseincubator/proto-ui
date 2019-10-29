@@ -10,10 +10,12 @@ interface State {
     sort: string | null,
   },
 }
+
 interface Props {
   onSetSearch: (searchParams: State['searchParams'] ) => void;
   loading: boolean;
 }
+
 /**
  * Filter bar for searching and sorting data results
  * state:
@@ -38,7 +40,7 @@ export class Filters extends Component<Props, State> {
   }
 
   // Handle an onSetVal event from SearchInput
-  handleSearch(val:string) {
+  handleSearch(val:string):void {
     const searchParams = this.state.searchParams;
     searchParams.term = val;
     this.setState({searchParams});
@@ -48,7 +50,7 @@ export class Filters extends Component<Props, State> {
   }
 
   // Handle an onSelect event from FilterDropdown
-  handleFilter(idx:number, val:string) {
+  handleFilter(idx:number, val:string):void {
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({searchParams});
@@ -74,6 +76,6 @@ export class Filters extends Component<Props, State> {
             items={dropdownItems} />
         </div>
       </div>
-    );
+    )
   }
 }
