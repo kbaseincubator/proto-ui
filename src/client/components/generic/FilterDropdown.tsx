@@ -48,10 +48,15 @@ export class FilterDropdown extends Component<Props, State> {
   }
 
   // Used in the componentDidMount document click event listener above
-  handleDocumentClick(ev: MouseEvent) {
+  handleDocumentClick(ev:MouseEvent) {
     // TODO: CHECKOUT findDomNode
+    //https://reactjs.org/docs/react-dom.html#finddomnode
+    // Note: findDOMNode is an escape hatch used to access the underlying DOM node. 
+    // In most cases, use of this escape hatch is discouraged because it pierces the component 
+    // abstraction. It has been deprecated in StrictMode.
     // Check if we are clicking on this dropdown element (this.base)
-    const withinDropdown = document.contains(ev.target);
+
+    const withinDropdown = document.contains(ev.target as HTMLElement);
     if (!withinDropdown && this.state.isOpen) {
       this.setState({isOpen: false});
     }

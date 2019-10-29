@@ -10,7 +10,7 @@ import {getWSTypeName} from '../../../utils/getWSTypeName';
 
 interface Props {
   activeItem:{};
-  selectedTabIdx: number;
+  selectedTabIdx?: number;
 }
 
 interface State {
@@ -29,29 +29,45 @@ export class NarrativeDetails extends Component<Props, State> {
     super(props);
     this.state = {
       // Index of the selected tab within MiniTabs
-      selectedTabIdx: props.selectedTabIdx || 0,
+      selectedTabIdx: this.props.selectedTabIdx || 0,
     };
   }
 
   // Handle the onSelect callback from MiniTabs
-  handleOnTabSelect(idx) {
+  handleOnTabSelect(idx:number) {
     this.setState({selectedTabIdx: idx});
   }
 
-  render(props) {
-    const {activeItem} = props;
+  basicDetailsView(data) {
+    const sharedWith = data.shared_users.filter((u) => u !== window._env.username);
+    return (
+      <div className='mb3'>
+        {descriptionList('Author', data.creator)}
+        {descriptionList('Created on', readableDate(data.creation_date))}
+        {descriptionList('Total cells', data.total_cells)}
+        {descriptionList('Data objects', data.data_objects.length)}
+        {descriptionList('Visibility', data.is_public ? 'Public' : 'Private')}
+        {data.is_public || !sharedWith.length ? '' : descriptionList('Shared with', sharedWith.join(', '))}
+      </div>
+    );
+  }
+
+  render() {
+    const {activeItem} = this.props;
     if (!activeItem) {
       return (<div></div>);
     }
+    let fooActiveItem:any
+    fooActiveItem = activeItem;
     const {selectedTabIdx} = this.state;
-    const data = activeItem._source;
+    const data = fooActiveItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
-    let content = '';
+    let content:JSX.Element;
     // Choose which content to show based on selected tab
     if (selectedTabIdx === 0) {
       // Show overview
-      content = basicDetailsView(data);
+      content = this.basicDetailsView(data);
     } else if (selectedTabIdx === 1) {
       content = dataView(data);
     } else if (selectedTabIdx === 2) {
@@ -101,24 +117,25 @@ export class NarrativeDetails extends Component<Props, State> {
   }
 }
 
-// Basic details, such as author, dates, etc.
-// Receives the narrative data from elasticsearch results for a single entry.
-function basicDetailsView(data) {
-  const sharedWith = data.shared_users.filter((u) => u !== window._env.username);
-  return (
-    <div className='mb3'>
-      {dl('Author', data.creator)}
-      {dl('Created on', readableDate(data.creation_date))}
-      {dl('Total cells', data.total_cells)}
-      {dl('Data objects', data.data_objects.length)}
-      {dl('Visibility', data.is_public ? 'Public' : 'Private')}
-      {data.is_public || !sharedWith.length ? '' : dl('Shared with', sharedWith.join(', '))}
-    </div>
-  );
-}
+// // Basic details, such as author, dates, etc.
+// // Receives the narrative data from elasticsearch results for a single entry.
+// function basicDetailsView(data) {
+//   const sharedWith = data.shared_users.filter((u) => u !== window._env.username);
+//   return (
+//     <div className='mb3'>
+//       {descriptionList('Author', data.creator)}
+//       {descriptionList('Created on', readableDate(data.creation_date))}
+//       {descriptionList('Total cells', data.total_cells)}
+//       {descriptionList('Data objects', data.data_objects.length)}
+//       {descriptionList('Visibility', data.is_public ? 'Public' : 'Private')}
+//       {data.is_public || !sharedWith.length ? '' : descriptionList('Shared with', sharedWith.join(', '))}
+//     </div>
+//   );
+// }
 
 // Dictionary term and definition for overview section
-function dl(key, val) {
+// function dl(key, val) {
+function descriptionList(key, val) {
   return (
     <dl className="ma0 flex justify-between bb b--black-20 pv2">
       <dt className="dib b">{key}</dt>

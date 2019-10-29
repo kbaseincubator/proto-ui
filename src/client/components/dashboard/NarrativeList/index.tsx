@@ -15,7 +15,7 @@ const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
 interface State {
   loading: boolean;
-  items: Array<string>;
+  items: Array<object>;
   totalItems?: number;
   activeIdx: number;
   searchParams: {
@@ -41,8 +41,8 @@ interface Props {
  * props: none
  * callbacks: none
  */
-export class NarrativeList extends Component<any, State> {
-  constructor(props:any) {
+export class NarrativeList extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
       loading: false,

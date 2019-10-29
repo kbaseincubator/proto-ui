@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import * as timeago from 'timeago.js';
 
 interface Props {
-  items?:Array<string>; // maybe?
+  items?:Array<object>; 
   loading: boolean;
   totalItems: number;
   onLoadMore?:()=>void;
@@ -57,10 +57,13 @@ export class ItemList extends Component<Props, State> {
   }
 
   // view for a single narrative item
-  itemView = (item:string, idx:number) => {
+  itemView = (item:object, idx:number) => {
+    // I need this until I figure out what's in item
+    let fooItem:any;
+    fooItem = item;
     const status = this.state.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = item._source;
+    const data = fooItem._source;
     // Action to select an item to view details
     return (
       <div onClick={() => this.handleClickItem(idx)}
@@ -70,7 +73,8 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <h4 className='ma0 mb2 pa0 f5'>{ data.narrative_title || 'Untitled' }</h4>
             <p className='ma0 pa0 f6'>
-              Updated { timeago.format(data.timestamp) } by { data.creator }
+              {/* Updated { timeago.format(data.timestamp) } by { data.creator } */}
+              updated - replace time ago
             </p>
           </div>
         </div>

@@ -10,6 +10,7 @@ declare global {
             username: string;
             narrative: string;
             kbase_endpoint: string;
+            token:string;
         }
     }
 }
