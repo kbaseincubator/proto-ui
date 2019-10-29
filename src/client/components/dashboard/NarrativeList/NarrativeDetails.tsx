@@ -9,7 +9,12 @@ import {getWSTypeName} from '../../../utils/getWSTypeName';
 
 
 interface Props {
-  activeItem:{}
+  activeItem:{};
+  selectedTabIdx: number;
+}
+
+interface State {
+  selectedTabIdx: number;
 }
 /**
  * Narrative details side panel in the narrative listing.
@@ -19,7 +24,7 @@ interface Props {
  * - selectedTabIdx - index of which mini-tab is selected
  * callbacks: none
  */
-export class NarrativeDetails extends Component {
+export class NarrativeDetails extends Component<Props, State> {
   constructor(props:Props) {
     super(props);
     this.state = {
