@@ -1,5 +1,5 @@
 serve:
-	docker-compose up --build
+	sh dev/start_server.sh
 
 reset:
 	docker-compose down --rmi all --remove-orphans --volumes

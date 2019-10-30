@@ -21,4 +21,5 @@ RUN apk --update add --virtual build-dependencies python-dev build-base && \
     pip install --upgrade --no-cache-dir -r requirements.txt && \
     apk del build-dependencies
 
-CMD ["sh", "scripts/start_server.sh"]
+ENV PYTHONPATH=/app
+CMD ["python", "/app/src/server.py"]
