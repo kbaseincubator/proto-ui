@@ -94,7 +94,7 @@ export class NarrativeDetails extends Component<Props, State> {
     const data = activeItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
-    let content:JSX.Element;
+    let content:React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
     // Choose which content to show based on selected tab
     if (selectedTabIdx === 0) {
       // Show overview
