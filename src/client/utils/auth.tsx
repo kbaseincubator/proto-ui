@@ -13,13 +13,15 @@ export function getToken() {
 
 // Fetch the username from the auth server or from session storage
 // Might return undefined
-export function getUsername(cb) {
+// TODO:Akiyo this function is doing two things. 
+// It might be a function that should be called from async function
+export function getUsername(callBack:(username:string)=>void) {
   const token = getToken();
   if (!token) {
     return undefined;
   }
   if (sessionStorage.getItem('kbase_username')) {
-    cb(sessionStorage.getItem('kbase_username'));
+    callBack(sessionStorage.getItem('kbase_username'));
   }
   const headers = {'Authorization': token};
   return fetch(window._env.kbase_endpoint + '/auth/api/V2/token', {
@@ -30,6 +32,6 @@ export function getUsername(cb) {
       .then((json) => {
         const username = json.user;
         sessionStorage.setItem('kbase_username', username);
-        cb(username);
+        callBack(username);
       });
 }

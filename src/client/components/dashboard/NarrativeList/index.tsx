@@ -4,10 +4,10 @@ import React, {Component} from 'react';
 import {TabHeader} from '../../generic/TabHeader';
 import {Filters} from './Filters';
 import {ItemList} from './ItemList';
-import {NarrativeDetails} from './NarrativeDetails';
+import {NarrativeDetails, NarrativeData} from './NarrativeDetails';
 
 // Utils
-import {searchNarratives} from '../../../utils/searchNarratives';
+import {searchNarratives, SearchParams} from '../../../utils/searchNarratives';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -15,16 +15,10 @@ const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
 interface State {
   loading: boolean;
-  items: Array<object>;
+  items: Array<NarrativeData>;
   totalItems?: number;
   activeIdx: number;
-  searchParams: {
-    term: string;
-    sort: string;
-    category: string;
-    skip: number;
-    pageSize: number;
-  };
+  searchParams: SearchParams;
 }
 interface Props {
   items?: Array<any>;
@@ -121,6 +115,7 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
         .then((resp:any) => {
+          console.log(resp)
           if (resp && resp.hits) {
             const total = resp.hits.total;
             const items = resp.hits.hits;

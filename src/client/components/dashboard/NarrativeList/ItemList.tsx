@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import * as timeago from 'timeago.js';
+import {format} from 'timeago.js';
 
 interface Props {
   items?:Array<object>; 

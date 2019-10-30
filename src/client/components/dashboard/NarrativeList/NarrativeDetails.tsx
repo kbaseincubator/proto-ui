@@ -9,13 +9,43 @@ import {getWSTypeName} from '../../../utils/getWSTypeName';
 
 
 interface Props {
-  activeItem:{};
+  activeItem:NarrativeData;
   selectedTabIdx?: number;
 }
 
 interface State {
   selectedTabIdx: number;
 }
+
+export interface NarrativeData {
+  _source: DetailedData;
+
+}
+
+interface Cell {
+  cell_type: string;
+  desc: string;
+  count: number;
+}
+    
+interface DataObjects {
+  readableType:string;
+  obj_type:string;
+  name:string;
+}
+interface DetailedData {
+    access_group: string | number;
+    cells: Array<Cell>;
+    narrative_title: string;
+    shared_users: Array<string>;
+    creator: string;
+    creation_date: number;
+    total_cells: number;
+    data_objects: Array<DataObjects>;
+    is_public: boolean;
+    sharedWith: Array<string>;
+}
+
 /**
  * Narrative details side panel in the narrative listing.
  * props:
@@ -37,9 +67,10 @@ export class NarrativeDetails extends Component<Props, State> {
   handleOnTabSelect(idx:number) {
     this.setState({selectedTabIdx: idx});
   }
-
-  basicDetailsView(data) {
-    const sharedWith = data.shared_users.filter((u) => u !== window._env.username);
+  // Basic details, such as author, dates, etc.
+  // Receives the narrative data from elasticsearch results for a single entry.
+  basicDetailsView(data:DetailedData) {
+    const sharedWith = data.shared_users.filter((user:string) => user !== window._env.username);
     return (
       <div className='mb3'>
         {descriptionList('Author', data.creator)}
@@ -52,15 +83,15 @@ export class NarrativeDetails extends Component<Props, State> {
     );
   }
 
+  
   render() {
     const {activeItem} = this.props;
     if (!activeItem) {
       return (<div></div>);
     }
-    let fooActiveItem:any
-    fooActiveItem = activeItem;
+
     const {selectedTabIdx} = this.state;
-    const data = fooActiveItem._source;
+    const data = activeItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content:JSX.Element;
@@ -135,7 +166,7 @@ export class NarrativeDetails extends Component<Props, State> {
 
 // Dictionary term and definition for overview section
 // function dl(key, val) {
-function descriptionList(key, val) {
+function descriptionList(key:string, val:string | number):React.DetailedHTMLProps<React.HTMLAttributes<HTMLDListElement>, HTMLDListElement> {
   return (
     <dl className="ma0 flex justify-between bb b--black-20 pv2">
       <dt className="dib b">{key}</dt>
@@ -144,39 +175,42 @@ function descriptionList(key, val) {
   );
 }
 
+function cellPreviewReducer(all:Array<Cell>, each:Cell):Array<Cell> {
+  const prev = all[all.length - 1];
+  if (each.cell_type === 'widget' || !each.cell_type.trim().length) {
+    // Filter out widgets for now
+    // Also, filter out blank cell types
+    return all;
+  } else if (prev && each.cell_type === prev.cell_type && each.desc === prev.desc) {
+    // If a previous cell has the same content, increase the previous quantity and don't append
+    prev.count = prev.count || 1;
+    prev.count += 1;
+  } else {
+    // Append a new cell
+    if (!each.desc.trim().length) {
+      // Show some text for empty cells
+      each.desc = '(empty)';
+    } else {
+      // Only take the first 4 lines
+      let desc = each.desc.split('\n').slice(0, 3).join('\n');
+      // Append ellipsis if we've shortened it
+      if (desc.length < each.desc.length) {
+        desc += '...';
+      }
+      each.desc = desc;
+    }
+    all.push(each);
+  }
+  return all;
+}
+
 // Preview of all notebook cells in the narrative
-function cellPreview(data) {
+function cellPreview(data:DetailedData) {
   const leftWidth = 18;
   const maxLength = 16;
   // TODO move this into its own component class
-  const truncated = data.cells.reduce((all, each) => {
-    const prev = all[all.length - 1];
-    if (each.cell_type === 'widget' || !each.cell_type.trim().length) {
-      // Filter out widgets for now
-      // Also, filter out blank cell types
-      return all;
-    } else if (prev && each.cell_type === prev.cell_type && each.desc === prev.desc) {
-      // If a previous cell has the same content, increase the previous quantity and don't append
-      prev.count = prev.count || 1;
-      prev.count += 1;
-    } else {
-      // Append a new cell
-      if (!each.desc.trim().length) {
-        // Show some text for empty cells
-        each.desc = '(empty)';
-      } else {
-        // Only take the first 4 lines
-        let desc = each.desc.split('\n').slice(0, 3).join('\n');
-        // Append ellipsis if we've shortened it
-        if (desc.length < each.desc.length) {
-          desc += '...';
-        }
-        each.desc = desc;
-      }
-      all.push(each);
-    }
-    return all;
-  }, []).slice(0, maxLength);
+  const truncated = data.cells.reduce(cellPreviewReducer, []).slice(0, maxLength);
+
   const rows = truncated.map((cell, idx) => {
     const faClass = cellIcons[cell.cell_type];
     return (
@@ -210,16 +244,23 @@ function cellPreview(data) {
 }
 
 // Font-awesome class names for each narrative cell type
-const cellIcons = {
+const cellIcons:{[key:string]:string} = {
   code_cell: 'fas fa-code',
   kbase_app: 'fas fa-cube',
   markdown: 'fas fa-paragraph',
   widget: 'fas fa-wrench',
   data: 'fas fa-database',
 };
-
+// Font-awesome class names for each narrative cell type
+enum CellIcons {
+  code_cell = 'fas fa-code',
+  kbase_app = 'fas fa-cube',
+  markdown = 'fas fa-paragraph',
+  widget = 'fas fa-wrench',
+  data = 'fas fa-database',
+};
 // Human readable names for each cell type.
-const cellNames = {
+const cellNames:{[key:string]:string} = {
   code_cell: 'Code',
   markdown: 'Text',
   kbase_app: 'App',
@@ -227,7 +268,7 @@ const cellNames = {
   data: 'Data',
 };
 
-function viewFullNarrativeLink(data) {
+function viewFullNarrativeLink(data:DetailedData):React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> {
   const wsid = data.access_group;
   const narrativeHref = window._env.narrative + '/narrative/' + wsid;
   return (
@@ -236,7 +277,7 @@ function viewFullNarrativeLink(data) {
 }
 
 // Overview of data objects in the narrative
-function dataView(data) {
+function dataView(data:DetailedData): React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   const rows = data.data_objects
       .slice(0, 50)
       .map((obj) => {
@@ -244,7 +285,7 @@ function dataView(data) {
         return obj;
       })
       .sort((a, b) => a.readableType.localeCompare(b.readableType))
-      .map((obj) => dataViewRow(data, obj));
+      .map((obj) => dataViewRow(obj));
   return (
     <div>
       <p className='black-60'>{data.data_objects.length} total objects in the narrative:</p>
@@ -257,7 +298,7 @@ function dataView(data) {
 }
 
 // View for each row in the data listing for the narrative
-function dataViewRow(data, obj) {
+function dataViewRow(obj:DataObjects) {
   const key = obj.name + obj.obj_type;
   const leftWidth = 40; // percentage
   return (
