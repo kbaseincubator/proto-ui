@@ -18,9 +18,9 @@ const CONTAINER = document.getElementById('react-root');
 
 // Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach((node) => {
-  if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
-  }
+  // if (PATHNAME === node.getAttribute('data-hl-nav')) {
+  //   node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
+  // }
 });
 
 // Set the signed-in username in the global env
@@ -31,6 +31,7 @@ getUsername((username:string) => {
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
 }
+
 // Global page wrapper
 class Page extends Component<Props, any> {
   render() {
