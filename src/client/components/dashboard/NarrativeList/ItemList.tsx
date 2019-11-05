@@ -1,31 +1,21 @@
-import React, {Component} from 'react';
-import {format} from 'timeago.js';
+import React, { Component } from 'react';
+const timeago = require('timeago.js');
 
 interface Props {
-  items?:Array<object>; 
+  items?: Array<object>;
   loading: boolean;
   totalItems: number;
-  onLoadMore?:()=>void;
-  onSelectItem?:(idx:number)=>void;
+  onLoadMore?: () => void;
+  onSelectItem?: (idx: number) => void;
 }
 
 interface State {
   selectedIdx: number;
 }
-/**
- * Simple UI for a list of selectable search results
- * props:
- * - items
- * - loading
- * - totalItems
- * state:
- * - selectedIdx - Index of search result currently selected
- * callbacks:
- *  - onSelectItem - called when a new result is activated
- *  - onLoadMore - called when the "load more" button is clicked
- */
+
+// Simple UI for a list of selectable search results
 export class ItemList extends Component<Props, State> {
-  constructor(props:Props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       // Index of which result item the user has activated
@@ -33,68 +23,66 @@ export class ItemList extends Component<Props, State> {
     };
   }
 
-  selectItem(idx:number) {
+  selectItem(idx: number) {
     if (idx < 0 || idx >= this.props.items.length) {
       throw new Error(`Invalid index for ItemList: ${idx}.
         Max is ${this.props.items.length - 1} and min is 0.`);
     }
-    this.setState({selectedIdx: idx});
+    this.setState({ selectedIdx: idx });
     if (this.props.onSelectItem) {
       this.props.onSelectItem(idx);
     }
   }
 
   // Handle click event on the "load more" button
-  handleClickLoadMore(ev:React.MouseEvent) {
+  handleClickLoadMore(ev: React.MouseEvent) {
     if (this.props.onLoadMore) {
       this.props.onLoadMore();
     }
   }
 
   // Handle click event on an individual item
-  handleClickItem(idx:number) {
+  handleClickItem(idx: number) {
     this.selectItem(idx);
   }
 
   // view for a single narrative item
-  itemView = (item:object, idx:number) => {
+  itemView = (item: object, idx: number) => {
     // I need this until I figure out what's in item
-    let fooItem:any;
+    let fooItem: any;
     fooItem = item;
     const status = this.state.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
     const data = fooItem._source;
     // Action to select an item to view details
     return (
-      <div onClick={() => this.handleClickItem(idx)}
-        key={ data.upa }
-        className='br b--black-20'>
+      <div
+        onClick={() => this.handleClickItem(idx)}
+        key={data.upa}
+        className="br b--black-20"
+      >
         <div className={css.outer}>
           <div className={css.inner}>
-            <h4 className='ma0 mb2 pa0 f5'>{ data.narrative_title || 'Untitled' }</h4>
-            <p className='ma0 pa0 f6'>
-              {/* Updated { timeago.format(data.timestamp) } by { data.creator } */}
-              updated - replace time ago
+            <h4 className="ma0 mb2 pa0 f5">
+              {data.narrative_title || 'Untitled'}
+            </h4>
+            <p className="ma0 pa0 f6">
+              Updated { timeago.format(data.timestamp) } by { data.creator }
             </p>
           </div>
         </div>
       </div>
     );
-  }
+  };
 
   hasMoreButton() {
     const hasMore = this.props.items.length < this.props.totalItems;
     if (!hasMore) {
-      return (
-        <span
-          className='black-50 pa3 dib tc'>
-          No more results.
-        </span>
-      );
+      return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
     if (this.props.loading) {
       return (
-        <span className='black-60 pa3 tc dib'>
+        <span className="black-60 pa3 tc dib">
           <i className="fas fa-cog fa-spin mr2"></i>
           Loading...
         </span>
@@ -102,21 +90,22 @@ export class ItemList extends Component<Props, State> {
     }
     return (
       <a
-        className='tc pa3 dib pointer blue dim b'
-        onClick={(ev:React.MouseEvent) => this.handleClickLoadMore(ev)} >
+        className="tc pa3 dib pointer blue dim b"
+        onClick={(ev: React.MouseEvent) => this.handleClickLoadMore(ev)}
+      >
         Load more ({this.props.totalItems - this.props.items.length} remaining)
       </a>
     );
   }
 
   render() {
-    const {items} = this.props;
+    const { items } = this.props;
     if (!items || !items.length) {
       if (this.props.loading) {
         // No results but still loading:
         return (
-          <div className='w-100 tc black-50'>
-            <p className='pv5'>
+          <div className="w-100 tc black-50">
+            <p className="pv5">
               <i className="fas fa-cog fa-spin mr2"></i>
               Loading...
             </p>
@@ -125,16 +114,16 @@ export class ItemList extends Component<Props, State> {
       } else {
         // No results and not loading
         return (
-          <div className='w-100 tc black-80'>
-            <p className='pv5'> No results found. </p>
+          <div className="w-100 tc black-80">
+            <p className="pv5"> No results found. </p>
           </div>
         );
       }
     }
     return (
-      <div className='w-40'>
-        { items.map((item, idx) => this.itemView(item, idx)) }
-        { this.hasMoreButton() }
+      <div className="w-40">
+        {items.map((item, idx) => this.itemView(item, idx))}
+        {this.hasMoreButton()}
       </div>
     );
   }
