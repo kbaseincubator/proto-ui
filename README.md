@@ -1,6 +1,6 @@
-# KBase React + Python UI
+# KBase Prototype React + Python UI
 
-* Preact
+* React
 * Webpack
 * Tachyons
 * Sanic with jinja2
@@ -34,17 +34,7 @@ There are a few dockerfiles:
 
 ### Build image
 
-Run:
-
-```sh
-IMAGE_NAME=kbase/react_ui:{VERSION} sh hooks/build
-```
-
-It can be deployed to docker hub with:
-
-```sh
-docker push kbase/react_ui:{VERSION}
-```
+To build locally, first increment the semantic version in `scripts/local-build.sh` and then run it.
 
 ### Environment config
 
