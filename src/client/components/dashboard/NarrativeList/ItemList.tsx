@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-const { format } = require('timeago.js');
+const timeago = require('timeago.js');
 
 interface Props {
   items?: Array<object>;
@@ -67,8 +67,7 @@ export class ItemList extends Component<Props, State> {
               {data.narrative_title || 'Untitled'}
             </h4>
             <p className="ma0 pa0 f6">
-              {/* Updated { timeago.format(data.timestamp) } by { data.creator } */}
-              updated - replace time ago
+              Updated { timeago.format(data.timestamp) } by { data.creator }
             </p>
           </div>
         </div>
