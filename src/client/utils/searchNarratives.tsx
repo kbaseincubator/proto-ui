@@ -4,6 +4,29 @@ import {getToken} from '../utils/auth';
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
 const INDEX_NAME = 'narrative';
 
+export interface SearchParams {
+  term: string;
+  sort?: string;
+  category: string;
+  skip?: number;
+  pageSize: number;
+  musts?: Array<any>;
+  mustNots?: Array<any>;
+}
+
+interface Options {
+  query: {
+    bool: {
+      must: Array<object>;
+      must_not?: Array<object>;
+    };
+  };
+  pageSize: number;
+  auth?: boolean;
+  sort?: Array<{[key:string]:{[key:string]:string}} | string>;
+  skip?: number;
+}
+
 // Search narratives using elasticsearch
 // `term` is a search term
 // `sortBy` can be one of "Newest" or "Oldest"
@@ -14,8 +37,9 @@ const INDEX_NAME = 'narrative';
 //   - 'public' - all public narratives
 //   - 'pageSize' - page length for search results
 // returns a fetch Promise
-export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
-  const options = {query: {bool: {must: []}}, pageSize};
+export function searchNarratives({term, sort, category, skip, pageSize = 20}:SearchParams) {
+  console.log(term, sort, category, skip, pageSize)
+  const options:Options = {query: {bool: {must:[]}}, pageSize};
   // Query constraints for "must" conditions
   const musts = [];
   // Query constraints for "must not" conditions
@@ -51,7 +75,7 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
   }
   if (sort) {
     if (sort === 'Newest') {
-      options.sort = [{creation_date: {order: 'desc'}}, '_score'];
+      options.sort = [{creation_date: {order: 'desc'}}, '_score']; 
     } else if (sort === 'Oldest') {
       options.sort = [{creation_date: {order: 'asc'}}, '_score'];
     } else if (sort === 'Least recently updated') {
@@ -73,19 +97,21 @@ export function searchNarratives({term, sort, category, skip, pageSize = 20}) {
 }
 
 // Make a request to the search API to fetch narratives
-export function makeRequest({query, skip = 0, sort, auth = true, pageSize}) {
+export function makeRequest({query, skip = 0, sort, auth = true, pageSize}:Options) {
   const params = {
     indexes: [INDEX_NAME],
     size: pageSize,
     query,
     from: skip,
   };
-  const headers = {'Content-Type': 'application/json'};
   if (sort) {
-    params.sort = sort;
+    let sortObj =  sort;
+    Object.assign(params, {sort:sortObj});
   }
+  const headers = {'Content-Type': 'application/json'};
   if (auth) {
-    headers['Authorization'] = getToken();
+    let token = getToken();
+    Object.assign(headers, {'Authorization': token});
   }
   return fetch(window._env.kbase_endpoint + '/searchapi2/rpc', {
     method: 'POST',

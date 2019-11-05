@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
 
+interface Props {
+  tabs:Array<string>;
+  onSelect:(indx:number)=>void;
+  className:string;
+  activeIdx?:number;
+}
+
+interface State {
+  activeIdx:number;
+}
+
 /**
  * Small horizontal, in-page tab navigation.
  * props:
@@ -9,16 +20,16 @@ import React, {Component} from 'react';
  * callbacks:
  * - onSelect
  */
-export class MiniTabs extends Component {
-  constructor(props) {
+export class MiniTabs extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
-      activeIdx: props.activeIdx || 0
+      activeIdx: this.props.activeIdx || 0
     };
   }
 
   // Select a new tab by index
-  select(idx) {
+  select(idx:number) {
     if (idx == this.state.activeIdx) {
       return;
     }
@@ -32,10 +43,10 @@ export class MiniTabs extends Component {
     }
   }
 
-  render(props) {
-    const {tabs} = props;
+  render() {
+    const {tabs} = this.props;
     const {activeIdx} = this.state;
-    const className = (props.className || '') + ' list pa0 ma0 flex items-center';
+    const className = (this.props.className || '') + ' list pa0 ma0 flex items-center';
     return (
       <ul className={className} style={{position: 'relative', top: '1px'}}>
         {

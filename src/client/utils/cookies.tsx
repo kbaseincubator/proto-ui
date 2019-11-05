@@ -1,5 +1,5 @@
 
-export function getCookie(name) {
+export function getCookie(name:string) {
   const vals = document.cookie.split(';')
       .map((s) => s.split('='))
       .filter(([key, val]) => key.trim() === 'kbase_session');

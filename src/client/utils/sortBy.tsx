@@ -1,6 +1,6 @@
 // Utility for sorting an array of data using a custom accessor fucntion
 
-export function sortBy(arr, fn) {
+export function sortBy(arr:Array<any>, fn:(param:any)=>any) {
   return arr.sort((a, b) => {
     const fa = fn(a);
     const fb = fn(b);

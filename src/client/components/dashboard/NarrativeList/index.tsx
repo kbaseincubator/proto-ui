@@ -1,18 +1,28 @@
 import React, {Component} from 'react';
 
-
 // Components
 import {TabHeader} from '../../generic/TabHeader';
 import {Filters} from './Filters';
 import {ItemList} from './ItemList';
-import {NarrativeDetails} from './NarrativeDetails';
+import {NarrativeDetails, NarrativeData} from './NarrativeDetails';
 
 // Utils
-import {searchNarratives} from '../../../utils/searchNarratives';
+import {searchNarratives, SearchParams} from '../../../utils/searchNarratives';
 
 // Page length of search results
 const PAGE_SIZE = 20;
 const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
+
+interface State {
+  loading: boolean;
+  items: Array<NarrativeData>;
+  totalItems?: number;
+  activeIdx: number;
+  searchParams: SearchParams;
+}
+interface Props {
+  items?: Array<any>;
+}
 
 /**
  * This is a parent component to everything in the narrative browser (tabs,
@@ -25,8 +35,8 @@ const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
  * props: none
  * callbacks: none
  */
-export class NarrativeList extends Component {
-  constructor(props) {
+export class NarrativeList extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
       loading: false,
@@ -51,22 +61,22 @@ export class NarrativeList extends Component {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch({term, sort}) {
+  handleSearch(searchP:{term:string, sort:string}):void {
     const searchParams = this.state.searchParams;
-    searchParams.term = term;
-    searchParams.sort = sort;
+    searchParams.term = searchP.term;
+    searchParams.sort = searchP.sort;
     searchParams.skip = 0;
     this.setState({searchParams});
     this.performSearch();
   }
 
   // Handle an onSelectTab callback from TabHeader
-  handleTabChange(idx, name) {
+  handleTabChange(idx:number, name:string):void {
     // Reset the search state and results
     const searchParams = this.state.searchParams;
     searchParams.term = '';
     searchParams.skip = 0;
-    const categoryMap = {
+    const categoryMap:{[key: string]: string;}= {
       'my narratives': 'own',
       'shared with me': 'shared',
       'tutorials': 'tutorials',
@@ -95,7 +105,7 @@ export class NarrativeList extends Component {
 
   // Handle an onSelectItem callback from ItemList
   // Receives the index of the selected item
-  handleSelectItem(idx) {
+  handleSelectItem(idx:number) {
     this.setState({activeIdx: idx});
   }
 
@@ -104,7 +114,8 @@ export class NarrativeList extends Component {
     this.setState({loading: true});
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
-        .then((resp) => {
+        .then((resp:any) => {
+          console.log(resp)
           if (resp && resp.hits) {
             const total = resp.hits.total;
             const items = resp.hits.hits;
@@ -122,7 +133,7 @@ export class NarrativeList extends Component {
     // TODO handle error from server
   }
 
-  render(props) {
+  render() {
     return (
       <div>
         <div className='flex justify-between'>
@@ -131,7 +142,8 @@ export class NarrativeList extends Component {
             <TabHeader
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
               onSelectTab={this.handleTabChange.bind(this)}
-              selectedIdx={0} />
+              selectedIdx={0} 
+            />
           </div>
 
           {/* New narrative button */}
@@ -144,7 +156,10 @@ export class NarrativeList extends Component {
 
         <div className='ba b--black-20'>
           {/* Search, sort, filter */}
-          <Filters onSetSearch={this.handleSearch.bind(this)} loading={this.state.loading} />
+          <Filters 
+            onSetSearch={this.handleSearch.bind(this)} 
+            loading={this.state.loading}
+          />
 
           {/* Narrative listing and side-panel details */}
           <div className='flex'>
@@ -153,7 +168,8 @@ export class NarrativeList extends Component {
               loading={this.state.loading}
               totalItems={this.state.totalItems}
               onLoadMore={this.handleLoadMore.bind(this)}
-              onSelectItem={this.handleSelectItem.bind(this)} />
+              onSelectItem={this.handleSelectItem.bind(this)} 
+            />
 
             <NarrativeDetails activeItem={this.state.items[this.state.activeIdx]} />
           </div>
