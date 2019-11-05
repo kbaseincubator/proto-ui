@@ -1,4 +1,4 @@
-import {getCookie} from './cookies';
+import { getCookie } from './cookies';
 
 // Might return undefined
 export function getToken() {
@@ -12,26 +12,24 @@ export function getToken() {
 }
 
 // Fetch the username from the auth server or from session storage
-// Might return undefined
-// TODO:Akiyo this function is doing two things. 
-// It might be a function that should be called from async function
-export function getUsername(callBack:(username:string)=>void) {
+// Calls the given callback with the username (or `null`)
+export function getUsername(callBack: (username: string | null) => void) {
   const token = getToken();
   if (!token) {
-    return undefined;
+    callBack(null);
   }
   if (sessionStorage.getItem('kbase_username')) {
     callBack(sessionStorage.getItem('kbase_username'));
   }
-  const headers = {'Authorization': token};
-  return fetch(window._env.kbase_endpoint + '/auth/api/V2/token', {
+  const headers = { Authorization: token };
+  fetch(window._env.kbase_endpoint + '/auth/api/V2/token', {
     method: 'GET',
     headers,
   })
-      .then((resp) => resp.json())
-      .then((json) => {
-        const username = json.user;
-        sessionStorage.setItem('kbase_username', username);
-        callBack(username);
-      });
+    .then(resp => resp.json())
+    .then(json => {
+      const username = json.user;
+      sessionStorage.setItem('kbase_username', username);
+      callBack(username);
+    });
 }
