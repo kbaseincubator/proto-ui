@@ -1,9 +1,20 @@
-// import {Component, h} from 'preact';
 import React, {Component} from 'react';
 
 // Components
 import {FilterDropdown} from '../../generic/FilterDropdown';
 import {SearchInput} from '../../generic/SearchInput';
+
+interface State {
+  searchParams: {
+    term: string,
+    sort: string | null,
+  },
+}
+
+interface Props {
+  onSetSearch: (searchParams: State['searchParams'] ) => void;
+  loading: boolean;
+}
 
 /**
  * Filter bar for searching and sorting data results
@@ -17,8 +28,8 @@ import {SearchInput} from '../../generic/SearchInput';
  * callbacks:
  * - onSetSearch - some filter has been applied to trigger a new search
  */
-export class Filters extends Component {
-  constructor(props) {
+export class Filters extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
       searchParams: {
@@ -29,7 +40,7 @@ export class Filters extends Component {
   }
 
   // Handle an onSetVal event from SearchInput
-  handleSearch(val) {
+  handleSearch(val:string):void {
     const searchParams = this.state.searchParams;
     searchParams.term = val;
     this.setState({searchParams});
@@ -39,7 +50,7 @@ export class Filters extends Component {
   }
 
   // Handle an onSelect event from FilterDropdown
-  handleFilter(idx, val) {
+  handleFilter(idx:number, val:string):void {
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({searchParams});
@@ -48,13 +59,13 @@ export class Filters extends Component {
     }
   }
 
-  render(props) {
+  render() {
     const dropdownItems = ['Newest', 'Oldest', 'Recently updated', 'Least recently updated'];
     return (
       <div className='bg-light-gray flex justify-between'>
         {/* Left-aligned actions (eg. search) */}
         <div className='pa3'>
-          <SearchInput loading={Boolean(props.loading)} onSetVal={this.handleSearch.bind(this)} />
+          <SearchInput loading={Boolean(this.props.loading)} onSetVal={this.handleSearch.bind(this)} />
         </div>
 
         {/* Right-aligned actions (eg. filter dropdown) */}
@@ -65,6 +76,6 @@ export class Filters extends Component {
             items={dropdownItems} />
         </div>
       </div>
-    );
+    )
   }
 }

@@ -2,28 +2,32 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && npm run css && webpack --mode production",
-    "watch": "npm install && npm run css && webpack --watch --progress --colors",
+    "build": "yarn install && yarn run css && webpack --mode production",
+    "watch": "yarn install && yarn run css && webpack --watch --progress --colors",
     "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css"
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
-    "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.5",
-    "eslint": "^6.5.1",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.6.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-react": "^7.16.0",
-    "webpack": "^4.29.6",
-    "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.2.3"
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.9"
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
-    "timeago.js": "^4.0.0-beta.2",
     "react": "16.11.0",
-    "react-dom": "16.11.0"
+    "react-dom": "16.11.0",
+    "timeago.js": "^4.0.0",
+    "@types/react": "16.9.5",
+    "@types/react-dom": "16.9.1"
   }
 }

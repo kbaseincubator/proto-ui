@@ -1,9 +1,0 @@
-# Nodejs Dockerfile for local development
-# For installing npm dependencies and building static css/js
-FROM node:8-alpine
-
-# Install npm dependencies and build static css/js
-WORKDIR /app
-COPY ./package.json ./webpack.config.js /app/
-COPY ./src/static /app/src/static
-COPY ./src/client /app/src/client

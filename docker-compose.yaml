@@ -11,24 +11,11 @@ services:
       - PYTHONUNBUFFERED=1
       - DEVELOPMENT=1
       - KBASE_ENDPOINT=http://localhost:5011/services
+      - WORKERS=2
     ports:
       - "127.0.0.1:5000:5000"
     volumes:
       - ${PWD}:/app
-
-  node:
-    build:
-      context: .
-      dockerfile: dev/Dockerfile-node
-      args:
-        DEVELOPMENT: 1
-    environment:
-      - DEVELOPMENT=1
-    ports:
-      - "127.0.0.1:8888:8888"
-    volumes:
-      - ${PWD}:/app
-    command: npm run watch
 
   # Proxy requests from localhost:5011 to ci.kbase.us
   # (for getting around CORS restrictions)

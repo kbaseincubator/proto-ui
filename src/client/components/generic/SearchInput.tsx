@@ -4,6 +4,15 @@ import React, {Component} from 'react';
 // callback
 const DEBOUNCE = 250;
 
+interface Props {
+  onSetVal: (value: string ) => void;
+  loading:boolean;
+}
+
+interface State {
+  value: string;
+}
+
 /**
  * Generic search text input with a loading state
  * props:
@@ -13,23 +22,24 @@ const DEBOUNCE = 250;
  * callbacks:
  * - onSetVal(str) - called when the input value is set, at most every DEBOUNCEms
  */
-export class SearchInput extends Component {
-  constructor(props) {
+export class SearchInput extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
     this.state = {
-      value: props.value || '',
+      // value: props.value || '', <-- react doesn't like this
+      value: '',
     };
   }
-
-  setVal(value) {
+  timeout: number | null;
+  setVal(value:string) {
     this.setState({value});
     if (this.props.onSetVal) {
-      this.props.onSetVal(value);
+      this.props.onSetVal(value); 
     }
   }
 
   // From an input event, call setVal at most every DEBOUNCE milliseconds
-  handleInput(ev) {
+  handleInput(ev:React.FormEvent<HTMLInputElement>) {
     const value = ev.currentTarget.value.trim();
     const callback = () => {
       this.setVal(value);
@@ -41,9 +51,9 @@ export class SearchInput extends Component {
     this.timeout = setTimeout(callback, DEBOUNCE);
   }
 
-  render(props) {
+  render() {
     let iconClass = 'fas fa-search black-30 absolute';
-    if (props.loading) {
+    if (this.props.loading) {
       iconClass = 'fas fa-cog fa-spin black-50 absolute';
     }
     return (

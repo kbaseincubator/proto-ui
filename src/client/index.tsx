@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
-
+import {render} from 'react-dom';
 // Imports for page-specific components
 // path: /dashboard
-import {Dashboard} from './components/dashboard';
+import {Dashboard} from './components/dashboard/index';
 // path: /object_relations
-import {ObjectRelations} from './components/object_relations';
+import {ObjectRelations} from './components/object_relations/index';
 
 // Utils
 import {getUsername} from './utils/auth';
-
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -25,14 +24,17 @@ document.querySelectorAll('[data-hl-nav]').forEach((node) => {
 });
 
 // Set the signed-in username in the global env
-getUsername((username) => {
+getUsername((username:string) => {
   window._env.username = username;
 });
 
+interface Props {
+  root: typeof Dashboard | typeof ObjectRelations;
+}
 // Global page wrapper
-class Page extends Component {
-  render(props, state) {
-    const RootComponent = props.root;
+class Page extends Component<Props, any> {
+  render() {
+    const RootComponent = this.props.root;
     return (<RootComponent />);
   }
 }
@@ -40,7 +42,7 @@ class Page extends Component {
 // Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname
-  const routes = {
+  const routes:{[key:string]: {[key:string]:typeof Dashboard | typeof ObjectRelations}} = {
     '/dashboard': {
       component: Dashboard,
     },
@@ -51,6 +53,7 @@ if (CONTAINER) {
       component: ObjectRelations,
     },
   };
+
   if (PATHNAME in routes) {
     const topComponent = routes[PATHNAME].component;
     render(<Page root={topComponent} />, CONTAINER);

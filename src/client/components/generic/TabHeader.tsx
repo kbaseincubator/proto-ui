@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
 
+interface Props {
+  selectedIdx: number;
+  tabs: Array<string>;
+  onSelectTab?:(idx:number, name:string)=>void
+}
+
+interface State {
+  tabs: Array<string>;
+  selectedIdx: number;
+}
+
 /**
  * Horizontal tab navigation UI.
  * props:
@@ -9,18 +20,22 @@ import React, {Component} from 'react';
  * callbacks:
  * - onSelectTab - a new tab was selected
  */
-export class TabHeader extends Component {
-  constructor(props) {
+export class TabHeader extends Component<Props, State> {
+  constructor(props:Props) {
     super(props);
-    const selectedIdx = props.selectedIdx || 0;
+    // "This style is quite elegant and pleasantly terse; that said,
+    // it can be really hard to read, especially for beginners."
+    // const selectedIdx = this.props.selectedIdx || 0;
+    const selectedIdxProps = this.props.selectedIdx ? this.props.selectedIdx : 0;
     this.state = {
-      tabs: props.tabs,
-      selectedIdx,
+      tabs: this.props.tabs,
+      // selectedIdx, 
+      selectedIdx: selectedIdxProps
     };
   }
 
   // Select a new tab to activate
-  select(idx) {
+  select(idx:number) {
     if (idx >= this.state.tabs.length || idx < 0) {
       throw Error(`Invalid tab index ${idx}. Max is ${this.state.tabs.length - 1} and min is 0.`);
     }
@@ -31,7 +46,7 @@ export class TabHeader extends Component {
   }
 
   // Handle click event on a tab element
-  handleClickTab(idx) {
+  handleClickTab(idx:number) {
     if (idx === this.state.selectedIdx) {
       // No-op if the tab is already selected
       return;
@@ -39,8 +54,8 @@ export class TabHeader extends Component {
     this.select(idx);
   }
 
-  render(props) {
-    const {tabs} = props;
+  render() {
+    const {tabs} = this.props;
     const {selectedIdx} = this.state;
     return (
       <div className='pt2'>
