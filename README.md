@@ -1,9 +1,10 @@
-# KBase React + Python UI
+# KBase Prototype React + Python UI
 
-* Preact
+* React
 * Webpack
+* Typescript
 * Tachyons
-* Sanic with jinja2
+* Backend: Sanic and jinja2
 
 ## Development
 
@@ -18,13 +19,13 @@
 
 Install `docker` and `docker-compose` first.
 
-**Start the server** with `make serve`. On the very first run, it will take a few minutes to install the npm and pip dependencies. Point your browser to **`localhost:5000`**.
+**Start the server** with `make serve`. Point your browser to **`localhost:5000`**.
+
+### Linting and formatting typescript
+
+Run `yarn test` to lint your code, and `yarn run fix` to auto-format your code.
 
 ### Troubleshooting
-
-If a docker server crashes, or if you install a new npm package, run `make reset`.
-* `docker-compose restart web` to restart the flask server
-* `docker-compose restart node` to restart the node server
 
 Run `make reset` to do a hard reset of your docker build, deleting containers and volumes.
 
@@ -32,7 +33,7 @@ Run `make reset` to do a hard reset of your docker build, deleting containers an
 
 There are a few dockerfiles:
 
-* `Dockerfile` - prod image
+* `Dockerfile` - production image
 * `dev/Dockerfile-python` - development python image
 * `dev/Dockerfile-node` - development js/css watcher
 * `docker-compose.yaml` - development docker-compose config
@@ -41,19 +42,9 @@ There are a few dockerfiles:
 
 ### Build image
 
-Run:
+To build locally, first increment the semantic version in `scripts/local-build.sh` and then run that script.
 
-```sh
-IMAGE_NAME=kbase/react_ui:{VERSION} sh hooks/build
-```
-
-It can be deployed to docker hub with:
-
-```sh
-docker push kbase/react_ui:{VERSION}
-```
-
-### Environment config
+### Environment variables
 
 These environment variables can be set:
 

@@ -1,35 +1,27 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 interface Props {
-  tabs:Array<string>;
-  onSelect:(indx:number)=>void;
-  className:string;
-  activeIdx?:number;
+  tabs: Array<string>;
+  onSelect: (index: number) => void;
+  className: string;
+  activeIdx?: number;
 }
 
 interface State {
-  activeIdx:number;
+  activeIdx: number;
 }
 
-/**
- * Small horizontal, in-page tab navigation.
- * props:
- * - items - array of str - names of tabs
- * state:
- * - activeIdx - index of the currently active tab
- * callbacks:
- * - onSelect
- */
+// Small horizontal, in-page tab navigation.
 export class MiniTabs extends Component<Props, State> {
-  constructor(props:Props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      activeIdx: this.props.activeIdx || 0
+      activeIdx: this.props.activeIdx || 0,
     };
   }
 
   // Select a new tab by index
-  select(idx:number) {
+  select(idx: number) {
     if (idx == this.state.activeIdx) {
       return;
     }
@@ -37,30 +29,33 @@ export class MiniTabs extends Component<Props, State> {
       throw new Error(`Invalid tab index ${idx}. Min is 0
         and max is ${this.props.tabs.length - 1}.`);
     }
-    this.setState({activeIdx: idx});
+    this.setState({ activeIdx: idx });
     if (this.props.onSelect) {
       this.props.onSelect(idx);
     }
   }
 
   render() {
-    const {tabs} = this.props;
-    const {activeIdx} = this.state;
-    const className = (this.props.className || '') + ' list pa0 ma0 flex items-center';
+    const { tabs } = this.props;
+    const { activeIdx } = this.state;
+    const className =
+      (this.props.className || '') + ' list pa0 ma0 flex items-center';
     return (
-      <ul className={className} style={{position: 'relative', top: '1px'}}>
-        {
-          tabs.map((tabText, idx) => {
-            const className = activeIdx === idx ? tabClasses.active : tabClasses.inactive;
-            return (
-              <li key={tabText} className={className}
-                onClick={() => this.select(idx)}
-                style={{userSelect: 'none'}}>
-                {tabText}
-              </li>
-            );
-          })
-        }
+      <ul className={className} style={{ position: 'relative', top: '1px' }}>
+        {tabs.map((tabText, idx) => {
+          const className =
+            activeIdx === idx ? tabClasses.active : tabClasses.inactive;
+          return (
+            <li
+              key={tabText}
+              className={className}
+              onClick={() => this.select(idx)}
+              style={{ userSelect: 'none' }}
+            >
+              {tabText}
+            </li>
+          );
+        })}
       </ul>
     );
   }
