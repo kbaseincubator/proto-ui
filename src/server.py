@@ -68,6 +68,10 @@ async def orgs(request):
     """Organizations."""
     return _render_template('orgs/index.html', request)
 
+@app.route('/feeds', methods=['GET'])
+async def feeds(request):
+    """Feeds."""
+    return _render_template('feeds/index.html', request)
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
