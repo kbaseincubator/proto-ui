@@ -44,7 +44,6 @@ export function searchNarratives({
   skip,
   pageSize = 20,
 }: SearchParams) {
-  console.log(term, sort, category, skip, pageSize);
   const options: Options = { query: { bool: { must: [] } }, pageSize };
   // Query constraints for "must" conditions
   const musts = [];

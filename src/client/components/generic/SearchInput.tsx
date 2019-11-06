@@ -17,9 +17,11 @@ interface State {
 export class SearchInput extends Component<Props, State> {
   // Used for debouncing the search input while typing
   timeout: number | null;
+  inputID: string;
 
   constructor(props: Props) {
     super(props);
+    this.inputID = "search-input" + String(Math.floor(Math.random() * 1000000));
     this.state = {
       // value: props.value || '', <-- react doesn't like this
       value: '',
@@ -54,9 +56,11 @@ export class SearchInput extends Component<Props, State> {
     return (
       <div className="relative">
         <i className={iconClass} style={{ top: '0.65rem', left: '0.5rem' }}></i>
+        <label htmlFor={this.inputID} className="dn">Search</label>
         <input
           className="w5-l pa2 br2 ba b--solid b--black-20"
           type="text"
+          id={this.inputID}
           placeholder="Search"
           onInput={this.handleInput.bind(this)}
           style={{ paddingLeft: '2rem' }}

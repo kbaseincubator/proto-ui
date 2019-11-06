@@ -6,7 +6,7 @@ COPY src/static /app/src/static
 WORKDIR /app
 
 # Install npm dependencies and build static css/js
-RUN npm run build && rm -rf node_modules
+RUN yarn run build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
