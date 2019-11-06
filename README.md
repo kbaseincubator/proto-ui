@@ -23,7 +23,7 @@ Install `docker` and `docker-compose` first.
 
 ### Linting and formatting typescript
 
-Run `npm test` to lint your code, and `npm run fix` to auto-format your code.
+Run `yarn test` to lint your code, and `yarn run fix` to auto-format your code.
 
 ### Troubleshooting
 
