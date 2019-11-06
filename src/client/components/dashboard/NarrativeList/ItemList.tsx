@@ -67,7 +67,7 @@ export class ItemList extends Component<Props, State> {
               {data.narrative_title || 'Untitled'}
             </h4>
             <p className="ma0 pa0 f6">
-              Updated { timeago.format(data.timestamp) } by { data.creator }
+              Updated {timeago.format(data.timestamp)} by {data.creator}
             </p>
           </div>
         </div>
