@@ -21,7 +21,7 @@ export class SearchInput extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.inputID = "search-input" + String(Math.floor(Math.random() * 1000000));
+    this.inputID = 'search-input' + String(Math.floor(Math.random() * 1000000));
     this.state = {
       // value: props.value || '', <-- react doesn't like this
       value: '',
@@ -56,7 +56,9 @@ export class SearchInput extends Component<Props, State> {
     return (
       <div className="relative">
         <i className={iconClass} style={{ top: '0.65rem', left: '0.5rem' }}></i>
-        <label htmlFor={this.inputID} className="dn">Search</label>
+        <label htmlFor={this.inputID} className="dn">
+          Search
+        </label>
         <input
           className="w5-l pa2 br2 ba b--solid b--black-20"
           type="text"
