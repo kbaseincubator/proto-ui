@@ -114,7 +114,6 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: any) => {
-        console.log(resp);
         if (resp && resp.hits) {
           const total = resp.hits.total;
           const items = resp.hits.hits;
@@ -150,7 +149,7 @@ export class NarrativeList extends Component<Props, State> {
 
           {/* New narrative button */}
           <a
-            className="pointer dim dib pa2 white br2 b bg-green dib no-underline"
+            className="pointer dim dib pa2 white br2 b bg-dark-green dib no-underline"
             style={{ marginTop: '1rem', height: '2.25rem' }}
             href={NEW_NARR_URL}
           >

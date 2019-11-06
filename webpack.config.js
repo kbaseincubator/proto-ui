@@ -1,8 +1,10 @@
+const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
 const dir = path.resolve(__dirname);
 const inDevelopment = Boolean(process.env.DEVELOPMENT);
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = {
+const exp = {
   mode: inDevelopment ? 'development' : 'production',
   devtool: inDevelopment ? 'cheap-module-source-map' : 'hidden-source-map',
   entry: dir + '/src/client/index.tsx',
@@ -22,4 +24,17 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.js', '.jsx'],
   },
+  plugins: [
+    new CompressionPlugin(),
+  ]
 };
+
+if (inDevelopment) {
+  exp.plugins.push(
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false
+    })
+  )
+}
+
+module.exports = exp;

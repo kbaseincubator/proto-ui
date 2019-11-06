@@ -4,5 +4,6 @@
 
 set -e
 
+export DEVELOPMENT=1
 yarn run watch &
 docker-compose up --build

@@ -2,6 +2,8 @@
 
 {# Browser window title #}
 {% block title %}Dashboard{% endblock %}
+{# The UI works at width 1024 and up #}
+{% block additional_head %}<meta name="viewport" content="width=1024">{% endblock %}
 
 {% block content %}
   <div id='react-root'></div>
