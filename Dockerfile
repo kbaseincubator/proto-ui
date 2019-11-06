@@ -1,12 +1,12 @@
 # For installing npm dependencies and building static css/js
 FROM node:8-alpine
-COPY ./webpack.config.js ./package.json ./package-lock.json /app/
+COPY ./webpack.config.js ./package.json yarn.lock /app/
 COPY src/client /app/src/client
 COPY src/static /app/src/static
 WORKDIR /app
 
 # Install npm dependencies and build static css/js
-RUN npm run build && rm -rf node_modules
+RUN yarn run build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
@@ -15,7 +15,7 @@ COPY scripts /app/scripts
 COPY requirements.txt /app
 WORKDIR /app
 
-# apk dependencies below are needed for installing gevent
+# apk dependencies below are needed for building sanic/uvloop
 RUN apk --update add --virtual build-dependencies python-dev build-base && \
     pip install --upgrade pip && \
     pip install --upgrade --no-cache-dir -r requirements.txt && \

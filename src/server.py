@@ -22,6 +22,18 @@ jinja_env = jinja2.Environment(
 )
 
 
+@app.route('/static/build/bundle.js', methods=['GET'])
+async def js(req):
+    """
+    We handle the bundle.js as a special endpoint so we can serve the gzip
+    file and set the Content-Encoding header.
+    """
+    return await sanic.response.file(
+        _CONF.app_root_path + '/src/static/build/bundle.js.gz',
+        headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/javascript'}
+    )
+
+
 @app.route('/', methods=['GET'])
 async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))

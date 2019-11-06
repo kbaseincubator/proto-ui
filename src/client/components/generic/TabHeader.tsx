@@ -1,52 +1,49 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 interface Props {
   selectedIdx: number;
-  tabs: Array<string>;
-  onSelectTab?:(idx:number, name:string)=>void
+  tabs: string[];
+  onSelectTab?: (idx: number, name: string) => void;
 }
 
 interface State {
-  tabs: Array<string>;
+  tabs: string[];
   selectedIdx: number;
 }
 
-/**
- * Horizontal tab navigation UI.
- * props:
- * - tabs - array of tab titles (default [])
- * state:
- * - selectedIdx - default selected index (default 0)
- * callbacks:
- * - onSelectTab - a new tab was selected
- */
+// Horizontal tab navigation UI.
 export class TabHeader extends Component<Props, State> {
-  constructor(props:Props) {
+  constructor(props: Props) {
     super(props);
     // "This style is quite elegant and pleasantly terse; that said,
     // it can be really hard to read, especially for beginners."
     // const selectedIdx = this.props.selectedIdx || 0;
-    const selectedIdxProps = this.props.selectedIdx ? this.props.selectedIdx : 0;
+    const selectedIdxProps = this.props.selectedIdx
+      ? this.props.selectedIdx
+      : 0;
     this.state = {
       tabs: this.props.tabs,
-      // selectedIdx, 
-      selectedIdx: selectedIdxProps
+      // selectedIdx,
+      selectedIdx: selectedIdxProps,
     };
   }
 
   // Select a new tab to activate
-  select(idx:number) {
+  select(idx: number) {
     if (idx >= this.state.tabs.length || idx < 0) {
-      throw Error(`Invalid tab index ${idx}. Max is ${this.state.tabs.length - 1} and min is 0.`);
+      throw Error(
+        `Invalid tab index ${idx}. Max is ${this.state.tabs.length -
+          1} and min is 0.`
+      );
     }
-    this.setState({selectedIdx: idx});
+    this.setState({ selectedIdx: idx });
     if (this.props.onSelectTab) {
       this.props.onSelectTab(idx, this.state.tabs[idx]);
     }
   }
 
   // Handle click event on a tab element
-  handleClickTab(idx:number) {
+  handleClickTab(idx: number) {
     if (idx === this.state.selectedIdx) {
       // No-op if the tab is already selected
       return;
@@ -55,23 +52,28 @@ export class TabHeader extends Component<Props, State> {
   }
 
   render() {
-    const {tabs} = this.props;
-    const {selectedIdx} = this.state;
+    const { tabs } = this.props;
+    const { selectedIdx } = this.state;
     return (
-      <div className='pt2'>
-        <ul className='list pa0 ma0 flex items-center' style={{position: 'relative', top: '1px'}}>
-          {
-            tabs.map((tabText, idx) => {
-              const className = selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
-              return (
-                <li key={tabText} className={className}
-                  onClick={() => this.handleClickTab(idx)}
-                  style={{userSelect: 'none'}}>
-                  {tabText}
-                </li>
-              );
-            })
-          }
+      <div className="pt2">
+        <ul
+          className="list pa0 ma0 flex items-center"
+          style={{ position: 'relative', top: '1px' }}
+        >
+          {tabs.map((tabText, idx) => {
+            const className =
+              selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
+            return (
+              <li
+                key={tabText}
+                className={className}
+                onClick={() => this.handleClickTab(idx)}
+                style={{ userSelect: 'none' }}
+              >
+                {tabText}
+              </li>
+            );
+          })}
         </ul>
       </div>
     );
