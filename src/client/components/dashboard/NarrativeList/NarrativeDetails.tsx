@@ -89,10 +89,7 @@ export class NarrativeDetails extends Component<Props, State> {
     const data = activeItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
-    let content: React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    >;
+    let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     if (selectedTabIdx === 0) {
       // Show overview
@@ -154,10 +151,7 @@ export class NarrativeDetails extends Component<Props, State> {
 function descriptionList(
   key: string,
   val: string | number
-): React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDListElement>,
-  HTMLDListElement
-> {
+): JSX.Element {
   return (
     <dl className="ma0 flex justify-between bb b--black-20 pv2">
       <dt className="dib b">{key}</dt>

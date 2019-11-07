@@ -22,18 +22,6 @@ jinja_env = jinja2.Environment(
 )
 
 
-@app.route('/static/build/bundle.js', methods=['GET'])
-async def js(req):
-    """
-    We handle the bundle.js as a special endpoint so we can serve the gzip
-    file and set the Content-Encoding header.
-    """
-    return await sanic.response.file(
-        _CONF.app_root_path + '/src/static/build/bundle.js.gz',
-        headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/javascript'}
-    )
-
-
 @app.route('/', methods=['GET'])
 async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))
@@ -49,6 +37,12 @@ async def iframe_content(request, path):
 async def dashboard(request):
     """Dashboard."""
     return _render_template('dashboard/index.html', request)
+
+
+@app.route('/dashboard-antd', methods=['GET'])
+async def dashboard_antd(request):
+    """Dashboard with Ant Design."""
+    return _render_template('dashboard_antd/index.html', request)
 
 
 @app.route('/notifications', methods=['GET'])
@@ -79,6 +73,18 @@ async def account(request):
 async def orgs(request):
     """Organizations."""
     return _render_template('orgs/index.html', request)
+
+
+@app.route('/static/build/bundle.js', methods=['GET'])
+async def js(req):
+    """
+    We handle the bundle.js as a special endpoint so we can serve the gzip
+    file and set the Content-Encoding header.
+    """
+    return await sanic.response.file(
+        _CONF.app_root_path + '/src/static/build/bundle.js.gz',
+        headers={'Content-Encoding': 'gzip', 'Content-Type': 'application/javascript'}
+    )
 
 
 @app.exception(sanic.exceptions.NotFound)

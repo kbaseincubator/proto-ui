@@ -24,9 +24,8 @@ export class ItemList extends Component<Props, State> {
   }
 
   selectItem(idx: number) {
-    if (idx < 0 || idx >= this.props.items.length) {
-      throw new Error(`Invalid index for ItemList: ${idx}.
-        Max is ${this.props.items.length - 1} and min is 0.`);
+    if (idx < 0 || !this.props.items || idx >= this.props.items.length) {
+      throw new Error(`Invalid index for ItemList: ${idx}.`);
     }
     this.setState({ selectedIdx: idx });
     if (this.props.onSelectItem) {
@@ -76,7 +75,7 @@ export class ItemList extends Component<Props, State> {
   };
 
   hasMoreButton() {
-    const hasMore = this.props.items.length < this.props.totalItems;
+    const hasMore = (this.props.items || []).length < this.props.totalItems;
     if (!hasMore) {
       return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
@@ -93,7 +92,7 @@ export class ItemList extends Component<Props, State> {
         className="tc pa3 dib pointer blue dim b"
         onClick={(ev: React.MouseEvent) => this.handleClickLoadMore(ev)}
       >
-        Load more ({this.props.totalItems - this.props.items.length} remaining)
+        Load more ({this.props.totalItems - (this.props.items || []).length} remaining)
       </a>
     );
   }

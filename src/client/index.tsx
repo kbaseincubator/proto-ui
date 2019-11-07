@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
+import './components/dashboard_antd';
 
 // Utils
 import { getUsername } from './utils/auth';
@@ -23,7 +24,7 @@ document.querySelectorAll('[data-hl-nav]').forEach(node => {
 });
 
 // Set the signed-in username in the global env
-getUsername((username: string) => {
+getUsername((username: string | null) => {
   window._env.username = username;
 });
 

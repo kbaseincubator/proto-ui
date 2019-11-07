@@ -21,7 +21,7 @@ interface State {
   loading: boolean;
   // List of objects of narrative details
   items: Array<NarrativeData>;
-  totalItems?: number;
+  totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
   // Parameters to send to searchNarratives
@@ -38,6 +38,7 @@ export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      totalItems: 0,
       loading: false,
       // List of narrative data
       items: props.items || [],
@@ -47,7 +48,7 @@ export class NarrativeList extends Component<Props, State> {
       // parameters to send to the searchNarratives function
       searchParams: {
         term: '',
-        sort: null,
+        sort: 'Newest',
         category: 'own',
         skip: 0,
         pageSize: PAGE_SIZE,

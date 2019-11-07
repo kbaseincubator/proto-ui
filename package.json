@@ -13,7 +13,9 @@
     "@types/react": "16.9.5",
     "@types/react-dom": "16.9.1",
     "compression-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
     "prettier": "^1.18.2",
+    "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.6.4",
     "webpack": "^4.41.2",
@@ -22,6 +24,7 @@
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
+    "antd": "^3.25.0",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "timeago.js": "^4.0.0"

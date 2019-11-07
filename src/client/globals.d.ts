@@ -7,7 +7,7 @@ declare global {
     interface Window { 
         _env: {
             url_prefix:string;
-            username: string;
+            username: string | null;
             narrative: string;
             kbase_endpoint: string;
             token:string;

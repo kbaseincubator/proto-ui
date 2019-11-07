@@ -6,9 +6,9 @@ const INDEX_NAME = 'narrative';
 
 export interface SearchParams {
   term: string;
-  sort?: string;
+  sort: string;
   category: string;
-  skip?: number;
+  skip: number;
   pageSize: number;
   musts?: Array<any>;
   mustNots?: Array<any>;
@@ -24,12 +24,12 @@ interface Options {
   pageSize: number;
   auth?: boolean;
   sort?: Array<{ [key: string]: { [key: string]: string } } | string>;
-  skip?: number;
+  skip: number;
 }
 
 // Search narratives using elasticsearch
 // `term` is a search term
-// `sortBy` can be one of "Newest" or "Oldest"
+// `sort` can be one of "Newest" or "Oldest"
 // `category` can be one of:
 //   - 'own' - narratives created by the current user
 //   - 'shared' - narratives shared with the current user
@@ -39,13 +39,17 @@ interface Options {
 // returns a fetch Promise
 export function searchNarratives({
   term,
-  sort,
   category,
-  skip,
+  sort = 'Newest',
+  skip = 0,
   pageSize = 20,
 }: SearchParams) {
-  const options: Options = { query: { bool: { must: [] } }, pageSize };
-  // Query constraints for "must" conditions
+  const options: Options = {
+    query: { bool: { must: [] } },
+    pageSize,
+    skip
+  };
+// Query constraints for "must" conditions
   const musts = [];
   // Query constraints for "must not" conditions
   const mustNots = [];
