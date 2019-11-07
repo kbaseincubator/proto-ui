@@ -26,7 +26,7 @@ export class FilterDropdown extends Component<Props, State> {
 
   // Callback function for use in clicking elsewhere in the document to
   // close the dropdown when it is open.
-  docListener: (ev: MouseEvent) => void;
+  docListener: (ev: MouseEvent) => void = () => {};
 
   // Add a document event handler to close the dropdown on click outside
   componentDidMount() {
@@ -111,10 +111,10 @@ export class FilterDropdown extends Component<Props, State> {
         <div
           className="dib bg-light-gray ba b--black-20 shadow-3 br2"
           style={{
-            position: 'absolute',
+            position: 'absolute' as 'absolute',
             right: '0',
             top: '80%',
-            zIndex: '1',
+            zIndex: 1,
             width: '14rem',
           }}
         >

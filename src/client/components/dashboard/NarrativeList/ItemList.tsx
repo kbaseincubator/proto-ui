@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 const timeago = require('timeago.js');
 
 interface Props {
-  items?: Array<object>;
+  items: Array<object>;
   loading: boolean;
   totalItems: number;
   onLoadMore?: () => void;

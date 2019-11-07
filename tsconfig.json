@@ -1,16 +1,26 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "outDir": "./src/static/build",
     "noImplicitAny": true,
-    "module": "es6",
+    "module": "esnext",
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ]
-  }
+  },
+  "include": [
+    "src/client"
+  ]
 }
