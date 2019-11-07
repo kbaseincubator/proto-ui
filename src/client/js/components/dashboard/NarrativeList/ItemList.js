@@ -53,7 +53,7 @@ export class ItemList extends Component {
         return (
           <div className='w-100 tc black-50'>
             <p className='pv5'>
-              <i className="fas fa-cog fa-spin mr2"></i>
+              <i className="fa fa-cog fa-spin mr2"></i>
               Loading...
             </p>
           </div>
@@ -90,7 +90,7 @@ function hasMoreButton(component) {
   if (props.loading) {
     return (
       <span className='black-60 pa3 tc dib'>
-        <i className="fas fa-cog fa-spin mr2"></i>
+        <i className="fa fa-cog fa-spin mr2"></i>
         Loading...
       </span>
     );

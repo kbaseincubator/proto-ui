@@ -11,17 +11,14 @@
     <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
     {# Base tachyons styles #}
     <link rel='stylesheet' href='{{ url_for('static', filename='build/tachyons.min.css') }}'>
-    {% block additional_head %}
-    {% endblock %}
+    {% block additional_head %}{% endblock %}
     {% endblock %}
   </head>
 
   <body class='flex flex-column' style='min-height: 100vh;'>      
     <!-- START top-level navigation -->
     <header class="flex items-center" style="width: 100vw; height: 70px; border-bottom: 5px solid #E0E0E0;">
-        <button style="padding: 6px 12px; margin: 2px 4px 0 4px; border-color:#ffffff00">
-            <i class="fa fa-navicon fa-2x dib" style='font-size: 24px; color:#2196F3; font-weight: 500;'></i>
-        </button>
+        {% include 'hamburgerMenu.html' %}
         <a href="https://kbase.us" class="-logo dib" data-k-b-testhook-widget="logo"><img sytle="padding: 4px 2px;" src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'></a>
         <h1 style="padding-left: 10px; font-family: 'RobotoBlack', Arial, sans-serif; font-size: 29px;"><div>{% block titleheader %}Dashboard{% endblock %}</div></h1>
         
@@ -29,56 +26,47 @@
     <div
       class='fixed left-0 h-100 flex flex-column justify-between z-1'
       style='width:75px; overflow-y:auto; text-align: center; top: 70px;'>
-      <ul class='list pa0' style='margin: 0px'>
-        {# <li class='ph2 pb3 pointer dim'> 
-            <a href='{{ url_for('dashboard')}}'>
-            <img src='{{url_for('static', filename='images/logo.png')}}' alt='KBase logo'>
-            </a>
-           </li> #}
-        <li>
-          <a data-hl-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            {#<i class="fas fa-tachometer-alt fa-2x tc mr1" style='display: block;font-size: 40px;'></i>#}
-            <i class="fa fa-tachometer fa-2x tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Dashboard</div>
+      <ul class='list pa0 ma0'>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-tachometer fa-2x tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Dashboard</div>
           </a>
         </li>
-        <li>
-          <a data-hl-nav='/orgs' href='{{ url_for('orgs') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            {#<i class="dib fas fa-users fa-2x dib tc mr1" style='display: block;font-size: 40px;'></i>#}
-            <i class="dib fa fa-users fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Orgs</div>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/orgs' href='{{ url_for('orgs') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="dib fa fa-users fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Orgs</div>
           </a>
         </li>
-        <li>
-          <a data-hl-nav='/catalog' href='{{ url_for('catalog') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            {#<i class="dib fas fa-book fa-2x dib tc mr1" style='display: block;font-size: 40px;'></i>#}
-            <i class="dib fa fa-book fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Catalog</div>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/catalog' href='{{ url_for('catalog') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="dib fa fa-book fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Catalog</div>
           </a>
         </li>
-        <li>
-        <a data-hl-nav='/search' href='{{ url_for('search') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            {#<i class="fas fa-search fa-2x dib tc mr1" style='display: block;font-size: 40px;'></i>#}
-            <i class="fa fa-search fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Search</div>
+        <li style='margin-top: 6px'>
+        <a data-hl-nav='/search' href='{{ url_for('search') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-search fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Search</div>
           </a>
         </li>
-        <li>
-          <a data-hl-nav='/notifications' href='{{ url_for('notifications') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            <i class="fa fa-suitcase fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Jobs</div>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/notifications' href='{{ url_for('notifications') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-suitcase fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Jobs</div>
           </a>
         </li>
-        <li>
-          <a data-hl-nav='/account' href='{{ url_for('account') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            <i class="fa fa-user-circle-o fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Account</div>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/account' href='{{ url_for('account') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-user-circle-o fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Account</div>
           </a>
         </li>
-        <li>
-          <a data-hl-nav='/feeds' href='{{ url_for('feeds') }}' class='dib pv2 no-underline black-80 w-100 dim'>
-            <i class="fa fa-bullhorn fa-2x dib tc" style='display: block;font-size: 40px;'></i>
-            <div style='font-size:14px;'>Feeds</div>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/feeds' href='{{ url_for('feeds') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-bullhorn fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Feeds</div>
           </a>
         </li>
       </ul>

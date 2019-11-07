@@ -17,8 +17,11 @@ const CONTAINER = document.getElementById('react-root');
 
 // Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
+  let HTMLEle:HTMLElement = node as HTMLElement;
+  HTMLEle.style
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    node.classList.add('bg-light-gray', 'br', 'bw2', 'b--green');
+    // to add style, it has to be HTMLElement and not node or Element
+    HTMLEle.style.backgroundColor = '#e4e3e4';
   }
 });
 
