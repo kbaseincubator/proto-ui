@@ -16,3 +16,6 @@ tmp/*
 coverage_report/
 .coverage
 __pycache__/
+
+# Editors
+.vscode/
