@@ -8,6 +8,7 @@ import { ObjectRelations } from './components/object_relations/index';
 
 // Utils
 import { getUsername } from './utils/auth';
+import {fetchProfileAPI} from './utils/API';
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -29,6 +30,8 @@ document.querySelectorAll('[data-hl-nav]').forEach(node => {
 getUsername((username: string) => {
   window._env.username = username;
 });
+
+fetchProfileAPI()
 
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;

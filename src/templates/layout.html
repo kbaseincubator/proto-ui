@@ -18,10 +18,9 @@
   <body class='flex flex-column' style='min-height: 100vh;'>      
     <!-- START top-level navigation -->
     <header class="flex items-center" style="width: 100vw; height: 70px; border-bottom: 5px solid #E0E0E0;">
-        {% include 'hamburgerMenu.html' %}
+        {#{% include 'hamburgerMenu.html' %}#}
         <a href="https://kbase.us" class="-logo dib" data-k-b-testhook-widget="logo"><img sytle="padding: 4px 2px;" src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'></a>
         <h1 style="padding-left: 10px; font-family: 'RobotoBlack', Arial, sans-serif; font-size: 29px;"><div>{% block titleheader %}Dashboard{% endblock %}</div></h1>
-        
     </header>  
     <div
       class='fixed left-0 h-100 flex flex-column justify-between z-1'

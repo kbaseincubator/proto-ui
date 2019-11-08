@@ -5,6 +5,7 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
+import { Header } from '../../Header/Header'
 
 // Utils
 import {
@@ -137,6 +138,7 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     return (
       <div>
+        <Header token='foo' headerTitle='Dashboard'/>
         <div className="flex justify-between">
           {/* Tab sections */}
           <div className="pt2">
