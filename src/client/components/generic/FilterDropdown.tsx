@@ -84,7 +84,7 @@ export class FilterDropdown extends Component<Props, State> {
     let icon;
     if (this.state.selectedIdx === idx) {
       icon = (
-        <i className="fas fa-check mr1 dib" style={{ width: '1.5rem' }}></i>
+        <i className="fa fa-check mr1 dib" style={{ width: '1.5rem' }}></i>
       );
     } else {
       icon = <span className="mr1 dib" style={{ width: '1.5rem' }}></span>;
@@ -127,7 +127,7 @@ export class FilterDropdown extends Component<Props, State> {
       );
     }
     const iconClass =
-      'ml1 fas ' + (this.state.isOpen ? 'fa-caret-up' : 'fa-caret-down');
+      'ml1 fa ' + (this.state.isOpen ? 'fa-caret-up' : 'fa-caret-down');
     return (
       <div className="dib relative">
         <a

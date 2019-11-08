@@ -154,7 +154,7 @@ export class NarrativeList extends Component<Props, State> {
             style={{ marginTop: '1rem', height: '2.25rem' }}
             href={NEW_NARR_URL}
           >
-            <i className="mr1 fas fa-plus"></i> New Narrative
+            <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
         </div>
 
