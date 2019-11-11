@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
 import { render } from 'react-dom';
 // Imports for page-specific components
 // path: /dashboard
@@ -6,15 +8,21 @@ import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
 
+import {Header} from '../client/components/Header/Header'
+
 // Utils
 import { getUsername } from './utils/auth';
-import {fetchProfileAPI} from './utils/API';
 
 // Constants
 const PATHNAME = document.location.pathname
   .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
   .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
+
+let headerEle = document.getElementById('header');
+let pageTitle = (headerEle.getAttribute('pageTitle'))
+// Header
+ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('header'));
 
 // Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
@@ -31,8 +39,6 @@ getUsername((username: string) => {
   window._env.username = username;
 });
 
-fetchProfileAPI()
-
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
 }
@@ -43,6 +49,7 @@ class Page extends Component<Props, State> {
     return <this.props.root />;
   }
 }
+console.log("random")
 
 // Render the page component based on pathname
 if (CONTAINER) {

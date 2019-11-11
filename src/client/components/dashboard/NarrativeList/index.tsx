@@ -138,7 +138,6 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     return (
       <div>
-        <Header token='foo' headerTitle='Dashboard'/>
         <div className="flex justify-between">
           {/* Tab sections */}
           <div className="pt2">

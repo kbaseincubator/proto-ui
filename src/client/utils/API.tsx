@@ -3,7 +3,9 @@ export {}
 async function getBFFServiceUrl(token: string, baseURL: string) {
     // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
     // baseURL = 'https://ci.kbase.us/services'; // for dev
-    let url = baseURL + '/services/service_wizard';
+    console.log(window._env)
+    window.window._env.narrative
+    let url = window.window._env.narrative + '/services/service_wizard';
     const body = {
         id: 0,
         method: 'ServiceWizard.get_service_status',
@@ -30,7 +32,7 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
         return  '';
     } else {
         const responseJson = await response.json();
-        console.log(responseJson)
+        console.log("responseJson", responseJson.result[0]['url'])
 
         return responseJson.result[0]['url'];
     };
@@ -38,6 +40,7 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
 
 export async function fetchProfileAPI() {
     let id = window._env.username;
+    console.log("id", id)
     let token = window._env.token;
     let baseURL =  window._env.url_prefix;
     const bffServiceUrl = await getBFFServiceUrl(token, baseURL);
@@ -47,15 +50,15 @@ export async function fetchProfileAPI() {
     });
     if (response.status !== 200) {
         console.warn(response.status, response);
-        return [response.status, response.statusText];
+        // return [response.status, response.statusText];
     } else {
         try {
             const profile = await response.json();
-            console.log(profile)
+            console.log('woot it worked!', profile)
             return profile;
         } catch (err) {
             console.error('profile fetch failed', response);
-            return [response.status, response.statusText];
+            // return [response.status, response.statusText];
         };
     };
 };

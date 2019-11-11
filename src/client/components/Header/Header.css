@@ -46,17 +46,18 @@ hr {
   outline: none;
 }
 .hamburger {
-    padding: 6px 12px; 
-    margin: 2px 4px 0 4px; 
-    border-style: hidden;
+  padding: 6px 12px; 
+  margin: 2px 4px 0 4px; 
+  border-style: hidden;
 }
 .header {
-  position: absolute;
-  top: 55px;
-    width: 100vw; 
-    height: 70px; 
-    border-bottom: 
-    5px solid #E0E0E0;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 70px; 
+  border-bottom: 
+  5px solid #E0E0E0;
 }
 .hamburger > i {
     font-size: 24px; color:#2196F3; 
@@ -66,7 +67,17 @@ hr {
     padding-left: 10px; 
     font-family: 'RobotoBlack', Arial, sans-serif; 
     font-size: 29px;
+    position: relative;
+    left: 100px;
 }
-.header-logo {
-    padding: 4px 2px;
+.hamburger-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: 65px;
+}
+.logo-header {
+  padding-top: 4px;
 }
