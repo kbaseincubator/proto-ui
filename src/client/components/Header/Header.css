@@ -1,4 +1,4 @@
-.dropdownmenu {
+.dropdown-menu {
   position: absolute;
   top: 55px;
   left: 5px;
@@ -9,7 +9,6 @@
   padding: 5px 0;
   margin: 2px 0 0;
   font-size: 14px;
-  text-align: left;
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
@@ -46,38 +45,40 @@ hr {
   outline: none;
 }
 .hamburger {
-  padding: 6px 12px; 
-  margin: 2px 4px 0 4px; 
+  padding: 6px 12px;
+  margin: 2px 4px 0 6px;
   border-style: hidden;
 }
 .header {
   position: relative;
   top: 0;
   left: 0;
-  width: 100vw; 
-  height: 70px; 
-  border-bottom: 
-  5px solid #E0E0E0;
+  width: 100vw;
+  height: 70px;
+  border-bottom: 5px solid #e0e0e0;
 }
 .hamburger > i {
-    font-size: 24px; color:#2196F3; 
-    font-weight: 500;
+  font-size: 24px;
+  color: #2196f3;
+  font-weight: 500;
 }
 .roboto-header {
-    padding-left: 10px; 
-    font-family: 'RobotoBlack', Arial, sans-serif; 
-    font-size: 29px;
-    position: relative;
-    left: 100px;
+  padding-left: 12px;
+  font-family: 'RobotoBlack', Arial, sans-serif;
+  font-size: 29px;
 }
 .hamburger-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
   align-items: center;
   height: 65px;
+  width: 53px;
 }
 .logo-header {
   padding-top: 4px;
+}
+
+.profile-dropdown {
+  border-width: 0px;
+  padding-right: 0px;
+  padding-top: 3px;
 }

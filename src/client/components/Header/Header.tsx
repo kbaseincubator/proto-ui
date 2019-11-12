@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import './Header.css';
 
 import {fetchProfileAPI} from '../../utils/API';
-// import nouserpic from '../../../static/images/nouserpic.png'; 
+import { getUsername } from '../../utils/auth';
+
+import nouserpic from '../../../static/images/nouserpic.png'
 
 interface State {
-  dropdownVisible: boolean;
+  dropdownHidden: boolean;
   gravatarHash: string | undefined;
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
+  env: string | undefined;
+  envIcon: string | undefined;
+  username: string | undefined;
+  realname: string | undefined;
 }
 interface Props {
   headerTitle: string;
@@ -18,40 +24,76 @@ export class Header extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dropdownVisible: true,
+      dropdownHidden: true,
       gravatarHash: undefined,
       avatarOption: undefined,
       gravatarDefault: undefined,
+      env: undefined,
+      envIcon: undefined,
+      username: undefined,
+      realname: undefined,
     };
+    this.getUserID = this.getUserID.bind(this);
+    this.getUrl_prefix = this.getUrl_prefix.bind(this);
+    this.getUserInfo = this.getUserInfo.bind(this);
+    this.dropDown = this.dropDown.bind(this);
   }
 
   componentDidMount(){
-    this.getGravater();
+    console.log(this.props)
+    this.getUrl_prefix()
+    this.getUserID();
+    this.getUserInfo();
   }
-  async getGravater(){
+
+  getUserID(){
+    getUsername((username: string) => {
+      window._env.username = username;
+    });
+  }
+
+  getUrl_prefix(){
+    let prefix: string;
+    let icon: string;
+    switch (window._env.url_prefix) {
+      case '':
+      case 'https:ci.kbase.us':
+        prefix = 'CI';
+        icon = 'fa fa-2x fa-flask';
+        break;
+      case 'https:appdev.kbase.us':
+        prefix = 'APPDEV';
+        icon = 'fa fa-2x fa-wrench';
+        break;
+      default:
+        prefix = 'CI';
+    }
+    this.setState({env: prefix, envIcon: icon})
+  }
+
+  async getUserInfo(){
     let res = await fetchProfileAPI();
     let avatarOption = res.profile.userdata.avatarOption;
     let gravatarHash = res.profile.synced.gravatarHash;
     let gravatarDefault = res.profile.userdata.gravatarDefault;
-    this.setState({avatarOption, gravatarHash, gravatarDefault})
+    let username =  res.user.username;
+    let realname = res.user.realname;
+    this.setState({avatarOption, gravatarHash, gravatarDefault, realname, username})
   }
-  // i really don't think this is how it works Lolz
-  // hamburgerOnClick = () => {
-  //   if (this.state.dropdownVisible) {
-  //     // let dropDownMenuHTMLEle:HTMLElement = document.querySelector('.dropdown-menu')
-  //     //     dropDownMenuHTMLEle.style = "display: none;"
-  //     this.setState({ dropdownVisible: false });
-      
-  //   } else {
-  //     // document.querySelector('.dropdown-menu').style = "display: block;"
-  //     this.setState({ dropdownVisible: true });
-  //   }
-  // }
+
+  dropDown(){
+    if(this.state.dropdownHidden){
+      this.setState({dropdownHidden: false})
+    } else {
+      this.setState({dropdownHidden: true})
+    }
+  }
+
   // Set gravatarURL
   gravaterSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
         // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={nouserpic} />;
-        return nouserpic;
+        return window._env.url_prefix + '/static/images/nouserpic.png'
     } else if (this.state.gravatarHash) {
         return 'https://www.gravatar.com/avatar/' + this.state.gravatarHash + '?s=300&amp;r=pg&d=' + this.state.gravatarDefault;
         // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={gravaterSrc} />;
@@ -59,10 +101,36 @@ export class Header extends Component<Props, State> {
   };
   render() {
     return (
-      <header className="flex items-center header">
-        <h1 className='roboto-header'><div>{this.props.headerTitle}</div></h1>
-        <div><img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={this.gravaterSrc()} onClick={(event) => { this.showModal(event, ModalName.AvatarOption) }} /></div>
-      </header>
+      <>
+        <h1 className='roboto-header'>{this.props.headerTitle}</h1>
+        <div className='flex top-0 right-0 absolute h-100'  style={{marginRight: '19px'}}>
+          <div className='tc' style={{ border: '1px silver solid', padding: '3px', margin: '2px', height: '58px', minWidth: '34px', alignSelf: 'center', marginRight: '24px'}}>
+            <div style={{ fontSize:'14px', fontWeight: 'bold', paddingBottom: '4px'}}>{this.state.env}</div>
+            <i className={this.state.envIcon} style={{color: '#2196F3', fontSize: '28px'}}></i>
+          </div>
+          <button className='profile-dropdown flex' onClick={(event)=>this.dropDown()}>
+            <img style={{ maxWidth: '40px'}} alt='avatar' src={this.gravaterSrc()}/>
+            <i className="fa fa-caret-down" style={{marginLeft: '5px', marginTop: '14px', fontSize: '13px'}}></i>
+          </button>
+          <ul className="dropdown-menu tc right-0" style={{left: 'auto'}} role="menu" hidden={this.state.dropdownHidden}>
+            <li>
+              <div className='dib'>
+                <div>{this.state.realname}</div>
+                <div style={{fontStyle: 'italic'}}>{this.state.username}</div>
+              </div>
+            </li>
+            <hr/>
+            <li>
+              <a>
+                <div className='dib' style={{width: '34px'}}>
+                  <i className="fa fa-sign-out" style={{fontSize: '150%', marginRight: '10px'}}></i>
+                </div>
+                  Sign Out
+              </a>
+            </li>
+          </ul>
+        </div>
+      </>  
     );
   }
 }

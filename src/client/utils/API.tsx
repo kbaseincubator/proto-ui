@@ -5,6 +5,7 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
     // baseURL = 'https://ci.kbase.us/services'; // for dev
     console.log(window._env)
     window.window._env.narrative
+    let versionNum: number | null = null;
     let url = window.window._env.narrative + '/services/service_wizard';
     const body = {
         id: 0,
@@ -13,7 +14,7 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
         params: [
             {
                 module_name: 'bff',
-                version: null
+                version: versionNum
             }
         ]
     };

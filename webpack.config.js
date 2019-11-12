@@ -25,10 +25,15 @@ const exp = {
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        use: {loader: 'file-loader'},
-        options: {
-          outputPath: dir + '/src/static/images',
-        },
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'images',
+              name: '[name].[ext]',
+            }
+          }
+        ],
       },
     ],
   },

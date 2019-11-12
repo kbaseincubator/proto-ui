@@ -16,3 +16,5 @@ tmp/*
 coverage_report/
 .coverage
 __pycache__/
+
+.DS_Store

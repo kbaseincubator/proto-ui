@@ -19,10 +19,11 @@ const PATHNAME = document.location.pathname
   .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
-let headerEle = document.getElementById('header');
-let pageTitle = (headerEle.getAttribute('pageTitle'))
+let headerEle = document.getElementById('react-header');
+console.log(headerEle, document.getElementById('header'))
+let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
 // Header
-ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('header'));
+ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
 
 // Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
@@ -49,7 +50,6 @@ class Page extends Component<Props, State> {
     return <this.props.root />;
   }
 }
-console.log("random")
 
 // Render the page component based on pathname
 if (CONTAINER) {
