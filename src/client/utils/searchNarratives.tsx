@@ -1,4 +1,4 @@
-import { getToken } from '../utils/auth';
+import { getToken, getUsername } from '../utils/auth';
 
 // Constants
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
@@ -49,7 +49,7 @@ export function searchNarratives({
     pageSize,
     skip
   };
-// Query constraints for "must" conditions
+  // Query constraints for "must" conditions
   const musts = [];
   // Query constraints for "must not" conditions
   const mustNots = [];
@@ -102,6 +102,7 @@ export function searchNarratives({
   if (mustNots.length) {
     options.query.bool.must_not = mustNots;
   }
+  console.log(options);
   return makeRequest(options);
 }
 

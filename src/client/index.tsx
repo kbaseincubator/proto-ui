@@ -26,11 +26,12 @@ document.querySelectorAll('[data-hl-nav]').forEach(node => {
 });
 
 // Set the signed-in username in the global env
-getUsername((username: string | null) => {
-  if (username) {
-    window._env.username = username;
-  }
-});
+getUsername()
+  .then((username: string | null) => {
+    if (username) {
+      window._env.username = username;
+    }
+  });
 
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
