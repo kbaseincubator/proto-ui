@@ -49,9 +49,9 @@ export class SearchInput extends Component<Props, State> {
   }
 
   render() {
-    let iconClass = 'fas fa-search black-30 absolute';
+    let iconClass = 'fa fa-search black-30 absolute';
     if (this.props.loading) {
-      iconClass = 'fas fa-cog fa-spin black-50 absolute';
+      iconClass = 'fa fa-cog fa-spin black-50 absolute';
     }
     return (
       <div className="relative">

@@ -1,4 +1,5 @@
 node_modules
+package-lock.json
 
 # JS and CSS bundle/build output
 src/static/build/*
@@ -16,3 +17,6 @@ tmp/*
 coverage_report/
 .coverage
 __pycache__/
+
+# Editors
+.vscode/

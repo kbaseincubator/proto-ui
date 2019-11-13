@@ -74,6 +74,10 @@ async def orgs(request):
     """Organizations."""
     return _render_template('orgs/index.html', request)
 
+@app.route('/feeds', methods=['GET'])
+async def feeds(request):
+    """Feeds."""
+    return _render_template('feeds/index.html', request)
 
 @app.route('/static/build/bundle.js', methods=['GET'])
 async def js(req):

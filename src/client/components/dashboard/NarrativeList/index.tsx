@@ -38,7 +38,7 @@ export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      totalItems: 0,
+      totalItems: props.items ? props.items.length : 0,
       loading: false,
       // List of narrative data
       items: props.items || [],
@@ -154,7 +154,7 @@ export class NarrativeList extends Component<Props, State> {
             style={{ marginTop: '1rem', height: '2.25rem' }}
             href={NEW_NARR_URL}
           >
-            <i className="mr1 fas fa-plus"></i> New Narrative
+            <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
         </div>
 

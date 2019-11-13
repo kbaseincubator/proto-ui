@@ -108,7 +108,7 @@ export class NarrativeDetails extends Component<Props, State> {
           <h4 className="ma0 pa0 pt2 f4">
             <a className="blue pointer no-underline dim" href={narrativeHref}>
               {data.narrative_title || 'Untitled'}
-              <i className="fas fa-external-link-alt ml2 black-20"></i>
+              <i className="fa fa-external-link-alt ml2 black-20"></i>
             </a>
           </h4>
         </div>
@@ -148,10 +148,7 @@ export class NarrativeDetails extends Component<Props, State> {
 
 // Dictionary term and definition for overview section
 // function dl(key, val) {
-function descriptionList(
-  key: string,
-  val: string | number
-): JSX.Element {
+function descriptionList(key: string, val: string | number): JSX.Element {
   return (
     <dl className="ma0 flex justify-between bb b--black-20 pv2">
       <dt className="dib b">{key}</dt>
@@ -246,20 +243,20 @@ function cellPreview(data: DetailedData) {
 
 // Font-awesome class names for each narrative cell type
 const cellIcons: { [key: string]: string } = {
-  code_cell: 'fas fa-code',
-  kbase_app: 'fas fa-cube',
-  markdown: 'fas fa-paragraph',
-  widget: 'fas fa-wrench',
-  data: 'fas fa-database',
+  code_cell: 'fa fa-code',
+  kbase_app: 'fa fa-cube',
+  markdown: 'fa fa-paragraph',
+  widget: 'fa fa-wrench',
+  data: 'fa fa-database',
 };
 
 // Font-awesome class names for each narrative cell type
 enum CellIcons {
-  code_cell = 'fas fa-code',
-  kbase_app = 'fas fa-cube',
-  markdown = 'fas fa-paragraph',
-  widget = 'fas fa-wrench',
-  data = 'fas fa-database',
+  code_cell = 'fa fa-code',
+  kbase_app = 'fa fa-cube',
+  markdown = 'fa fa-paragraph',
+  widget = 'fa fa-wrench',
+  data = 'fa fa-database',
 }
 
 // Human readable names for each cell type.
@@ -314,7 +311,7 @@ function dataViewRow(obj: DataObjects) {
         className="dib mr2 dtc b pa2 truncate"
         style={{ width: leftWidth + '%' }}
       >
-        <i className="fas fa-database dib mr2 green"></i>
+        <i className="fa fa-database dib mr2 green"></i>
         {obj.readableType}
       </span>
       <span
