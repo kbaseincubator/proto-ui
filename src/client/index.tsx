@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { render } from 'react-dom';
 
-import { render } from 'react-dom';
 // Imports for page-specific components
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
@@ -19,12 +18,8 @@ const PATHNAME = document.location.pathname
   .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
-let headerEle = document.getElementById('react-header');
-let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
-// Header
-ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
 
-// Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
+// change background of the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
   let HTMLEle:HTMLElement = node as HTMLElement;
   HTMLEle.style
@@ -50,26 +45,26 @@ class Page extends Component<Props, State> {
   }
 }
 
+// Header
+let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
+ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+
 // Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname
   const routes: {
     [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
   } = {
-    '/dashboard': {
-      component: Dashboard,
-    },
-    '/iframe/dashboard': {
-      component: Dashboard,
-    },
-    '/iframe/object_relations': {
-      component: ObjectRelations,
-    },
-  };
+        '/dashboard': {component: Dashboard},
+        '/iframe/dashboard': {component: Dashboard},
+        '/iframe/object_relations': {component: ObjectRelations}
+      };
 
   if (PATHNAME in routes) {
     const topComponent = routes[PATHNAME].component;
-    render(<Page root={topComponent} />, CONTAINER);
+    render(
+        <Page root={topComponent} />,
+      CONTAINER);
   } else {
     console.error(
       `Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(

@@ -4,8 +4,6 @@ import './Header.css';
 import {fetchProfileAPI} from '../../utils/API';
 import { getUsername } from '../../utils/auth';
 
-import nouserpic from '../../../static/images/nouserpic.png'
-
 interface State {
   dropdownHidden: boolean;
   gravatarHash: string | undefined;
@@ -16,6 +14,7 @@ interface State {
   username: string | undefined;
   realname: string | undefined;
 }
+
 interface Props {
   headerTitle: string;
 }
@@ -34,13 +33,13 @@ export class Header extends Component<Props, State> {
       realname: undefined,
     };
     this.getUserID = this.getUserID.bind(this);
-    this.getUrl_prefix = this.getUrl_prefix.bind(this);
+    this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
     this.dropDown = this.dropDown.bind(this);
   }
 
   componentDidMount(){
-    this.getUrl_prefix()
+    this.setUrl_prefix()
     this.getUserID();
     this.getUserInfo();
   }
@@ -51,7 +50,7 @@ export class Header extends Component<Props, State> {
     });
   }
 
-  getUrl_prefix(){
+  setUrl_prefix(){
     let prefix: string;
     let icon: string;
     switch (window._env.url_prefix) {
