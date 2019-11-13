@@ -78,7 +78,8 @@ async def account(request):
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
     """Organizations."""
-    return _render_template('orgs/index.html', request)
+    return sanic.response.redirect('https://ci.kbase.us/#orgs')
+    # return _render_template('orgs/index.html', request)
 
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):

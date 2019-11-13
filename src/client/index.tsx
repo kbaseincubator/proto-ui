@@ -20,7 +20,6 @@ const PATHNAME = document.location.pathname
 const CONTAINER = document.getElementById('react-root');
 
 let headerEle = document.getElementById('react-header');
-console.log(headerEle, document.getElementById('header'))
 let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
 // Header
 ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));

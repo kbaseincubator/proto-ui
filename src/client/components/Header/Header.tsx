@@ -40,7 +40,6 @@ export class Header extends Component<Props, State> {
   }
 
   componentDidMount(){
-    console.log(this.props)
     this.getUrl_prefix()
     this.getUserID();
     this.getUserInfo();
@@ -80,12 +79,22 @@ export class Header extends Component<Props, State> {
     let realname = res.user.realname;
     this.setState({avatarOption, gravatarHash, gravatarDefault, realname, username})
   }
-
-  dropDown(){
-    if(this.state.dropdownHidden){
+  /**
+   * if open is true, then set dropdown Hidden to false
+   * if open is null, taggle dropdown Hidden
+   * @param open 
+   */
+  dropDown(open:boolean | null):void{
+    if(open){
+      this.setState({dropdownHidden: true})
+    } else if (!open) {
       this.setState({dropdownHidden: false})
     } else {
-      this.setState({dropdownHidden: true})
+      if(this.state.dropdownHidden){
+        this.setState({dropdownHidden: false})
+      } else {
+        this.setState({dropdownHidden: true})
+      }
     }
   }
 
@@ -108,11 +117,11 @@ export class Header extends Component<Props, State> {
             <div style={{ fontSize:'14px', fontWeight: 'bold', paddingBottom: '4px'}}>{this.state.env}</div>
             <i className={this.state.envIcon} style={{color: '#2196F3', fontSize: '28px'}}></i>
           </div>
-          <button className='profile-dropdown flex' onClick={(event)=>this.dropDown()}>
+          <button className='profile-dropdown flex' onClick={(event)=>this.dropDown(null)} onBlur={(event)=>this.dropDown(false)}>
             <img style={{ maxWidth: '40px'}} alt='avatar' src={this.gravaterSrc()}/>
             <i className="fa fa-caret-down" style={{marginLeft: '5px', marginTop: '14px', fontSize: '13px'}}></i>
           </button>
-          <ul className="dropdown-menu tc right-0" style={{left: 'auto'}} role="menu" hidden={this.state.dropdownHidden}>
+          <ul className="dropdown-menu tc right-0" style={{left: 'auto'}} role="menu" hidden={this.state.dropdownHidden} onFocus={(event)=>this.dropDown(true)} onBlur={(event)=>this.dropDown(false)}>
             <li>
               <div className='dib'>
                 <div>{this.state.realname}</div>

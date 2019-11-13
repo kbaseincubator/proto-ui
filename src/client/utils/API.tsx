@@ -3,7 +3,6 @@ export {}
 async function getBFFServiceUrl(token: string, baseURL: string) {
     // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
     // baseURL = 'https://ci.kbase.us/services'; // for dev
-    console.log(window._env)
     window.window._env.narrative
     let versionNum: number | null = null;
     let url = window.window._env.narrative + '/services/service_wizard';
@@ -33,8 +32,6 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
         return  '';
     } else {
         const responseJson = await response.json();
-        console.log("responseJson", responseJson.result[0]['url'])
-
         return responseJson.result[0]['url'];
     };
 };

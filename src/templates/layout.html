@@ -17,10 +17,10 @@
 
   <body class='flex flex-column' style='min-height: 100vh;'>      
     <!-- START top-level navigation -->
-    <header id='header' class='flex items-center header' pageTitle={% block titleheader %}{% endblock %}>
+    <header id='header' class='flex items-center header z-2' pageTitle={% block titleheader %}{% endblock %}>
       {% include "hamburgerMenu.html" %}
       <a href="https://kbase.us" class="-logo dib logo-header"><img src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'></a>
-      <div id='react-header' class='flex'></div>
+      <div id='react-header' class='flex' style='height: 65px'></div>
     </header>
     <div
       class='fixed left-0 h-100 flex flex-column justify-between z-1'
