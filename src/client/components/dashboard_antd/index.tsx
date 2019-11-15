@@ -42,14 +42,17 @@ interface State {
   searchParams: SearchParams;
   loading: boolean;
   items: Array<NarrativeItem>;
-  selectedIdx: number;
+  selectedRowIdx: number;
+  tabIdx: number;
+  detailsTabIdx: number;
+  page: number;
+  totalItems: number;
 }
 
 interface Props {}
 
 
 // -- Global constants
-const PAGE_SIZE = 20;
 // Column configuration for the narrative table
 const TABLE_COLS = [
   {
@@ -76,7 +79,10 @@ const TABLE_COLS = [
 const DATE_FORMAT = "L LTS"
 // Background color for a selected row
 const SELECTED_BG_COLOR = "#e6f7ff";
-
+// Tab index to search category mapping
+const TAB_CATEGORY_MAPPING = ['own', 'shared', 'tutorials', 'public'];
+// Table pagination size
+const PAGE_SIZE = 20;
 
 // Ant design version of the dashboard
 export class DashboardAntd extends React.Component<Props, State> {
@@ -84,7 +90,7 @@ export class DashboardAntd extends React.Component<Props, State> {
     super(props);
     this.state = {
       searchParams: {
-        term: 'test',
+        term: '',
         sort: 'Newest',
         category: 'own',
         skip: 0,
@@ -92,11 +98,16 @@ export class DashboardAntd extends React.Component<Props, State> {
       },
       items: [],
       loading: false,
-      selectedIdx: 0,
+      selectedRowIdx: 0,
+      tabIdx: 0,
+      detailsTabIdx: 0,
+      page: 0,
+      totalItems: 0
     };
   }
 
   componentDidMount() {
+    // XXX redundant with client/index.tsx but we need the timing here
     getUsername()
       .then((username) => {
         window._env.username = username;
@@ -125,7 +136,11 @@ export class DashboardAntd extends React.Component<Props, State> {
               is_public: item._source.is_public
             }
           })
-          this.setState({ items: items })
+          this.setState({
+            items,
+            selectedRowIdx: 0,
+            totalItems: total
+          })
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
             /*
@@ -147,19 +162,47 @@ export class DashboardAntd extends React.Component<Props, State> {
     // TODO handle error from server
   }
 
-  handleTabChange() {
+  handleTabChange(key: string) {
+    const idx = Number(key);
     console.log('tab change');
-    this.setState({ items: [] });
+    const searchParams = this.state.searchParams;
+    searchParams.category = TAB_CATEGORY_MAPPING[idx];
+    searchParams.term = '';
+    searchParams.skip = 0;
+    this.setState({
+      // items: [],
+      tabIdx: idx,
+      searchParams,
+      // page: 0,
+      // totalItems: 0
+    });
+    this.performSearch();
   }
 
   handleClickRow(idx: number) {
     this.setState({
-      selectedIdx: idx
+      selectedRowIdx: idx
     })
   }
 
+  handleSearch(term: string) {
+    console.log('searching', term);
+    const searchParams = this.state.searchParams;
+    searchParams.term = term;
+    this.setState({ searchParams });
+    this.performSearch();
+  }
+
+  handlePageChange(page: number) {
+    console.log('chagned page to', page);
+    const searchParams = this.state.searchParams;
+    searchParams.skip = page * PAGE_SIZE;
+    this.setState({ page, searchParams });
+    this.performSearch()
+  }
+
   render() {
-    const selected = this.state.items[this.state.selectedIdx];
+    const selected = this.state.items[this.state.selectedRowIdx];
     const menu = (
       <Menu>
         <Menu.Item>
@@ -186,20 +229,28 @@ export class DashboardAntd extends React.Component<Props, State> {
     );
     return (
       <div style={{padding: '2rem', minWidth: '1024px' }}>
-        <Tabs onChange={this.handleTabChange.bind(this)} type="card">
-          <TabPane tab="My narratives" key="1">
+        <Tabs
+          onChange={this.handleTabChange.bind(this)}
+          type="card"
+        >
+          <TabPane tab="My narratives" key="0">
           </TabPane>
-          <TabPane tab="Shared with me" key="2">
+          <TabPane tab="Shared with me" key="1">
           </TabPane>
-          <TabPane tab="Tutorials" key="3">
+          <TabPane tab="Tutorials" key="2">
           </TabPane>
-          <TabPane tab="Public" key="4">
+          <TabPane tab="Public" key="3">
           </TabPane>
         </Tabs>
 
         <Row>
           <Col span={12} style={{paddingRight: '2rem' }}>
-            <Search placeholder="Search narratives" onSearch={value => console.log(value)} enterButton />
+            <Search
+              allowClear
+              placeholder="Search narratives"
+              onSearch={this.handleSearch.bind(this)}
+              enterButton
+            />
           </Col>
         </Row>
 
@@ -217,6 +268,12 @@ export class DashboardAntd extends React.Component<Props, State> {
                       backgroundColor: selected && selected.key === record.key ? SELECTED_BG_COLOR : 'white'
                     }
                   };
+                }}
+                pagination={{
+                  current: this.state.page,
+                  pageSize: PAGE_SIZE,
+                  total: this.state.totalItems,
+                  onChange: this.handlePageChange.bind(this)
                 }}
             />
           </Col>

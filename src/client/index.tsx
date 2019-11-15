@@ -36,6 +36,7 @@ getUsername()
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
 }
+
 interface State {}
 // Global page wrapper
 class Page extends Component<Props, State> {
