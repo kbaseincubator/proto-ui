@@ -29,7 +29,7 @@ interface Options {
 
 // Search narratives using elasticsearch
 // `term` is a search term
-// `sort` can be one of "Newest" or "Oldest"
+// `sort` can be one of "Newest" or "Oldest", "Least recently updated", "Recently updated"
 // `category` can be one of:
 //   - 'own' - narratives created by the current user
 //   - 'shared' - narratives shared with the current user

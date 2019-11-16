@@ -12,6 +12,8 @@ import {
   SearchParams,
 } from '../../utils/searchNarratives';
 import { getUsername } from '../../utils/auth';
+import { getWSTypeName } from '../../utils/getWSTypeName';
+import { readableSnakeCase } from '../../utils/readableSnakeCase';
 
 interface NarrativeItem {
   name: string;
@@ -22,6 +24,8 @@ interface NarrativeItem {
   cell_count: number;
   object_count: number;
   is_public: boolean;
+  data: Array<{obj_type: string, name: string}>;
+  cells: Array<{cell_type: string, desc: string}>;
 }
 
 export interface SearchResult {
@@ -32,9 +36,9 @@ export interface SearchResult {
     timestamp: number,
     access_group: number,
     obj_id: number,
-    cells: Array<Object>;
-    data_objects: Array<Object>;
     is_public: boolean;
+    data_objects: Array<{obj_type: string, name: string}>;
+    cells: Array<{cell_type: string, desc: string}>;
   }
 }
 
@@ -63,15 +67,31 @@ const TABLE_COLS = [
     title: 'Author',
     dataIndex: 'author'
   },
-  /*
-  {
-    title: 'Created',
-    dataIndex: 'created'
-  },
-  */
   {
     title: 'Updated',
-    dataIndex: 'updated'
+    dataIndex: 'updated',
+    sorter: true,
+    defaultSortOrder: 'descend' as 'descend',
+  }
+];
+const TABLE_COLS_DATA = [
+  {
+    title: 'Type',
+    dataIndex: 'obj_type'
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name'
+  }
+];
+const TABLE_COLS_PREVIEW = [
+  {
+    title: 'Cell type',
+    dataIndex: 'cell_type'
+  },
+  {
+    title: 'Content',
+    dataIndex: 'desc'
   }
 ];
 // Localized date format
@@ -83,6 +103,7 @@ const SELECTED_BG_COLOR = "#e6f7ff";
 const TAB_CATEGORY_MAPPING = ['own', 'shared', 'tutorials', 'public'];
 // Table pagination size
 const PAGE_SIZE = 20;
+// Mapping of cell type name to readable name
 
 // Ant design version of the dashboard
 export class DashboardAntd extends React.Component<Props, State> {
@@ -125,6 +146,16 @@ export class DashboardAntd extends React.Component<Props, State> {
           const total = resp.hits.total;
           const items = resp.hits.hits.map((item: SearchResult) => {
             console.log('item', item);
+            const cells = item._source.cells.map((c: {desc: string, cell_type: string}) => {
+              c.cell_type = readableSnakeCase(c.cell_type);
+              return c;
+            });
+            const data = item._source.data_objects.map((c: {obj_type: string, name: string}) => {
+              return {
+                obj_type: getWSTypeName(c.obj_type),
+                name: c.name
+              };
+            });
             return {
               name: item._source.narrative_title,
               author: item._source.creator,
@@ -133,7 +164,9 @@ export class DashboardAntd extends React.Component<Props, State> {
               key: `${item._source.access_group}/${item._source.obj_id}`,
               cell_count: item._source.cells.length,
               object_count: item._source.data_objects.length,
-              is_public: item._source.is_public
+              is_public: item._source.is_public,
+              data,
+              cells,
             }
           })
           this.setState({
@@ -141,19 +174,6 @@ export class DashboardAntd extends React.Component<Props, State> {
             selectedRowIdx: 0,
             totalItems: total
           })
-          // If we are loading a subsequent page, append to items. Otherwise, replace them.
-          if (searchParams.skip > 0) {
-            /*
-            this.setState({
-              items: this.state.items.concat(items),
-              totalItems: total,
-            });
-             */
-          } else {
-            /*
-            this.setState({ items, totalItems: total });
-            */
-          }
         }
       })
       .finally(() => {
@@ -170,11 +190,8 @@ export class DashboardAntd extends React.Component<Props, State> {
     searchParams.term = '';
     searchParams.skip = 0;
     this.setState({
-      // items: [],
       tabIdx: idx,
       searchParams,
-      // page: 0,
-      // totalItems: 0
     });
     this.performSearch();
   }
@@ -199,6 +216,25 @@ export class DashboardAntd extends React.Component<Props, State> {
     searchParams.skip = page * PAGE_SIZE;
     this.setState({ page, searchParams });
     this.performSearch()
+  }
+
+  handleTableChange(pagination: Object, filters: Object, sorter: {field: string, order?: string}) {
+    const searchParams = this.state.searchParams;
+    if (sorter.order === 'ascend') {
+      searchParams.sort = 'Least recently updated';
+    } else {
+      searchParams.sort = 'Recently updated';
+    }
+    searchParams.skip = 0;
+    this.setState({searchParams, page: 0});
+    this.performSearch();
+  }
+
+  handleDetailsTabChange(key: string) {
+    const idx = Number(key);
+    this.setState({
+      detailsTabIdx: idx
+    });
   }
 
   render() {
@@ -275,6 +311,7 @@ export class DashboardAntd extends React.Component<Props, State> {
                   total: this.state.totalItems,
                   onChange: this.handlePageChange.bind(this)
                 }}
+                onChange={this.handleTableChange.bind(this)}
             />
           </Col>
 
@@ -285,7 +322,6 @@ export class DashboardAntd extends React.Component<Props, State> {
   }
 }
 
-
 function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
   if (!item) {
     return (<div></div>);
@@ -293,29 +329,60 @@ function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
   return (
     <Col span={12}>
       <h3>{ item.name }</h3>
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Overview" key="1" />
-        <TabPane tab="Data" key="2" />
-        <TabPane tab="Preview" key="3" />
+      <Tabs
+        defaultActiveKey="0"
+        onChange={cmp.handleDetailsTabChange.bind(cmp)}
+      >
+        <TabPane tab="Overview" key="0" />
+        <TabPane tab="Data" key="1" />
+        <TabPane tab="Preview" key="2" />
       </Tabs>
-      <Descriptions bordered layout="horizontal" column={1}>
-        <Descriptions.Item label="Author">
-          { item.author }
-        </Descriptions.Item>
-        <Descriptions.Item label="Created on">
-          { item.created }
-        </Descriptions.Item>
-        <Descriptions.Item label="Total cells">
-          { item.cell_count }
-        </Descriptions.Item>
-        <Descriptions.Item label="Data objects">
-          { item.object_count }
-        </Descriptions.Item>
-        <Descriptions.Item label="Visibility">
-          { item.is_public ? 'public' : 'private' }
-        </Descriptions.Item>
-      </Descriptions>
+      { cmp.state.detailsTabIdx === 0 ? detailsOverview(item) : '' }
+      { cmp.state.detailsTabIdx === 1 ? detailsData(item) : '' }
+      { cmp.state.detailsTabIdx === 2 ? detailsPreview(item) : '' }
     </Col>
+  );
+}
+
+function detailsOverview(item: NarrativeItem) {
+  return (
+    <Descriptions bordered layout="horizontal" column={1}>
+      <Descriptions.Item label="Author">
+        { item.author }
+      </Descriptions.Item>
+      <Descriptions.Item label="Created on">
+        { item.created }
+      </Descriptions.Item>
+      <Descriptions.Item label="Total cells">
+        { item.cell_count }
+      </Descriptions.Item>
+      <Descriptions.Item label="Data objects">
+        { item.object_count }
+      </Descriptions.Item>
+      <Descriptions.Item label="Visibility">
+        { item.is_public ? 'public' : 'private' }
+      </Descriptions.Item>
+    </Descriptions>
+  );
+}
+
+function detailsData(item: NarrativeItem) {
+  console.log({item});
+  return (
+    <Table
+      columns={TABLE_COLS_DATA}
+      dataSource={item.data}
+    />
+  );
+}
+
+function detailsPreview(item: NarrativeItem) {
+  console.log({item});
+  return (
+    <Table
+      columns={TABLE_COLS_PREVIEW}
+      dataSource={item.cells}
+    />
   );
 }
 
