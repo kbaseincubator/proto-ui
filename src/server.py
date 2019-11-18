@@ -39,12 +39,6 @@ async def dashboard(request):
     return _render_template('dashboard/index.html', request)
 
 
-@app.route('/dashboard-antd', methods=['GET'])
-async def dashboard_antd(request):
-    """Dashboard with Ant Design."""
-    return _render_template('dashboard_antd/index.html', request)
-
-
 @app.route('/notifications', methods=['GET'])
 async def notifications(request):
     """Notifications."""
@@ -74,10 +68,12 @@ async def orgs(request):
     """Organizations."""
     return _render_template('orgs/index.html', request)
 
+
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
     return _render_template('feeds/index.html', request)
+
 
 @app.route('/static/build/bundle.js', methods=['GET'])
 async def js(req):
