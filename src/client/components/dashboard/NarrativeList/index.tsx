@@ -11,6 +11,7 @@ import {
   searchNarratives,
   SearchParams,
 } from '../../../utils/searchNarratives';
+import { getUsername } from '../../../utils/auth';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -57,7 +58,11 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.performSearch();
+    // FIXME this is redundant with client/index.tsx
+    getUsername(username => {
+      window._env.username = username;
+      this.performSearch();
+    });
   }
 
   // Handle an onSetSearch callback from Filters
