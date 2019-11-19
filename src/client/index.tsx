@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM, { render } from 'react-dom';
+import { render } from 'react-dom';
 
 // Imports for page-specific components
 // path: /dashboard
@@ -53,7 +53,7 @@ class Page extends Component<Props, State> {
 
 // Header
 let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
-ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
 
 // Render the page component based on pathname
 if (CONTAINER) {
