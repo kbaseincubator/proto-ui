@@ -5,6 +5,8 @@ import { render } from 'react-dom';
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
+// path: /catalog
+import { AppCatalog } from './components/catalog/index';
 
 // Utils
 import { getUsername } from './utils/auth';
@@ -61,6 +63,9 @@ if (CONTAINER) {
     },
     '/iframe/object_relations': {
       component: ObjectRelations,
+    },
+    '/catalog': {
+      component: AppCatalog,
     },
   };
 

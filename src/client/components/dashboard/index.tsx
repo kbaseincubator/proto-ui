@@ -13,8 +13,7 @@ export class Dashboard extends Component {
   render() {
     return (
       <section className="ph4 mt3">
-        {' '}
-        <NarrativeList />{' '}
+        <NarrativeList />
       </section>
     );
   }
