@@ -1,6 +1,6 @@
 # For installing npm dependencies and building static css/js
-FROM node:8-alpine
-COPY ./webpack.config.js ./package.json yarn.lock /app/
+FROM node:10-alpine
+COPY ./webpack.config.js ./tsconfig.json ./package.json yarn.lock /app/
 COPY src/client /app/src/client
 COPY src/static /app/src/static
 WORKDIR /app
@@ -11,7 +11,6 @@ RUN yarn run build && rm -rf node_modules
 # Set up python
 FROM python:3.7-alpine
 COPY src /app/src
-COPY scripts /app/scripts
 COPY requirements.txt /app
 WORKDIR /app
 

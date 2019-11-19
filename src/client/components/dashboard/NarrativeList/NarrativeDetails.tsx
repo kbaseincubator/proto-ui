@@ -89,7 +89,11 @@ export class NarrativeDetails extends Component<Props, State> {
     const data = activeItem._source;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
+<<<<<<< HEAD
     let content: JSX.Element;
+=======
+    let content: JSX.Element | string = '';
+>>>>>>> 35d185e46bc6e3035d89cd58728ba38a4696f8b0
     // Choose which content to show based on selected tab
     if (selectedTabIdx === 0) {
       // Show overview

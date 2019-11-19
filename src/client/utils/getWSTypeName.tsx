@@ -3,7 +3,7 @@
 
 export function getWSTypeName(type: string): string {
   const matches = type.match(/.*\.(.+)-\d+\.\d+/);
-  if (matches.length < 2) {
+  if (!matches || matches.length < 2) {
     throw new Error('Invalid workspace type name: ' + type);
   }
   const match = matches[1];

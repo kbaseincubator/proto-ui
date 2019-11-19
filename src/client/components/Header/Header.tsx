@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Header.css';
 
+<<<<<<< HEAD
 import {fetchProfileAPI} from '../../utils/API';
 import { getUsername } from '../../utils/auth';
 
@@ -142,3 +143,15 @@ export class Header extends Component<Props, State> {
     );
   }
 }
+=======
+export class Header extends Component {
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return <div>I need this somewhere in header</div>;
+  }
+}
+>>>>>>> 35d185e46bc6e3035d89cd58728ba38a4696f8b0
