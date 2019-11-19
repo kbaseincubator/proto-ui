@@ -80,10 +80,12 @@ async def orgs(request):
     """Organizations."""
     return _render_template('orgs/index.html', request)
 
+
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
     return _render_template('feeds/index.html', request)
+
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
@@ -111,7 +113,8 @@ def _url_for(arg, *args, **kwargs):
     """
     url = app.url_for(arg, *args, **kwargs)
     # Note that _CONF.url_prefix will have leading slash and no trailing slash
-    return os.path.join(_CONF.url_prefix, url.strip('/'))
+    print('url', os.path.join(_CONF.url_prefix, url.strip('/')))
+    return os.path.join(_CONF.url_prefix, url.rstrip('/'))
 
 
 def _render_template(path, args=None, status=200):
