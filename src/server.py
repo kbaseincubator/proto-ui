@@ -113,8 +113,7 @@ def _url_for(arg, *args, **kwargs):
     """
     url = app.url_for(arg, *args, **kwargs)
     # Note that _CONF.url_prefix will have leading slash and no trailing slash
-    print('url', os.path.join(_CONF.url_prefix, url.strip('/')))
-    return os.path.join(_CONF.url_prefix, url.rstrip('/'))
+    return os.path.join(_CONF.url_prefix, url.strip('/'))
 
 
 def _render_template(path, args=None, status=200):

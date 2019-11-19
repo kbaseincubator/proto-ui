@@ -9,10 +9,15 @@ import { ObjectRelations } from './components/object_relations/index';
 // Utils
 import { getUsername } from './utils/auth';
 
-// Constants
-const PATHNAME = '/' + document.location.pathname
+// Get a pathname for the page without the global prefix for routing purposes.
+// Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
+let PATHNAME = document.location.pathname
   .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
   .replace(/\/$/, ''); // Remove trailing slash
+if (PATHNAME[0] !== '/') {
+  PATHNAME = '/' + PATHNAME;
+}
+
 const CONTAINER = document.getElementById('react-root');
 
 // Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
