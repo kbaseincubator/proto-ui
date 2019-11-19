@@ -7,6 +7,7 @@ import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
 
+import {Account} from './components/Account/index';
 import {Header} from '../client/components/Header/Header'
 
 // Utils
@@ -48,23 +49,24 @@ class Page extends Component<Props, State> {
 // Header
 let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
 ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
-
+console.log('how many times does this run?')
 // Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname
   const routes: {
     [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
   } = {
-        '/dashboard': {component: Dashboard},
-        '/iframe/dashboard': {component: Dashboard},
-        '/iframe/object_relations': {component: ObjectRelations}
-      };
-
+    '/dashboard': {component: Dashboard},
+    '/account': {component: Account},
+    '/iframe/dashboard': {component: Dashboard},
+    '/iframe/object_relations': {component: ObjectRelations},
+  };
+  
   if (PATHNAME in routes) {
+    console.log('how many times does this run? part 2')
     const topComponent = routes[PATHNAME].component;
-    render(
-        <Page root={topComponent} />,
-      CONTAINER);
+    console.log('here', topComponent)
+    render(<Page root={topComponent} />, CONTAINER);
   } else {
     console.error(
       `Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(

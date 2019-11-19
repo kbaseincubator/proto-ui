@@ -124,6 +124,7 @@ export function makeRequest({
     let token = getToken();
     Object.assign(headers, { Authorization: token });
   }
+  console.log(params, window._env.kbase_endpoint)
   return fetch(window._env.kbase_endpoint + '/searchapi2/rpc', {
     method: 'POST',
     headers,
