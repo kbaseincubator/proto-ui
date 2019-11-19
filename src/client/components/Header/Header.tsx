@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Header.css';
 
-<<<<<<< HEAD
 import {fetchProfileAPI} from '../../utils/API';
 import { getUsername } from '../../utils/auth';
 
@@ -46,7 +45,7 @@ export class Header extends Component<Props, State> {
   }
 
   getUserID(){
-    getUsername((username: string) => {
+    getUsername((username) => {
       window._env.username = username;
     });
   }
@@ -59,15 +58,16 @@ export class Header extends Component<Props, State> {
       case 'https:ci.kbase.us':
         prefix = 'CI';
         icon = 'fa fa-2x fa-flask';
+        this.setState({env: prefix, envIcon: icon})
         break;
       case 'https:appdev.kbase.us':
         prefix = 'APPDEV';
         icon = 'fa fa-2x fa-wrench';
+        this.setState({env: prefix, envIcon: icon})
         break;
       default:
         prefix = 'CI';
     }
-    this.setState({env: prefix, envIcon: icon})
   }
 
   async getUserInfo(){
@@ -143,15 +143,3 @@ export class Header extends Component<Props, State> {
     );
   }
 }
-=======
-export class Header extends Component {
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return <div>I need this somewhere in header</div>;
-  }
-}
->>>>>>> 35d185e46bc6e3035d89cd58728ba38a4696f8b0

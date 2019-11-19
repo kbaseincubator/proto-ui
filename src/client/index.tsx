@@ -52,8 +52,13 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
-render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+let headerEle = document.getElementById('header')
+if(headerEle !== null){
+  let pageTitle = headerEle.getAttribute('pageTitle')
+  if(pageTitle!==null){
+    render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+  }
+}
 
 // Render the page component based on pathname
 if (CONTAINER) {
