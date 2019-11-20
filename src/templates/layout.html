@@ -15,14 +15,14 @@
     {% endblock %}
   </head>
 
-  <body class='flex flex-column' style='min-height: 100vh;'>
+  <body style='min-height: 100vh;'>
 
     {# Top nav bar #}
 
     <!-- START top-level navigation -->
     <div
       class='fixed top-0 left-0 shadow-4 h-100 flex flex-column justify-between bg-washed-blue z-1'
-      style='width:12rem; box-shadow:-1px 2px 8px 0 rgba( 0, 0, 0, .2 ); overflow-y:auto;'>
+      style='width: 12rem; box-shadow:-1px 2px 8px 0 rgba( 0, 0, 0, .2 ); overflow-y:auto;'>
       <ul class='list pa0'>
         <li class='ph2 pb3 pointer dim'>
           <a href='{{ url_for('dashboard')}}'>
@@ -84,7 +84,7 @@
     <!-- END top-level navigation -->
 
     {# Page contents replaced by React #}
-    <main style='padding-left: 12rem; max-width: 80rem;'>
+    <main style='padding-left: 14rem; padding-right: 2rem; min-width: 70rem; max-width: 80rem;' class='center'>
       {% block content %}{% endblock %}
     </main>
 

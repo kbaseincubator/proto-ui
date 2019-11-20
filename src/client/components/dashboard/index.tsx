@@ -12,9 +12,8 @@ export class Dashboard extends Component {
 
   render() {
     return (
-      <section className="ph4 mt3">
-        {' '}
-        <NarrativeList />{' '}
+      <section className="mt3">
+        <NarrativeList />
       </section>
     );
   }
