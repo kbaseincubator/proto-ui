@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 // Components
+import { SideNav } from './SideNav';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
@@ -16,6 +17,7 @@ interface FakeDatum {
   runs: number;
   iconColor: string;
   iconLetter: string;
+  id: string;
 }
 
 const fakeData: Array<FakeDatum> = [
@@ -25,7 +27,8 @@ const fakeData: Array<FakeDatum> = [
     stars: 30,
     runs: 16148,
     iconColor: 'green',
-    iconLetter: 'X'
+    iconLetter: 'X',
+    id: '0',
   },
   {
     name: 'Assess Read Quality with FastQC',
@@ -33,7 +36,8 @@ const fakeData: Array<FakeDatum> = [
     stars: 37,
     runs: 6107,
     iconColor: 'orange',
-    iconLetter: 'Y'
+    iconLetter: 'Y',
+    id: '1',
   },
   {
     name: 'Filter Out Low-Complexity Reads with PRINSEQ - v0.20.4',
@@ -41,7 +45,8 @@ const fakeData: Array<FakeDatum> = [
     stars: 2,
     runs: 13,
     iconColor: 'blue',
-    iconLetter: 'Z'
+    iconLetter: 'Z',
+    id: '2',
   }
 ]
 
@@ -54,39 +59,44 @@ export class AppCatalog extends Component {
 
   render() {
     return (
-      <div className="ph4 mt3">
-        <h1 className='mb4'>App Catalog</h1>
+      <div className='flex'>
+        <div style={{paddingTop: '5rem', width: '10rem'}} className='w4'>
+          <SideNav />
+        </div>
+        <div className="ph4 mt3">
+          <h2 className='mb4'>App Catalog</h2>
 
-        <div className='mt3 flex items-baseline justify-between'>
-          <div className='w-70 flex'>
-            <div className='relative'>
-              <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
-              <SearchInput onSetVal={() => null} loading={false} />
+          <div className='mt3 flex items-baseline justify-between'>
+            <div className='w-70 flex'>
+              <div className='relative'>
+                <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
+                <SearchInput onSetVal={() => null} loading={false} />
 
+              </div>
+
+              <fieldset className='bn pa0 ml3'>
+                <select className='br2 bn bg-light-gray pa2 black-80'>
+                  <option>Any category</option>
+                  <option>Read Processing</option>
+                  <option>Genome Assembly</option>
+                </select>
+              </fieldset>
             </div>
 
-            <fieldset className='bn pa0 ml3'>
-              <select className='br2 bn bg-light-gray pa2 black-80'>
-                <option>Any category</option>
-                <option>Read Processing</option>
-                <option>Genome Assembly</option>
-              </select>
-            </fieldset>
+            <div className='pr4 b black-70 blue pointer'>Stars <span className='fas fa-caret-down'></span></div>
+            <div className='b black-70 blue pointer'>Runs <span className='fas fa-caret-down'></span></div>
           </div>
 
-          <div className='pr4 b black-70 blue pointer'>Stars <span className='fas fa-caret-down'></span></div>
-          <div className='b black-70 blue pointer'>Runs <span className='fas fa-caret-down'></span></div>
+          <div>
+            { fakeData.map(rowView) }
+          </div>
+
+
+          <div className='pt3 mt4 bt b--black-20'>
+            <LoadMoreBtn loading={ false } />
+          </div>
+
         </div>
-
-        <div>
-          { fakeData.map(rowView) }
-        </div>
-
-
-        <div className='pt3 mt4 bt b--black-20'>
-          <LoadMoreBtn loading={ false } />
-        </div>
-
       </div>
     );
   }
@@ -94,7 +104,7 @@ export class AppCatalog extends Component {
 
 function rowView (data: FakeDatum) {
   return (
-    <div className='mt3 pt3 bt b--black-20'>
+    <div className='mt3 pt3 bt b--black-20' key={data.id}>
       <div className='pointer flex justify-between hover-dark-blue'>
         <div className='w-70 flex'>
           <div className={`mt1 db flex justify-center w2 h2 bg-${data.iconColor} br2 pt1`}>
