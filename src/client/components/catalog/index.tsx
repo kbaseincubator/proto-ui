@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import { fetchApps } from '../../utils/fetchApps';
+
 // Components
 import { SideNav } from './SideNav';
 import { SearchInput } from '../generic/SearchInput';
@@ -10,16 +12,7 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 // - util to make necessary ajax requests
 // - search, category, star/run sort, and pagination
 
-interface FakeDatum {
-  name: string;
-  desc: string;
-  stars: number;
-  runs: number;
-  iconColor: string;
-  iconLetter: string;
-  id: string;
-}
-
+/*
 const fakeData: Array<FakeDatum> = [
   {
     name: 'Assess Genome Quality with CheckM - v1.0.18',
@@ -29,32 +22,53 @@ const fakeData: Array<FakeDatum> = [
     iconColor: 'green',
     iconLetter: 'X',
     id: '0',
-  },
-  {
-    name: 'Assess Read Quality with FastQC',
-    desc: 'A quality control application for high throughput sequence data.',
-    stars: 37,
-    runs: 6107,
-    iconColor: 'orange',
-    iconLetter: 'Y',
-    id: '1',
-  },
-  {
-    name: 'Filter Out Low-Complexity Reads with PRINSEQ - v0.20.4',
-    desc: 'Filter out low-complexity paired- or single-end reads with PRINSEQ.',
-    stars: 2,
-    runs: 13,
-    iconColor: 'blue',
-    iconLetter: 'Z',
-    id: '2',
   }
 ]
+*/
+
+// Objects we
+interface SDKApp {
+  name: string;
+  desc: string;
+  stars: number;
+  runs: number;
+  iconColor: string;
+  iconLetter: string;
+  id: string;
+}
+
+// Catalog results directly in the server, converted into SDKApp above by mungeData
+interface ServerResult {
+  module_name: string;
+  git_url: string;
+}
+
+interface Props {}
+
+interface State {
+  data: Array<SDKApp>;
+  loading: boolean;
+}
 
 // Parent page component for the dashboard page
-export class AppCatalog extends Component {
+export class AppCatalog extends Component<Props, State> {
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+      data: []
+    };
+  }
+
+  componentDidMount() {
+    this.setState({loading: true});
+    fetchApps().then((json) => {
+      const hasResults = json.result && json.result.length && json.result[0].length;
+      this.setState({
+        data: mungeData(json.result[0]),
+        loading: false
+      });
+    });
   }
 
   render() {
@@ -67,11 +81,10 @@ export class AppCatalog extends Component {
           <h2 className='mb4'>App Catalog</h2>
 
           <div className='mt3 flex items-baseline justify-between'>
-            <div className='w-70 flex'>
+            <div className='flex' style={{ minWidth: '30rem' }}>
               <div className='relative'>
                 <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
                 <SearchInput onSetVal={() => null} loading={false} />
-
               </div>
 
               <fieldset className='bn pa0 ml3'>
@@ -88,7 +101,7 @@ export class AppCatalog extends Component {
           </div>
 
           <div>
-            { fakeData.map(rowView) }
+            { this.state.data.map(rowView) }
           </div>
 
 
@@ -102,7 +115,7 @@ export class AppCatalog extends Component {
   }
 }
 
-function rowView (data: FakeDatum) {
+function rowView (data: SDKApp) {
   return (
     <div className='mt3 pt3 bt b--black-20' key={data.id}>
       <div className='pointer flex justify-between hover-dark-blue'>
@@ -130,4 +143,20 @@ function rowView (data: FakeDatum) {
       </div>
     </div>
   );
+}
+
+function mungeData (inpData: Array<ServerResult>): Array<SDKApp> {
+  const ret: Array<SDKApp> = [];
+  return inpData.map(d => {
+    return {
+      name: d.module_name,
+      desc: '',
+      stars: 0,
+      runs: 0,
+      iconColor: 'blue',
+      iconLetter: 'X',
+      id: d.git_url,
+    };
+  });
+  return ret;
 }

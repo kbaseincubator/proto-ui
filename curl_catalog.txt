@@ -1,0 +1,7 @@
+doesn't work:
+
+curl -d '{"params": [{"include_released": 1, "include_unreleased": 1, "include_disabled": 0}], "method": "list_basic_module_info", "version": "1.1", "id": "xyz"}' https://ci.kbase.us/services/catalog
+
+works:
+
+curl -d '{"params": [{"include_released": 1,"include_unreleased": 1, "include_disabled": 0}],"method":" Catalog.list_basic_module_info", "version":"1.1", "id":"xyz"}' https://ci.kbase.us/services/catalog

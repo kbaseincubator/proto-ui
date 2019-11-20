@@ -14,7 +14,7 @@ export class SideNav extends Component {
 
   itemView(name: string) {
     return (
-      <li>
+      <li key={name}>
         <a className="pointer db hover-bg-light-blue pa2 br1">
           {name}
         </a>
