@@ -7,6 +7,8 @@ import { Dashboard } from './components/dashboard/index';
 import { ObjectRelations } from './components/object_relations/index';
 import './components/dashboard_antd';
 
+import { Header } from './components/header/Header';
+
 // Utils
 import { getUsername } from './utils/auth';
 
@@ -72,4 +74,15 @@ if (CONTAINER) {
       )}`
     ); // eslint-disable-line
   }
+}
+
+// Render the Header component
+let pageTitle = '';
+const pageTitleElm = document.getElementById('header');
+if (pageTitleElm) {
+  pageTitle = pageTitleElm.getAttribute('pageTitle') || '';
+}
+const headerElm = document.getElementById('react-header');
+if (headerElm) {
+  render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
 }

@@ -145,7 +145,6 @@ export class DashboardAntd extends React.Component<Props, State> {
         if (resp && resp.hits) {
           const total = resp.hits.total;
           const items = resp.hits.hits.map((item: SearchResult) => {
-            console.log('item', item);
             const cells = item._source.cells.map((c: {desc: string, cell_type: string}) => {
               c.cell_type = readableSnakeCase(c.cell_type);
               return c;
