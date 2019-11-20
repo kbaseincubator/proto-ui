@@ -54,11 +54,12 @@ export class ItemList extends Component<Props, State> {
     const status = this.state.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
     const data = fooItem._source;
+    const upa = `${data.access_group}/${data.obj_id}`;
     // Action to select an item to view details
     return (
       <div
         onClick={() => this.handleClickItem(idx)}
-        key={data.upa}
+        key={upa}
         className="br b--black-20"
       >
         <div className={css.outer}>
