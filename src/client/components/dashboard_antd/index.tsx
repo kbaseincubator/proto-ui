@@ -264,7 +264,7 @@ export class DashboardAntd extends React.Component<Props, State> {
       </Menu>
     );
     return (
-      <div style={{padding: '2rem', minWidth: '1024px' }}>
+      <div style={{padding: '2rem', minWidth: '1024px', maxWidth: '1280px' }}>
         <Tabs
           onChange={this.handleTabChange.bind(this)}
           type="card"
@@ -327,7 +327,7 @@ function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
     return (<div></div>);
   }
   return (
-    <Col span={12}>
+    <Col span={12} style={{ position: 'sticky', top: '1rem' }}>
       <h3>{ item.name }</h3>
       <Tabs
         defaultActiveKey="0"
