@@ -264,7 +264,7 @@ export class DashboardAntd extends React.Component<Props, State> {
       </Menu>
     );
     return (
-      <div style={{padding: '2rem', minWidth: '1024px', maxWidth: '1280px' }}>
+      <div style={{padding: '2rem', minWidth: '1024px', maxWidth: '1280px' }} className='center'>
         <Tabs
           onChange={this.handleTabChange.bind(this)}
           type="card"
