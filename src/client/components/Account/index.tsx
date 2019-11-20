@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
-
+import {getUsername} from '../../utils/auth';
+import {fetchProfile} from '../../redux/actions';
 interface Props {
-  // profile data
-  // organizations
-  // narratives
+
 }
 
 interface State {
-
-}
-
-interface Options {
-  query: {
-    bool: {
-      must: Array<object>;
-      must_not?: Array<object>;
-    };
-  };
-  pageSize: number;
-  auth?: boolean;
-  sort?: Array<{ [key: string]: { [key: string]: string } } | string>;
-  skip?: number;
-  index_name: string;
+  username: string | null;
+  authUsername: string | undefined;
 }
 
 export class Account extends Component<Props, State> {
@@ -29,20 +15,29 @@ export class Account extends Component<Props, State> {
     super(props);
 
     this.state = {
-      
+      username: undefined,
+      authUsername: undefined
     };
-    this.getProfile = this.getProfile.bind(this);
   }
   componentDidMount(){
-    this.getProfile()
+    getUsername((authUsername) => {
+      this.setState({authUsername:authUsername})
+    });
+    if(window.location.search){
+      let user = window.location.search.slice(1);
+      this.setState({username: user})
+    }
+    if(this.state.username === this.state.authUsername){
+      fetchProfile(this.state.username);
+    } else {
+      fetchProfile(this.state.authUsername);
+    }
   }
 
   componentDidUpdate(){
   }
 
-  async getProfile(){
-
-  }
+  
 
   render() {
     return (

@@ -61,7 +61,7 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch(searchP: { term: string; sort: string }): void {
+  handleSearch(searchP: { term: string; sort: string|null }): void {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;

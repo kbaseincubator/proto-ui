@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM, { render } from 'react-dom';
+import { render } from 'react-dom';
 
 // Imports for page-specific components
 // path: /dashboard
@@ -12,6 +12,7 @@ import {Header} from '../client/components/Header/Header'
 
 // Utils
 import { getUsername } from './utils/auth';
+import { type } from 'os';
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -31,8 +32,10 @@ document.querySelectorAll('[data-hl-nav]').forEach(node => {
 });
 
 // Set the signed-in username in the global env
-getUsername((username: string) => {
-  window._env.username = username;
+getUsername((username:string | null) => {
+  if(username){
+    window._env.username = username;
+  }
 });
 
 interface Props {
@@ -47,8 +50,13 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
-ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+let ele = (document.getElementById('header'))
+if(ele){
+  let pageTitle = ele.getAttribute('pageTitle');
+  if(pageTitle){
+    render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+  }
+}
 console.log('how many times does this run?')
 // Render the page component based on pathname
 if (CONTAINER) {
@@ -63,9 +71,7 @@ if (CONTAINER) {
   };
   
   if (PATHNAME in routes) {
-    console.log('how many times does this run? part 2')
     const topComponent = routes[PATHNAME].component;
-    console.log('here', topComponent)
     render(<Page root={topComponent} />, CONTAINER);
   } else {
     console.error(

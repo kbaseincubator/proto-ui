@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Header.css';
 
 import {fetchProfileAPI} from '../../utils/API';
-import { getUsername } from '../../utils/auth';
+import {getUsername} from '../../utils/auth';
 
 interface State {
   dropdownHidden: boolean;
@@ -32,7 +32,6 @@ export class Header extends Component<Props, State> {
       username: undefined,
       realname: undefined,
     };
-    this.getUserID = this.getUserID.bind(this);
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
     this.dropDown = this.dropDown.bind(this);
@@ -40,14 +39,7 @@ export class Header extends Component<Props, State> {
 
   componentDidMount(){
     this.setUrl_prefix()
-    this.getUserID();
     this.getUserInfo();
-  }
-
-  getUserID(){
-    getUsername((username: string) => {
-      window._env.username = username;
-    });
   }
 
   setUrl_prefix(){
@@ -70,7 +62,7 @@ export class Header extends Component<Props, State> {
   }
 
   async getUserInfo(){
-    let res = await fetchProfileAPI();
+    let res = await fetchProfileAPI(window._env.username);
     let avatarOption = res.profile.userdata.avatarOption;
     let gravatarHash = res.profile.synced.gravatarHash;
     let gravatarDefault = res.profile.userdata.gravatarDefault;

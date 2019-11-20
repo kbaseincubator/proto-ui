@@ -70,7 +70,7 @@ async def search(request):
 
 
 @app.route('/account', methods=['GET'])
-async def account(request):
+async def account(request, path=None):
     """Account settings."""
     return _render_template('account/index.html', request)
 

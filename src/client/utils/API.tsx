@@ -35,13 +35,11 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
   };
 };
 
-export async function fetchProfileAPI() {
-  let id = window._env.username;
-  console.log("id", id)
+export async function fetchProfileAPI(username:string) {
   let token = window._env.token;
   let baseURL = window._env.url_prefix;
   const bffServiceUrl = await getBFFServiceUrl(token, baseURL);
-  let url = bffServiceUrl + '/fetchUserProfile/' + id;
+  let url = bffServiceUrl + '/fetchUserProfile/' + username;
   console.log(url)
   const response = await fetch(url, {
     method: 'GET'

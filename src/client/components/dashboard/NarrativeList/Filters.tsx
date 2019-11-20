@@ -39,7 +39,7 @@ export class Filters extends Component<Props, State> {
   }
 
   // Handle an onSelect event from FilterDropdown
-  handleFilter(idx: number, val: string): void {
+  handleFilter(idx: number, val: string|null): void {
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({ searchParams });
