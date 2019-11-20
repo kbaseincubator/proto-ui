@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import {getUsername} from '../../utils/auth';
-import {fetchProfile} from '../../redux/actions';
-interface Props {
-
-}
+import { getUsername } from '../../utils/auth';
+import { fetchProfile } from '../../redux/actions';
+interface Props {}
 
 interface State {
-  username: string | null;
-  authUsername: string | undefined;
+  username?: string | null;
+  authUsername?: string | null;
 }
 
 export class Account extends Component<Props, State> {
@@ -15,35 +13,28 @@ export class Account extends Component<Props, State> {
     super(props);
 
     this.state = {
-      username: undefined,
-      authUsername: undefined
+      username: null,
+      authUsername: null,
     };
   }
-  componentDidMount(){
-    getUsername((authUsername) => {
-      this.setState({authUsername:authUsername})
+  componentDidMount() {
+    getUsername(authUsername => {
+      this.setState({ authUsername: authUsername });
     });
-    if(window.location.search){
+    if (window.location.search) {
       let user = window.location.search.slice(1);
-      this.setState({username: user})
+      this.setState({ username: user });
     }
-    if(this.state.username === this.state.authUsername){
+    if (this.state.username === this.state.authUsername) {
       fetchProfile(this.state.username);
     } else {
       fetchProfile(this.state.authUsername);
     }
   }
 
-  componentDidUpdate(){
-  }
-
-  
+  componentDidUpdate() {}
 
   render() {
-    return (
-      <div>
-        "WORKING?"
-      </div>
-    );
+    return <div>"WORKING?"</div>;
   }
 }

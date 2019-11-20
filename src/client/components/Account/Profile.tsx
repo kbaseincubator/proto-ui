@@ -6,35 +6,24 @@ interface Props {
   // narratives
 }
 
-interface State {
-
-}
+interface State {}
 
 export class Profile extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    this.state = {
-      
-    };
+    this.state = {};
     this.getProfile = this.getProfile.bind(this);
   }
-  componentDidMount(){
-    this.getProfile()
+  componentDidMount() {
+    this.getProfile();
   }
 
-  componentDidUpdate(){
-  }
+  componentDidUpdate() {}
 
-  async getProfile(){
-
-  }
+  async getProfile() {}
 
   render() {
-    return (
-      <div>
-        "WORKING?"
-      </div>
-    );
+    return <div>"WORKING?"</div>;
   }
 }
