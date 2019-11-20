@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM, { render } from 'react-dom';
+import { render } from 'react-dom';
 
 // Imports for page-specific components
 // path: /dashboard
@@ -7,7 +7,7 @@ import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
 
-import {Header} from '../client/components/Header/Header'
+import { Header } from '../client/components/Header/Header';
 
 // Utils
 import { getUsername } from './utils/auth';
@@ -18,11 +18,10 @@ const PATHNAME = document.location.pathname
   .replace(/\/$/, ''); // Remove trailing slash
 const CONTAINER = document.getElementById('react-root');
 
-
 // change background of the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
-  let HTMLEle:HTMLElement = node as HTMLElement;
-  HTMLEle.style
+  let HTMLEle: HTMLElement = node as HTMLElement;
+  HTMLEle.style;
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
     // to add style, it has to be HTMLElement and not node or Element
     HTMLEle.style.backgroundColor = '#e4e3e4';
@@ -46,8 +45,17 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-let pageTitle = (document.getElementById('header').getAttribute('pageTitle'))
-ReactDOM.render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
+const headerEle:HTMLElement = document.getElementById('header');
+if (headerEle) {
+  let pageTitle:string;
+  headerEle.getAttribute('pageTitle') ? pageTitle = headerEle.getAttribute('pageTitle') : '';
+  if (document.getElementById('react-header')) {
+    render(
+      <Header headerTitle={pageTitle} />,
+      document.getElementById('react-header')
+    );
+  }
+}
 
 // Render the page component based on pathname
 if (CONTAINER) {
@@ -55,16 +63,14 @@ if (CONTAINER) {
   const routes: {
     [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
   } = {
-        '/dashboard': {component: Dashboard},
-        '/iframe/dashboard': {component: Dashboard},
-        '/iframe/object_relations': {component: ObjectRelations}
-      };
+    '/dashboard': { component: Dashboard },
+    '/iframe/dashboard': { component: Dashboard },
+    '/iframe/object_relations': { component: ObjectRelations },
+  };
 
   if (PATHNAME in routes) {
     const topComponent = routes[PATHNAME].component;
-    render(
-        <Page root={topComponent} />,
-      CONTAINER);
+    render(<Page root={topComponent} />, CONTAINER);
   } else {
     console.error(
       `Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(

@@ -3,8 +3,6 @@
   top: 55px;
   left: 5px;
   z-index: 1000;
-  float: left;
-  font-size: 14px;
   min-width: 160px;
   padding: 5px 0;
   margin: 2px 0 0;
@@ -36,7 +34,7 @@
   margin-bottom: 4px;
   width: 21px;
 }
-hr {
+.hr-header {
   border-top: #e5e5e5;
   margin-block-start: 6px;
   margin-block-end: 10px;
