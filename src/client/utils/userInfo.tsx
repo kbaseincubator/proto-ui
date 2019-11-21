@@ -57,6 +57,6 @@ export async function fetchProfileAPI(username: string) {
       return profile;
     } catch (err) {
       console.error('Profile fetch failed:', response);
-    };
-  };
-};
+    }
+  }
+}

@@ -1,16 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Avatar, Tabs, Input, Menu, Icon, Col, Row, Descriptions } from 'antd';
+import {
+  Table,
+  Avatar,
+  Tabs,
+  Input,
+  Menu,
+  Icon,
+  Col,
+  Row,
+  Descriptions,
+} from 'antd';
 import 'antd/dist/antd.css';
 import moment from 'moment';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
 
-import {
-  searchNarratives,
-  SearchParams,
-} from '../../utils/searchNarratives';
+import { searchNarratives, SearchParams } from '../../utils/searchNarratives';
 import { getUsername } from '../../utils/auth';
 import { getWSTypeName } from '../../utils/getWSTypeName';
 import { readableSnakeCase } from '../../utils/readableSnakeCase';
@@ -24,22 +31,22 @@ interface NarrativeItem {
   cell_count: number;
   object_count: number;
   is_public: boolean;
-  data: Array<{obj_type: string, name: string}>;
-  cells: Array<{cell_type: string, desc: string}>;
+  data: Array<{ obj_type: string; name: string }>;
+  cells: Array<{ cell_type: string; desc: string }>;
 }
 
 export interface SearchResult {
   _source: {
-    narrative_title: string,
-    creator: string,
-    creation_date: string,
-    timestamp: number,
-    access_group: number,
-    obj_id: number,
+    narrative_title: string;
+    creator: string;
+    creation_date: string;
+    timestamp: number;
+    access_group: number;
+    obj_id: number;
     is_public: boolean;
-    data_objects: Array<{obj_type: string, name: string}>;
-    cells: Array<{cell_type: string, desc: string}>;
-  }
+    data_objects: Array<{ obj_type: string; name: string }>;
+    cells: Array<{ cell_type: string; desc: string }>;
+  };
 }
 
 interface State {
@@ -55,50 +62,49 @@ interface State {
 
 interface Props {}
 
-
 // -- Global constants
 // Column configuration for the narrative table
 const TABLE_COLS = [
   {
     title: 'Narrative',
-    dataIndex: 'name'
+    dataIndex: 'name',
   },
   {
     title: 'Author',
-    dataIndex: 'author'
+    dataIndex: 'author',
   },
   {
     title: 'Updated',
     dataIndex: 'updated',
     sorter: true,
     defaultSortOrder: 'descend' as 'descend',
-  }
+  },
 ];
 const TABLE_COLS_DATA = [
   {
     title: 'Type',
-    dataIndex: 'obj_type'
+    dataIndex: 'obj_type',
   },
   {
     title: 'Name',
-    dataIndex: 'name'
-  }
+    dataIndex: 'name',
+  },
 ];
 const TABLE_COLS_PREVIEW = [
   {
     title: 'Cell type',
-    dataIndex: 'cell_type'
+    dataIndex: 'cell_type',
   },
   {
     title: 'Content',
-    dataIndex: 'desc'
-  }
+    dataIndex: 'desc',
+  },
 ];
 // Localized date format
 // eg. 9/4/2019 8:30pm
-const DATE_FORMAT = "L LTS"
+const DATE_FORMAT = 'L LTS';
 // Background color for a selected row
-const SELECTED_BG_COLOR = "#e6f7ff";
+const SELECTED_BG_COLOR = '#e6f7ff';
 // Tab index to search category mapping
 const TAB_CATEGORY_MAPPING = ['own', 'shared', 'tutorials', 'public'];
 // Table pagination size
@@ -123,17 +129,16 @@ export class DashboardAntd extends React.Component<Props, State> {
       tabIdx: 0,
       detailsTabIdx: 0,
       page: 0,
-      totalItems: 0
+      totalItems: 0,
     };
   }
 
   componentDidMount() {
     // XXX redundant with client/index.tsx but we need the timing here
-    getUsername()
-      .then((username) => {
-        window._env.username = username;
-        this.performSearch();
-      });
+    getUsername().then(username => {
+      window._env.username = username;
+      this.performSearch();
+    });
   }
 
   // Perform a search and return the Promise for the fetch
@@ -145,16 +150,20 @@ export class DashboardAntd extends React.Component<Props, State> {
         if (resp && resp.hits) {
           const total = resp.hits.total;
           const items = resp.hits.hits.map((item: SearchResult) => {
-            const cells = item._source.cells.map((c: {desc: string, cell_type: string}) => {
-              c.cell_type = readableSnakeCase(c.cell_type);
-              return c;
-            });
-            const data = item._source.data_objects.map((c: {obj_type: string, name: string}) => {
-              return {
-                obj_type: getWSTypeName(c.obj_type),
-                name: c.name
-              };
-            });
+            const cells = item._source.cells.map(
+              (c: { desc: string; cell_type: string }) => {
+                c.cell_type = readableSnakeCase(c.cell_type);
+                return c;
+              }
+            );
+            const data = item._source.data_objects.map(
+              (c: { obj_type: string; name: string }) => {
+                return {
+                  obj_type: getWSTypeName(c.obj_type),
+                  name: c.name,
+                };
+              }
+            );
             return {
               name: item._source.narrative_title,
               author: item._source.creator,
@@ -166,13 +175,13 @@ export class DashboardAntd extends React.Component<Props, State> {
               is_public: item._source.is_public,
               data,
               cells,
-            }
-          })
+            };
+          });
           this.setState({
             items,
             selectedRowIdx: 0,
-            totalItems: total
-          })
+            totalItems: total,
+          });
         }
       })
       .finally(() => {
@@ -197,8 +206,8 @@ export class DashboardAntd extends React.Component<Props, State> {
 
   handleClickRow(idx: number) {
     this.setState({
-      selectedRowIdx: idx
-    })
+      selectedRowIdx: idx,
+    });
   }
 
   handleSearch(term: string) {
@@ -214,10 +223,14 @@ export class DashboardAntd extends React.Component<Props, State> {
     const searchParams = this.state.searchParams;
     searchParams.skip = page * PAGE_SIZE;
     this.setState({ page, searchParams });
-    this.performSearch()
+    this.performSearch();
   }
 
-  handleTableChange(pagination: Object, filters: Object, sorter: {field: string, order?: string}) {
+  handleTableChange(
+    pagination: Object,
+    filters: Object,
+    sorter: { field: string; order?: string }
+  ) {
     const searchParams = this.state.searchParams;
     if (sorter.order === 'ascend') {
       searchParams.sort = 'Least recently updated';
@@ -225,14 +238,14 @@ export class DashboardAntd extends React.Component<Props, State> {
       searchParams.sort = 'Recently updated';
     }
     searchParams.skip = 0;
-    this.setState({searchParams, page: 0});
+    this.setState({ searchParams, page: 0 });
     this.performSearch();
   }
 
   handleDetailsTabChange(key: string) {
     const idx = Number(key);
     this.setState({
-      detailsTabIdx: idx
+      detailsTabIdx: idx,
     });
   }
 
@@ -263,23 +276,19 @@ export class DashboardAntd extends React.Component<Props, State> {
       </Menu>
     );
     return (
-      <div style={{padding: '2rem', minWidth: '1024px', maxWidth: '1280px' }} className='center'>
-        <Tabs
-          onChange={this.handleTabChange.bind(this)}
-          type="card"
-        >
-          <TabPane tab="My narratives" key="0">
-          </TabPane>
-          <TabPane tab="Shared with me" key="1">
-          </TabPane>
-          <TabPane tab="Tutorials" key="2">
-          </TabPane>
-          <TabPane tab="Public" key="3">
-          </TabPane>
+      <div
+        style={{ padding: '2rem', minWidth: '1024px', maxWidth: '1280px' }}
+        className="center"
+      >
+        <Tabs onChange={this.handleTabChange.bind(this)} type="card">
+          <TabPane tab="My narratives" key="0"></TabPane>
+          <TabPane tab="Shared with me" key="1"></TabPane>
+          <TabPane tab="Tutorials" key="2"></TabPane>
+          <TabPane tab="Public" key="3"></TabPane>
         </Tabs>
 
         <Row>
-          <Col span={12} style={{paddingRight: '2rem' }}>
+          <Col span={12} style={{ paddingRight: '2rem' }}>
             <Search
               allowClear
               placeholder="Search narratives"
@@ -292,42 +301,45 @@ export class DashboardAntd extends React.Component<Props, State> {
         <Row style={{ marginTop: '2rem' }}>
           <Col span={12} style={{ paddingRight: '2rem' }}>
             <Table
-                loading={this.state.loading}
-                columns={TABLE_COLS}
-                dataSource={this.state.items}
-                onRow={(record, rowIndex) => {
-                  return {
-                    onClick: ev => this.handleClickRow(rowIndex),
-                    style: {
-                      cursor: 'pointer',
-                      backgroundColor: selected && selected.key === record.key ? SELECTED_BG_COLOR : 'white'
-                    }
-                  };
-                }}
-                pagination={{
-                  current: this.state.page,
-                  pageSize: PAGE_SIZE,
-                  total: this.state.totalItems,
-                  onChange: this.handlePageChange.bind(this)
-                }}
-                onChange={this.handleTableChange.bind(this)}
+              loading={this.state.loading}
+              columns={TABLE_COLS}
+              dataSource={this.state.items}
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: ev => this.handleClickRow(rowIndex),
+                  style: {
+                    cursor: 'pointer',
+                    backgroundColor:
+                      selected && selected.key === record.key
+                        ? SELECTED_BG_COLOR
+                        : 'white',
+                  },
+                };
+              }}
+              pagination={{
+                current: this.state.page,
+                pageSize: PAGE_SIZE,
+                total: this.state.totalItems,
+                onChange: this.handlePageChange.bind(this),
+              }}
+              onChange={this.handleTableChange.bind(this)}
             />
           </Col>
 
-          { narrativeDetails(this, selected) }
+          {narrativeDetails(this, selected)}
         </Row>
       </div>
     );
   }
 }
 
-function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
+function narrativeDetails(cmp: DashboardAntd, item: NarrativeItem) {
   if (!item) {
-    return (<div></div>);
+    return <div></div>;
   }
   return (
     <Col span={12} style={{ position: 'sticky', top: '1rem' }}>
-      <h3>{ item.name }</h3>
+      <h3>{item.name}</h3>
       <Tabs
         defaultActiveKey="0"
         onChange={cmp.handleDetailsTabChange.bind(cmp)}
@@ -336,9 +348,9 @@ function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
         <TabPane tab="Data" key="1" />
         <TabPane tab="Preview" key="2" />
       </Tabs>
-      { cmp.state.detailsTabIdx === 0 ? detailsOverview(item) : '' }
-      { cmp.state.detailsTabIdx === 1 ? detailsData(item) : '' }
-      { cmp.state.detailsTabIdx === 2 ? detailsPreview(item) : '' }
+      {cmp.state.detailsTabIdx === 0 ? detailsOverview(item) : ''}
+      {cmp.state.detailsTabIdx === 1 ? detailsData(item) : ''}
+      {cmp.state.detailsTabIdx === 2 ? detailsPreview(item) : ''}
     </Col>
   );
 }
@@ -346,43 +358,29 @@ function narrativeDetails (cmp: DashboardAntd, item: NarrativeItem) {
 function detailsOverview(item: NarrativeItem) {
   return (
     <Descriptions bordered layout="horizontal" column={1}>
-      <Descriptions.Item label="Author">
-        { item.author }
-      </Descriptions.Item>
-      <Descriptions.Item label="Created on">
-        { item.created }
-      </Descriptions.Item>
+      <Descriptions.Item label="Author">{item.author}</Descriptions.Item>
+      <Descriptions.Item label="Created on">{item.created}</Descriptions.Item>
       <Descriptions.Item label="Total cells">
-        { item.cell_count }
+        {item.cell_count}
       </Descriptions.Item>
       <Descriptions.Item label="Data objects">
-        { item.object_count }
+        {item.object_count}
       </Descriptions.Item>
       <Descriptions.Item label="Visibility">
-        { item.is_public ? 'public' : 'private' }
+        {item.is_public ? 'public' : 'private'}
       </Descriptions.Item>
     </Descriptions>
   );
 }
 
 function detailsData(item: NarrativeItem) {
-  console.log({item});
-  return (
-    <Table
-      columns={TABLE_COLS_DATA}
-      dataSource={item.data}
-    />
-  );
+  console.log({ item });
+  return <Table columns={TABLE_COLS_DATA} dataSource={item.data} />;
 }
 
 function detailsPreview(item: NarrativeItem) {
-  console.log({item});
-  return (
-    <Table
-      columns={TABLE_COLS_PREVIEW}
-      dataSource={item.cells}
-    />
-  );
+  console.log({ item });
+  return <Table columns={TABLE_COLS_PREVIEW} dataSource={item.cells} />;
 }
 
 const mountNode = document.getElementById('dashboard-antd');
