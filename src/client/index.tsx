@@ -12,7 +12,6 @@ import { Header } from '../client/components/Header/Header';
 
 // Utils
 import { getUsername } from './utils/auth';
-import { type } from 'os';
 
 // Constants
 const PATHNAME = document.location.pathname
@@ -49,17 +48,19 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-let ele = document.getElementById('header');
-if (ele) {
-  let pageTitle = ele.getAttribute('pageTitle');
-  if (pageTitle) {
+if (document.getElementById('header')) {
+  const headerEle = document.getElementById('header');
+  let pageTitle: string;
+  headerEle.getAttribute('pageTitle')
+    ? (pageTitle = headerEle.getAttribute('pageTitle'))
+    : '';
+  if (document.getElementById('react-header')) {
     render(
       <Header headerTitle={pageTitle} />,
       document.getElementById('react-header')
     );
   }
 }
-console.log('how many times does this run?');
 // Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname

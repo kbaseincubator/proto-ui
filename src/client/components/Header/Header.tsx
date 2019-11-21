@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import './Header.css';
-import { fetchProfileAPI } from '../../utils/API';
+
+import { fetchProfileAPI } from '../../utils/userInfo';
+import { getUsername } from '../../utils/auth';
 
 interface State {
   dropdownHidden: boolean;
-  gravatarHash: string | undefined;
+  gravatarHash: string;
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
   env: string | undefined;
   envIcon: string | undefined;
-  username: string | undefined;
+  username: string | null;
   realname: string | undefined;
 }
 
@@ -22,12 +24,12 @@ export class Header extends Component<Props, State> {
     super(props);
     this.state = {
       dropdownHidden: true,
-      gravatarHash: undefined,
+      gravatarHash: '',
       avatarOption: undefined,
       gravatarDefault: undefined,
       env: undefined,
       envIcon: undefined,
-      username: undefined,
+      username: null,
       realname: undefined,
     };
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
@@ -36,8 +38,26 @@ export class Header extends Component<Props, State> {
   }
 
   componentDidMount() {
+    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time. 
+    // make change to stop second call
     this.setUrl_prefix();
-    this.getUserInfo();
+    this.getUserID();
+  }
+  
+  componentDidUpdate(prevProps:Props, prevState:State){
+    if(prevState === this.state){
+      return
+    }
+  }
+
+  getUserID() {
+    getUsername(username => {
+      if (typeof username === 'string') {
+        window._env.username = username;
+        this.setState({username})
+        this.getUserInfo(window._env.username);
+      }
+    });
   }
 
   setUrl_prefix() {
@@ -55,24 +75,28 @@ export class Header extends Component<Props, State> {
         break;
       default:
         prefix = 'CI';
+        icon = 'fa fa-2x fa-flask';
     }
     this.setState({ env: prefix, envIcon: icon });
   }
 
-  async getUserInfo() {
-    let res = await fetchProfileAPI(window._env.username);
-    let avatarOption = res.profile.userdata.avatarOption;
-    let gravatarHash = res.profile.synced.gravatarHash;
-    let gravatarDefault = res.profile.userdata.gravatarDefault;
-    let username = res.user.username;
-    let realname = res.user.realname;
-    this.setState({
-      avatarOption,
-      gravatarHash,
-      gravatarDefault,
-      realname,
-      username,
-    });
+  async getUserInfo(username: string) {
+    username = window._env.username;
+    const res = await fetchProfileAPI(username);
+    if (res) {
+      const avatarOption = res.profile.userdata.avatarOption;
+      const gravatarHash = res.profile.synced.gravatarHash;
+      const gravatarDefault = res.profile.userdata.gravatarDefault;
+      const username = res.user.username;
+      const realname = res.user.realname;
+      this.setState({
+        avatarOption,
+        gravatarHash,
+        gravatarDefault,
+        realname,
+        username,
+      });
+    }
   }
   /**
    * if open is true, then set dropdown Hidden to false
@@ -80,9 +104,9 @@ export class Header extends Component<Props, State> {
    * @param open
    */
   dropDown(open: boolean | null): void {
-    if (open) {
+    if (open === true) {
       this.setState({ dropdownHidden: true });
-    } else if (!open) {
+    } else if (open === false) {
       this.setState({ dropdownHidden: false });
     } else {
       if (this.state.dropdownHidden) {
@@ -162,7 +186,6 @@ export class Header extends Component<Props, State> {
             style={{ left: 'auto' }}
             role="menu"
             hidden={this.state.dropdownHidden}
-            onFocus={event => this.dropDown(true)}
             onBlur={event => this.dropDown(false)}
           >
             <li>
@@ -171,7 +194,7 @@ export class Header extends Component<Props, State> {
                 <div style={{ fontStyle: 'italic' }}>{this.state.username}</div>
               </div>
             </li>
-            <hr />
+            <hr className="hr-header" />
             <li>
               <a>
                 <div className="dib" style={{ width: '34px' }}>

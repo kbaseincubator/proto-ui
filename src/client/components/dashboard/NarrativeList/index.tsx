@@ -5,7 +5,6 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
-import { Header } from '../../Header/Header';
 
 // Utils
 import {
