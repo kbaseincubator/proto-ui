@@ -66,7 +66,8 @@ async def account(request):
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
     """Organizations."""
-    return _render_template('orgs/index.html', request)
+    url = app.config.KBASE_ENDPOINT + '/#orgs'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 
 @app.route('/feeds', methods=['GET'])
