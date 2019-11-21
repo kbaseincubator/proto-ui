@@ -47,7 +47,7 @@ export function searchNarratives({
   const options: Options = {
     query: { bool: { must: [] } },
     pageSize,
-    skip
+    skip,
   };
   // Query constraints for "must" conditions
   const musts = [];

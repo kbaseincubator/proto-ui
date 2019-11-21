@@ -1,93 +1,8 @@
 <div class='hamburger-menu'>
-  <style scoped>
-    .dropdown-menu {
-      position: absolute;
-      top: 55px;
-      left: 5px;
-      z-index: 1000;
-      font-size: 14px;
-      min-width: 160px;
-      padding: 5px 0;
-      margin: 2px 0 0;
-      list-style: none;
-      background-color: #fff;
-      background-clip: padding-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-    }
-    .dropdown-menu > li {
-      list-style-type: none;
-    }
-    .dropdown-menu > li > a {
-      white-space: nowrap;
-      color: #2196f3;
-      display: block;
-      padding: 3px 20px;
-      text-decoration: none;
-    }
-    .dropdown-menu > li > a > .fa {
-      text-align: center;
-      font-size: 21px;
-      margin-right: 10px;
-      margin-bottom: 4px;
-      width: 21px;
-    }
-    .dropdown-menu hr {
-      border-top: #e5e5e5;
-      margin-block-start: 6px;
-      margin-block-end: 10px;
-    }
-    .hamburger:focus {
-      outline: none;
-    }
-    .hamburger {
-      padding: 6px 12px;
-      margin: 2px 4px 0 6px;
-      border-style: hidden;
-    }
-    .header {
-      position: sticky;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 70px;
-      border-bottom: 5px solid #e0e0e0;
-      background: white;
-    }
-    .hamburger > i {
-      font-size: 24px;
-      color: #2196f3;
-      font-weight: 500;
-    }
-    .roboto-header {
-      padding-left: 12px;
-      font-family: 'RobotoBlack', Arial, sans-serif;
-      font-size: 29px;
-    }
-    .hamburger-menu {
-      display: flex;
-      align-items: center;
-      height: 65px;
-      width: 53px;
-    }
-    .logo-header {
-      padding-top: 4px;
-    }
-
-    .profile-dropdown {
-      border-width: 0px;
-      padding-right: 0px;
-      padding-top: 3px;
-    }
-  </style>
-
-  <button class="hamburger" style="padding: 6px 12px; margin: 2px 4px 0 4px; border-style: hidden;">
+  <button class="hamburger">
       <i class="fa fa-navicon fa-2x dib" style='font-size: 24px; color:#2196F3; font-weight: 500;'></i>
   </button>
-
-  <ul role="menu" aria-labeledby="kb-nav-menu" class="absolute">
+  <ul class="dropdown-menu tl" role="menu" style = "display: none; align-self: flex-start;">
     <li>
       <a href="#narrativemanager/start"><span class="fa fa-file"></span><span>Narrative Interface</span></a>
     </li>
@@ -97,11 +12,11 @@
     <li>
       <a href="#biochem-search"><span class="fa fa-search"></span><span>Biochem Search</span></a>
     </li>
-    <hr />
+    <hr class='hr-header'/>
     <li>
       <a href="#about/services"><span class="fa fa-server"></span><span>KBase Services Status</span></a>
     </li>
-    <hr />
+    <hr class='hr-header'/>
     <li>
       <a href="#about"><span class="fa fa-info-circle"></span><span>About</span></a>
     </li>

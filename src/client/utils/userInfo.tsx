@@ -1,8 +1,16 @@
+export {};
+import { getToken } from '../utils/auth';
 
-// Get the URL for the "backend-for-frontend" service
-async function getBFFServiceUrl(token: string, baseURL: string) {
-  const versionNum: number | null = null;
-  const url = window._env.kbase_endpoint + '/services/service_wizard';
+async function getBFFServiceUrl(token: string) {
+  // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
+  let versionNum: number | null = null;
+  console.log('window._env', window.window._env);
+  let url: string;
+  if (window._env.kbase_endpoint.includes('localhost')) {
+    url = 'https://ci.kbase.us/services/service_wizard';
+  } else {
+    url = window._env.kbase_endpoint + '/service_wizard';
+  }
   const body = {
     id: 0,
     method: 'ServiceWizard.get_service_status',
@@ -10,36 +18,36 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
     params: [
       {
         module_name: 'bff',
-        version: versionNum
-      }
-    ]
+        version: versionNum,
+      },
+    ],
   };
   const stringBody = JSON.stringify(body);
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
     headers: {
-      Authorization: token
+      Authorization: token,
     },
-    body: stringBody
+    body: stringBody,
   });
-  if(response.status !== 200){
+  if (response.status !== 200) {
     // return empty string so that the fetch API called this function
     // can generate error messages.
-    return  '';
+    return '';
   } else {
     const responseJson = await response.json();
     return responseJson.result[0]['url'];
-  };
-};
+  }
+}
 
-export async function fetchProfileAPI() {
-  const id = window._env.username;
-  const token = window._env.token;
-  const baseURL =  window._env.url_prefix;
-  const bffServiceUrl = await getBFFServiceUrl(token, baseURL);
-  const url = bffServiceUrl + '/fetchUserProfile/' + id;
-  const response = await fetch(url, { method: 'GET' });
+export async function fetchProfileAPI(username: string) {
+  let token = getToken();
+  const bffServiceUrl = await getBFFServiceUrl(token);
+  let url = bffServiceUrl + '/fetchUserProfile/' + username;
+  const response = await fetch(url, {
+    method: 'GET',
+  });
   if (response.status !== 200) {
     console.warn(response.status, response);
     // return [response.status, response.statusText];
@@ -49,6 +57,6 @@ export async function fetchProfileAPI() {
       return profile;
     } catch (err) {
       console.error('Profile fetch failed:', response);
-    };
-  };
-};
+    }
+  }
+}

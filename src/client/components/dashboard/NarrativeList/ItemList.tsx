@@ -93,7 +93,8 @@ export class ItemList extends Component<Props, State> {
         className="tc pa3 dib pointer blue dim b"
         onClick={(ev: React.MouseEvent) => this.handleClickLoadMore(ev)}
       >
-        Load more ({this.props.totalItems - (this.props.items || []).length} remaining)
+        Load more ({this.props.totalItems - (this.props.items || []).length}{' '}
+        remaining)
       </a>
     );
   }
