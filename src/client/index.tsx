@@ -45,10 +45,12 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-const headerEle:HTMLElement = document.getElementById('header');
-if (headerEle) {
-  let pageTitle:string;
-  headerEle.getAttribute('pageTitle') ? pageTitle = headerEle.getAttribute('pageTitle') : '';
+if (document.getElementById('header')) {
+  const headerEle = document.getElementById('header');
+  let pageTitle: string;
+  headerEle.getAttribute('pageTitle')
+    ? (pageTitle = headerEle.getAttribute('pageTitle'))
+    : '';
   if (document.getElementById('react-header')) {
     render(
       <Header headerTitle={pageTitle} />,

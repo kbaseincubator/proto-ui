@@ -1,11 +1,16 @@
 export {};
+import { getToken } from '../utils/auth';
 
-async function getBFFServiceUrl(token: string, baseURL: string) {
+async function getBFFServiceUrl(token: string) {
   // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
-  // kbase_endpoint = 'https://ci.kbase.us/services'; // for dev
   let versionNum: number | null = null;
-  console.log('window._env', window.window._env)
-  let url = window.window._env.kbase_endpoint + '/services/service_wizard';
+  console.log('window._env', window.window._env);
+  let url: string;
+  if (window._env.kbase_endpoint.includes('localhost')) {
+    url = 'https://ci.kbase.us/services/service_wizard';
+  } else {
+    url = window._env.kbase_endpoint + '/service_wizard';
+  }
   const body = {
     id: 0,
     method: 'ServiceWizard.get_service_status',
@@ -36,13 +41,10 @@ async function getBFFServiceUrl(token: string, baseURL: string) {
   }
 }
 
-export async function fetchProfileAPI() {
-  let id = window._env.username;
-  console.log('id', id);
-  let token = window._env.token;
-  let baseURL = window._env.url_prefix;
-  const bffServiceUrl = await getBFFServiceUrl(token, baseURL);
-  let url = bffServiceUrl + '/fetchUserProfile/' + id;
+export async function fetchProfileAPI(username: string) {
+  let token = getToken();
+  const bffServiceUrl = await getBFFServiceUrl(token);
+  let url = bffServiceUrl + '/fetchUserProfile/' + username;
   const response = await fetch(url, {
     method: 'GET',
   });

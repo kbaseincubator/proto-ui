@@ -6,12 +6,12 @@ import { getUsername } from '../../utils/auth';
 
 interface State {
   dropdownHidden: boolean;
-  gravatarHash: string | undefined;
+  gravatarHash: string;
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
   env: string | undefined;
   envIcon: string | undefined;
-  username: string | undefined;
+  username: string | null;
   realname: string | undefined;
 }
 
@@ -24,12 +24,12 @@ export class Header extends Component<Props, State> {
     super(props);
     this.state = {
       dropdownHidden: true,
-      gravatarHash: undefined,
+      gravatarHash: '',
       avatarOption: undefined,
       gravatarDefault: undefined,
       env: undefined,
       envIcon: undefined,
-      username: undefined,
+      username: null,
       realname: undefined,
     };
     this.getUserID = this.getUserID.bind(this);
@@ -41,48 +41,54 @@ export class Header extends Component<Props, State> {
   componentDidMount() {
     this.setUrl_prefix();
     this.getUserID();
-    this.getUserInfo();
   }
 
   getUserID() {
-    getUsername((username: string) => {
-      window._env.username = username;
+    getUsername(username => {
+      if (typeof username === 'string') {
+        window._env.username = username;
+        this.getUserInfo(window._env.username);
+      }
     });
   }
 
   setUrl_prefix() {
-    let prefix: string;
-    let icon: string;
+    let prefix: string = '';
+    let icon: string = '';
     switch (window._env.url_prefix) {
       case '':
-      case 'https:ci.kbase.us':
+      case 'https://ci.kbase.us':
         prefix = 'CI';
         icon = 'fa fa-2x fa-flask';
         break;
-      case 'https:appdev.kbase.us':
+      case 'https://appdev.kbase.us':
         prefix = 'APPDEV';
         icon = 'fa fa-2x fa-wrench';
         break;
       default:
         prefix = 'CI';
+        icon = 'fa fa-2x fa-flask';
     }
     this.setState({ env: prefix, envIcon: icon });
   }
 
-  async getUserInfo() {
-    let res = await fetchProfileAPI();
-    let avatarOption = res.profile.userdata.avatarOption;
-    let gravatarHash = res.profile.synced.gravatarHash;
-    let gravatarDefault = res.profile.userdata.gravatarDefault;
-    let username = res.user.username;
-    let realname = res.user.realname;
-    this.setState({
-      avatarOption,
-      gravatarHash,
-      gravatarDefault,
-      realname,
-      username,
-    });
+  async getUserInfo(username: string) {
+    username = window._env.username;
+    const res = await fetchProfileAPI(username);
+    if (res) {
+      const avatarOption = res.profile.userdata.avatarOption;
+      const gravatarHash = res.profile.synced.gravatarHash;
+      const gravatarDefault = res.profile.userdata.gravatarDefault;
+      const username = res.user.username;
+      const realname = res.user.realname;
+      this.setState({
+        avatarOption,
+        gravatarHash,
+        gravatarDefault,
+        realname,
+        username,
+      });
+    }
   }
   /**
    * if open is true, then set dropdown Hidden to false
@@ -90,9 +96,9 @@ export class Header extends Component<Props, State> {
    * @param open
    */
   dropDown(open: boolean | null): void {
-    if (open) {
+    if (open === true) {
       this.setState({ dropdownHidden: true });
-    } else if (!open) {
+    } else if (open === false) {
       this.setState({ dropdownHidden: false });
     } else {
       if (this.state.dropdownHidden) {
@@ -172,7 +178,6 @@ export class Header extends Component<Props, State> {
             style={{ left: 'auto' }}
             role="menu"
             hidden={this.state.dropdownHidden}
-            onFocus={event => this.dropDown(true)}
             onBlur={event => this.dropDown(false)}
           >
             <li>
