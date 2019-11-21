@@ -39,14 +39,23 @@ export class Header extends Component<Props, State> {
   }
 
   componentDidMount() {
+    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time. 
+    // make change to stop second call
     this.setUrl_prefix();
     this.getUserID();
+  }
+  
+  componentDidUpdate(prevProps:Props, prevState:State){
+    if(prevState === this.state){
+      return
+    }
   }
 
   getUserID() {
     getUsername(username => {
       if (typeof username === 'string') {
         window._env.username = username;
+        this.setState({username})
         this.getUserInfo(window._env.username);
       }
     });
