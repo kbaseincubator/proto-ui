@@ -1,6 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { fetchProfileAPI } from '../utils/API';
+import { fetchProfileAPI } from '../utils/userInfo';
 /*
  * action types
  */
