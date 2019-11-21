@@ -41,8 +41,8 @@ export class Header extends Component<Props, State> {
   }
 
   setUrl_prefix() {
-    let prefix: string;
-    let icon: string;
+    let prefix: string = '';
+    let icon: string = '';
     switch (window._env.url_prefix) {
       case '':
       case 'https://ci.kbase.us':
