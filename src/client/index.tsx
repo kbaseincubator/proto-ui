@@ -6,6 +6,7 @@ import { render } from 'react-dom';
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
+import { NotFoundPage } from './components/not_found';
 
 import {Header} from '../client/components/Header/Header'
 
@@ -71,16 +72,11 @@ if (CONTAINER) {
         '/iframe/object_relations': {component: ObjectRelations}
       };
 
-  if (PATHNAME in routes) {
-    const topComponent = routes[PATHNAME].component;
-    render(
-        <Page root={topComponent} />,
-      CONTAINER);
+  if (!(PATHNAME in routes)) {
+    // Render 404
+    render(<Page root={NotFoundPage} />, CONTAINER);
   } else {
-    console.error(
-      `Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(
-        routes
-      )}`
-    ); // eslint-disable-line
+    const topComponent = routes[PATHNAME].component;
+    render(<Page root={topComponent} />, CONTAINER);
   }
 }
