@@ -25,12 +25,12 @@ export class Header extends Component<Props, State> {
     this.state = {
       dropdownHidden: true,
       gravatarHash: '',
-      avatarOption: undefined,
-      gravatarDefault: undefined,
-      env: undefined,
-      envIcon: undefined,
+      avatarOption: '',
+      gravatarDefault: '',
+      env: '',
+      envIcon: '',
       username: null,
-      realname: undefined,
+      realname: '',
     };
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
@@ -38,15 +38,15 @@ export class Header extends Component<Props, State> {
   }
 
   componentDidMount() {
-    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time. 
+    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time.
     // make change to stop second call
     this.setUrl_prefix();
     this.getUserID();
   }
-  
-  componentDidUpdate(prevProps:Props, prevState:State){
-    if(prevState === this.state){
-      return
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState === this.state) {
+      return;
     }
   }
 
@@ -54,7 +54,6 @@ export class Header extends Component<Props, State> {
     getUsername(username => {
       if (typeof username === 'string') {
         window._env.username = username;
-        this.setState({username})
         this.getUserInfo(window._env.username);
       }
     });

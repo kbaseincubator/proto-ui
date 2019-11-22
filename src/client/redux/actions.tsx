@@ -1,6 +1,7 @@
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { fetchProfileAPI } from '../utils/userInfo';
+import { type } from 'os';
 /*
  * action types
  */
@@ -49,7 +50,15 @@ export function loadProfile(reponse: {}) {
  *
  * @param username
  */
-export async function fetchProfile(username: string) {
-  let res = await fetchProfileAPI(window._env.username);
-  console.log(res);
+export function fetchProfile(username: string) {
+  return async (dispatch: ThunkDispatch)=>{
+    dispatch(requestProfile());
+    let res = await fetchProfileAPI(username);
+    if(typeof res !== 'undefined') {
+      dispatch(loadProfile(res));
+    } else {
+      dispatch(fetchErrorProfile(res));
+    }
+    console.log(res);
+  }
 }

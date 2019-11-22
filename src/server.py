@@ -77,12 +77,41 @@ async def search(request):
     
 
 @app.route('/account', methods=['GET'])
-async def account(request, path=None):
+async def account(request):
     """Account settings."""
-    # return _render_template('account/index.html', request)
-    url = app.config.URL_PREFIX + '/#auth2/account'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('account/index.html', request)
+    # url = app.config.URL_PREFIX + '/#auth2/account'
+    # return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
+@app.route('/account/profile', methods=['GET'])
+async def profile(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'profile/index.html', request)
+
+@app.route('/account/account', methods=['GET'])
+async def account_account(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'account_account/index.html', request)
+
+@app.route('/account/linked_accounts', methods=['GET'])
+async def linked_accounts(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'linked_accounts/index.html', request)
+
+@app.route('/account/developer_tokens', methods=['GET'])
+async def developer_tokens(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'developer_tokens/index.html', request)
+
+@app.route('/account/running_jobs', methods=['GET'])
+async def running_jobs(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'running_jobs/index.html', request)
+
+@app.route('/account/usage_agreeements', methods=['GET'])
+async def usage_agreeements(request, args=None):
+    """Account subpath settings."""
+    return _render_template( 'usage_agreeements/index.html', request)
 
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
@@ -132,6 +161,7 @@ def _render_template(path, args=None, status=200):
     Render a jinja template and return it as a sanic html response.
     Set some default template variables (eg. `app` and `url_for`).
     """
+    print(args, 'args')
     template = jinja_env.get_template(path)
     if not args:
         args = {}
