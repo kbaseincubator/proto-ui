@@ -16,7 +16,7 @@ interface State {
 // Generic search text input with a loading state
 export class SearchInput extends Component<Props, State> {
   // Used for debouncing the search input while typing
-  timeout: number | null;
+  timeout: number | null = null;
   inputID: string;
 
   constructor(props: Props) {

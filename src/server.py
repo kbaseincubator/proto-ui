@@ -90,6 +90,7 @@ async def orgs(request):
     url = app.config.URL_PREFIX + '/#orgs'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
+
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
@@ -97,6 +98,7 @@ async def feeds(request):
     url = app.config.URL_PREFIX + '/#feeds'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
+
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):

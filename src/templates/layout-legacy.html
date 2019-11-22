@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %} | KBase</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {# Use font awesome from their official CDN. #}
+    {# <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">  #}
+    <script src="https://use.fontawesome.com/5fbc4a9aa2.js"></script>
+    {# Use the Oxygen font from the google font API #}
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
+    {# Base tachyons styles #}
+    <link rel='stylesheet' href='{{ url_for('static', filename='build/tachyons.min.css') }}'>
+    {% block additional_head %}{% endblock %}
+    {% endblock %}
+  </head>
+
+  <body class='flex flex-column' style='min-height: 100vh;'>      
+    <!-- START top-level navigation -->
+    <header class="flex items-center" style="width: 100vw; height: 70px; border-bottom: 5px solid #E0E0E0;">
+        {% include 'hamburgerMenu.html' %}
+        <a href="https://kbase.us" class="-logo dib" data-k-b-testhook-widget="logo"><img sytle="padding: 4px 2px;" src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'></a>
+        <h1 style="padding-left: 10px; font-family: 'RobotoBlack', Arial, sans-serif; font-size: 29px;"><div>{% block titleheader %}Dashboard{% endblock %}</div></h1>
+        
+    </header>  
+    <div
+      class='fixed left-0 h-100 flex flex-column justify-between z-1'
+      style='width:75px; overflow-y:auto; text-align: center; top: 70px;'>
+      <ul class='list pa0 ma0'>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-tachometer fa-2x tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Dashboard</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/orgs' href='{{ url_for('orgs') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="dib fa fa-users fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Orgs</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/catalog' href='{{ url_for('catalog') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="dib fa fa-book fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Catalog</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+        <a data-hl-nav='/search' href='{{ url_for('search') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-search fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Search</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/notifications' href='{{ url_for('notifications') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-suitcase fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Jobs</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/account' href='{{ url_for('account') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-user-circle-o fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Account</div>
+          </a>
+        </li>
+        <li style='margin-top: 6px'>
+          <a data-hl-nav='/feeds' href='{{ url_for('feeds') }}' class='dib no-underline black-80 w-100 dim'>
+            <i class="fa fa-bullhorn fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+            <div style='font-size:14px; padding-bottom: 4px;'>Feeds</div>
+          </a>
+        </li>
+      </ul>
+
+      {# 
+      <ul class='list pa0 bt b--black-10 pt2'>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://kbase.us/new-to-kbase/'>Help</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='http://kbase.us/what-is-kbase/'>About KBase</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://kbase.us/contact-us/'>Contact</a>
+        </li>
+        <li class='ph3 pv1 pointer dim'>
+          <a class='no-underline black-80' target='_blank' href='https://status.kbase.us/'>Server Status</a>
+        </li>
+      </ul>
+       #}
+    </div>
+    <!-- END top-level navigation -->
+
+    {# Page contents replaced by React #}
+    <main style='padding-left: 6rem; max-width: 80rem;'>
+      {% block content %}{% endblock %}
+    </main>
+
+    {# Server-provided global data into JS #}
+    <script type='text/javascript'>
+      window._env = {
+        url_prefix: '{{app.config.URL_PREFIX}}',
+        kbase_endpoint: '{{app.config.KBASE_ENDPOINT}}',
+        narrative: '{{app.config.KBASE_UI_ROOT}}'
+      };
+    </script>
+
+    {# Global JS bundle #}
+    <script src="{{ url_for('js') }}" type='text/javascript'></script>
+
+    {# Any additional page-specific JS #}
+    {% block js %} {% endblock %}
+  </body>
+</html>
+

@@ -55,7 +55,6 @@ export class Header extends Component<Props, State> {
     getUsername(username => {
       if (typeof username === 'string') {
         window._env.username = username;
-        this.setState({username})
         this.getUserInfo(window._env.username);
       }
     });
@@ -69,10 +68,12 @@ export class Header extends Component<Props, State> {
       case 'https://ci.kbase.us':
         prefix = 'CI';
         icon = 'fa fa-2x fa-flask';
+        this.setState({env: prefix, envIcon: icon})
         break;
       case 'https://appdev.kbase.us':
         prefix = 'APPDEV';
         icon = 'fa fa-2x fa-wrench';
+        this.setState({env: prefix, envIcon: icon})
         break;
       default:
         prefix = 'CI';
@@ -82,7 +83,6 @@ export class Header extends Component<Props, State> {
   }
 
   async getUserInfo(username: string) {
-    username = window._env.username;
     const res = await fetchProfileAPI(username);
     if (res) {
       const avatarOption = res.profile.userdata.avatarOption;
