@@ -57,14 +57,11 @@ if (CONTAINER) {
     '/dashboard': {
       component: Dashboard,
     },
-    '/iframe/dashboard': {
+    // For testing out an alternative nav design
+    '/newnav/dashboard': {
       component: Dashboard,
     },
-    '/iframe/object_relations': {
-      component: ObjectRelations,
-    },
   };
-
   if (!(PATHNAME in routes)) {
     // Render 404
     render(<Page root={NotFoundPage} />, CONTAINER);
