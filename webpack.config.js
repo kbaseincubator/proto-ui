@@ -2,7 +2,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
 const dir = path.resolve(__dirname);
 const inDevelopment = Boolean(process.env.DEVELOPMENT);
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const exp = {
   mode: inDevelopment ? 'development' : 'production',
@@ -46,11 +46,13 @@ const exp = {
 };
 
 if (inDevelopment) {
+  /* Uncomment this to enable the bundle analyzer server at localhost:8888
   exp.plugins.push(
     new BundleAnalyzerPlugin({
       openAnalyzer: false
     })
   )
+  */
 }
 
 module.exports = exp;

@@ -1,4 +1,5 @@
 serve:
+	docker-compose down
 	sh dev/start_server.sh
 
 reset:
