@@ -54,38 +54,45 @@ async def dashboard(request):
 @app.route('/notifications', methods=['GET'])
 async def notifications(request):
     """Notifications."""
-    return _render_template('notifications/index.html')
-
+    # return _render_template('notifications/index.html')
+    url = app.config.URL_PREFIX + '/#jobbrowser'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 @app.route('/catalog', methods=['GET'])
 async def catalog(request):
     """Catalog."""
-    return _render_template('catalog/index.html')
-
+    # return _render_template('catalog/index.html')
+    url = app.config.URL_PREFIX + '/#feeds'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 @app.route('/search', methods=['GET'])
 async def search(request):
     """Search."""
-    return _render_template('search/index.html')
-
+    # return _render_template('search/index.html')
+    url = app.config.URL_PREFIX + '/#search'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 @app.route('/account', methods=['GET'])
 async def account(request):
     """Account settings."""
-    return _render_template('account/index.html')
-
+    # return _render_template('account/index.html')
+    url = app.config.URL_PREFIX + '/#auth2/account'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
     """Organizations."""
-    return _render_template('orgs/index.html')
+    # return _render_template('orgs/index.html')
+    url = app.config.URL_PREFIX + '/#orgs'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
-    return _render_template('feeds/index.html')
-
+    # return _render_template('feeds/index.html')
+    url = app.config.URL_PREFIX + '/#feeds'
+    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
