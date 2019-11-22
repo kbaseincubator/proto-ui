@@ -2,6 +2,6 @@
 set -e
 # show the commands we execute
 set -o xtrace
-export IMAGE_NAME="kbase/proto-ui:0.0.7"
+export IMAGE_NAME="kbase/proto-ui:0.2.0"
 sh hooks/build
 docker push $IMAGE_NAME

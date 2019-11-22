@@ -26,30 +26,26 @@ export class FilterDropdown extends Component<Props, State> {
 
   // Callback function for use in clicking elsewhere in the document to
   // close the dropdown when it is open.
-  docListener: (ev: MouseEvent) => void;
+  docListener: null | ((ev: MouseEvent) => void) = null;
 
   // Add a document event handler to close the dropdown on click outside
   componentDidMount() {
-    this.docListener = ev => this.handleDocumentClick(ev);
-    document.addEventListener('click', this.docListener, false); //<-- THIS?
+    if (this.state.isOpen) {
+      this.addDocumentClickListener();
+    }
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.docListener, false); //<-- THIS?
+    this.removeDocClickListener;
   }
 
   // Used in the componentDidMount document click event listener above
   handleDocumentClick(ev: MouseEvent) {
-    // TODO: CHECKOUT findDomNode
-    //https://reactjs.org/docs/react-dom.html#finddomnode
-    // Note: findDOMNode is an escape hatch used to access the underlying DOM node.
-    // In most cases, use of this escape hatch is discouraged because it pierces the component
-    // abstraction. It has been deprecated in StrictMode.
-    // Check if we are clicking on this dropdown element (this.base)
-
-    const withinDropdown = document.contains(ev.target as HTMLElement);
-    if (!withinDropdown && this.state.isOpen) {
+    const outsideDropdown = document.contains(ev.target as HTMLElement);
+    if (outsideDropdown && this.state.isOpen) {
       this.setState({ isOpen: false });
+      this.addOrRemoveDocClickListener();
+      this.removeDocClickListener();
     }
   }
 
@@ -62,15 +58,37 @@ export class FilterDropdown extends Component<Props, State> {
     }
     ev.preventDefault();
     if (this.props.disabled) {
-      // <-- this was this.state.disabled
       return;
     }
+    this.addOrRemoveDocClickListener();
     this.setState({ isOpen: !this.state.isOpen });
+  }
+
+  addDocumentClickListener() {
+    this.docListener = ev => this.handleDocumentClick(ev);
+    document.addEventListener('click', this.docListener, false);
+  }
+
+  removeDocClickListener() {
+    if (!this.docListener) {
+      return;
+    }
+    document.removeEventListener('click', this.docListener);
+    this.docListener = null;
+  }
+
+  addOrRemoveDocClickListener() {
+    if (this.docListener) {
+      this.removeDocClickListener();
+    } else {
+      this.addDocumentClickListener();
+    }
   }
 
   // Select an item in the dropdown by value
   // Closes the dropdown
   selectItem(idx: number) {
+    this.addOrRemoveDocClickListener();
     this.setState({
       selectedIdx: idx,
       isOpen: false,
@@ -79,6 +97,7 @@ export class FilterDropdown extends Component<Props, State> {
       this.props.onSelect(idx, this.props.items[idx]);
     }
   }
+
   // View for a single dropdown item
   itemView(item: string, idx: number) {
     let icon;
@@ -111,10 +130,10 @@ export class FilterDropdown extends Component<Props, State> {
         <div
           className="dib bg-light-gray ba b--black-20 shadow-3 br2"
           style={{
-            position: 'absolute',
+            position: 'absolute' as 'absolute',
             right: '0',
             top: '80%',
-            zIndex: '1',
+            zIndex: 1,
             width: '14rem',
           }}
         >

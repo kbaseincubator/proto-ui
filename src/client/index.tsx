@@ -13,16 +13,20 @@ import { Header } from '../client/components/Header/Header';
 // Utils
 import { getUsername } from './utils/auth';
 
-// Constants
-const PATHNAME = document.location.pathname
+// Get a pathname for the page without the global prefix for routing purposes.
+// Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
+let PATHNAME = document.location.pathname
   .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
   .replace(/\/$/, ''); // Remove trailing slash
+if (PATHNAME[0] !== '/') {
+  PATHNAME = '/' + PATHNAME;
+}
+
 const CONTAINER = document.getElementById('react-root');
 
 // change background of the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
-  HTMLEle.style;
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
     // to add style, it has to be HTMLElement and not node or Element
     HTMLEle.style.backgroundColor = '#e4e3e4';
@@ -48,19 +52,14 @@ class Page extends Component<Props, State> {
 }
 
 // Header
-if (document.getElementById('header')) {
-  const headerEle = document.getElementById('header');
-  let pageTitle: string;
-  headerEle.getAttribute('pageTitle')
-    ? (pageTitle = headerEle.getAttribute('pageTitle'))
-    : '';
-  if (document.getElementById('react-header')) {
-    render(
-      <Header headerTitle={pageTitle} />,
-      document.getElementById('react-header')
-    );
+let headerEle = document.getElementById('header')
+if(headerEle !== null){
+  let pageTitle = headerEle.getAttribute('pageTitle')
+  if(pageTitle!==null){
+    render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
   }
 }
+
 // Render the page component based on pathname
 if (CONTAINER) {
   // Simple routing by looking at pathname

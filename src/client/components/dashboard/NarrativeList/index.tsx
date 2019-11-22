@@ -11,6 +11,7 @@ import {
   searchNarratives,
   SearchParams,
 } from '../../../utils/searchNarratives';
+import { getUsername } from '../../../utils/auth';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -21,7 +22,7 @@ interface State {
   loading: boolean;
   // List of objects of narrative details
   items: Array<NarrativeData>;
-  totalItems?: number;
+  totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
   // Parameters to send to searchNarratives
@@ -38,6 +39,7 @@ export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      totalItems: props.items ? props.items.length : 0,
       loading: false,
       // List of narrative data
       items: props.items || [],
@@ -47,7 +49,7 @@ export class NarrativeList extends Component<Props, State> {
       // parameters to send to the searchNarratives function
       searchParams: {
         term: '',
-        sort: null,
+        sort: 'Newest',
         category: 'own',
         skip: 0,
         pageSize: PAGE_SIZE,
@@ -56,7 +58,11 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.performSearch();
+    // FIXME this is redundant with client/index.tsx
+    getUsername(username => {
+      window._env.username = username;
+      this.performSearch();
+    });
   }
 
   // Handle an onSetSearch callback from Filters

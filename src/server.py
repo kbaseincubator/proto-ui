@@ -42,13 +42,13 @@ async def root(request):
 @app.route('/iframe/<path:path>', methods=['GET'])
 async def iframe_content(request, path):
     """Iframe content pages."""
-    return _render_template('iframe/index.html', request)
+    return _render_template('iframe/index.html')
 
 
 @app.route('/dashboard', methods=['GET'])
 async def dashboard(request):
     """Dashboard."""
-    return _render_template('dashboard/index.html', request)
+    return _render_template('dashboard/index.html')
 
 
 @app.route('/notifications', methods=['GET'])
@@ -177,5 +177,6 @@ if __name__ == '__main__':
         port=_CONF.server_port,
         workers=_CONF.n_workers,
         access_log=_CONF.development,
-        debug=_CONF.development
+        debug=_CONF.development,
+        auto_reload=False  # handled by entr in development
     )

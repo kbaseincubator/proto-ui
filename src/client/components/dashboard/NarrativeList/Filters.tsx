@@ -7,7 +7,7 @@ import { SearchInput } from '../../generic/SearchInput';
 interface State {
   searchParams: {
     term: string;
-    sort: string | null;
+    sort: string;
   };
 }
 
@@ -23,7 +23,7 @@ export class Filters extends Component<Props, State> {
     this.state = {
       searchParams: {
         term: '',
-        sort: null,
+        sort: 'Newest',
       },
     };
   }

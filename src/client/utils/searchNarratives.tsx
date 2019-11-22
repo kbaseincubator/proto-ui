@@ -6,9 +6,9 @@ const INDEX_NAME = 'narrative';
 
 export interface SearchParams {
   term: string;
-  sort?: string;
+  sort: string;
   category: string;
-  skip?: number;
+  skip: number;
   pageSize: number;
   musts?: Array<any>;
   mustNots?: Array<any>;
@@ -39,9 +39,9 @@ interface Options {
 // returns a fetch Promise
 export function searchNarratives({
   term,
-  sort,
   category,
-  skip,
+  sort = 'Newest',
+  skip = 0,
   pageSize = 20,
 }: SearchParams) {
   const options: Options = { query: { bool: { must: [] } }, pageSize };
