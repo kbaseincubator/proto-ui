@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getUsername } from '../../utils/auth';
+import { fetchProfileAPI } from '../../utils/userInfo';
 
 interface Props {
   // profile data
@@ -6,22 +8,40 @@ interface Props {
   // narratives
 }
 
-interface State {}
+interface State {
+  username: string;
+}
 
 export class Profile extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      username: '',
+    };
     this.getProfile = this.getProfile.bind(this);
   }
   componentDidMount() {
-    this.getProfile();
+    getUsername(username => {
+      if (typeof username === 'string') {
+        window._env.username = username;
+        window._env.username = username;
+        this.setState({username})
+      }
+    });
+    console.log(this.state)
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate(prevState:State) {
+   console.log(prevState, this.state) 
+  }
 
-  async getProfile() {}
+  async getProfile() {
+    let profileID: string = '';
+    if(window.location.search){
+      profileID = window.location.search.slice(1);
+    }
+  }
 
   render() {
     return <div>"WORKING?"</div>;

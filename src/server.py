@@ -54,7 +54,7 @@ async def dashboard(request):
 @app.route('/notifications', methods=['GET'])
 async def notifications(request):
     """Notifications."""
-    # return _render_template('notifications/index.html', request)
+    # return _render_template('notifications/index.html')
     url = app.config.URL_PREFIX + '/#jobbrowser'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
@@ -62,7 +62,7 @@ async def notifications(request):
 @app.route('/catalog', methods=['GET'])
 async def catalog(request):
     """Catalog."""
-    # return _render_template('catalog/index.html', request)
+    # return _render_template('catalog/index.html')
     url = app.config.URL_PREFIX + '/#feeds'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     #/catalog/apps
@@ -71,7 +71,7 @@ async def catalog(request):
 @app.route('/search', methods=['GET'])
 async def search(request):
     """Search."""
-    # return _render_template('search/index.html', request)
+    # return _render_template('search/index.html')
     url = app.config.URL_PREFIX + '/#search'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
@@ -79,39 +79,39 @@ async def search(request):
 @app.route('/account', methods=['GET'])
 async def account(request):
     """Account settings."""
-    return _render_template('account/index.html', request)
+    return _render_template('account/index.html')
     # url = app.config.URL_PREFIX + '/#auth2/account'
     # return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
 @app.route('/account/profile', methods=['GET'])
 async def profile(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'profile/index.html', request)
+    return _render_template( 'profile/index.html')
 
 @app.route('/account/account', methods=['GET'])
 async def account_account(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'account_account/index.html', request)
+    return _render_template( 'account_account/index.html')
 
 @app.route('/account/linked_accounts', methods=['GET'])
 async def linked_accounts(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'linked_accounts/index.html', request)
+    return _render_template( 'linked_accounts/index.html')
 
 @app.route('/account/developer_tokens', methods=['GET'])
 async def developer_tokens(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'developer_tokens/index.html', request)
+    return _render_template( 'developer_tokens/index.html')
 
 @app.route('/account/running_jobs', methods=['GET'])
 async def running_jobs(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'running_jobs/index.html', request)
+    return _render_template( 'running_jobs/index.html')
 
 @app.route('/account/usage_agreeements', methods=['GET'])
 async def usage_agreeements(request, args=None):
     """Account subpath settings."""
-    return _render_template( 'usage_agreeements/index.html', request)
+    return _render_template( 'usage_agreeements/index.html')
 
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
@@ -122,7 +122,7 @@ async def orgs(request):
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
-    # return _render_template('feeds/index.html', request)
+    # return _render_template('feeds/index.html')
     url = app.config.URL_PREFIX + '/#feeds'
     return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
     
