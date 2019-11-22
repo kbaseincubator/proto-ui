@@ -42,50 +42,48 @@ async def root(request):
 @app.route('/iframe/<path:path>', methods=['GET'])
 async def iframe_content(request, path):
     """Iframe content pages."""
-    return _render_template('iframe/index.html', request)
+    return _render_template('iframe/index.html')
 
 
 @app.route('/dashboard', methods=['GET'])
 async def dashboard(request):
     """Dashboard."""
-    return _render_template('dashboard/index.html', request)
+    return _render_template('dashboard/index.html')
 
 
 @app.route('/notifications', methods=['GET'])
 async def notifications(request):
     """Notifications."""
-    return _render_template('notifications/index.html', request)
+    return _render_template('notifications/index.html')
 
 
 @app.route('/catalog', methods=['GET'])
 async def catalog(request):
     """Catalog."""
-    return _render_template('catalog/index.html', request)
+    return _render_template('catalog/index.html')
 
 
 @app.route('/search', methods=['GET'])
 async def search(request):
     """Search."""
-    return _render_template('search/index.html', request)
+    return _render_template('search/index.html')
 
 
 @app.route('/account', methods=['GET'])
 async def account(request):
     """Account settings."""
-    return _render_template('account/index.html', request)
+    return _render_template('account/index.html')
 
 
 @app.route('/orgs', methods=['GET'])
 async def orgs(request):
     """Organizations."""
-    return sanic.response.redirect('https://ci.kbase.us/#orgs', headers=None, status=302, content_type='text/html; charset=utf-8')
-    # return _render_template('orgs/index.html', request)
-
+    return _render_template('orgs/index.html')
 
 @app.route('/feeds', methods=['GET'])
 async def feeds(request):
     """Feeds."""
-    return _render_template('feeds/index.html', request)
+    return _render_template('feeds/index.html')
 
 
 @app.exception(sanic.exceptions.NotFound)
@@ -137,5 +135,6 @@ if __name__ == '__main__':
         port=_CONF.server_port,
         workers=_CONF.n_workers,
         access_log=_CONF.development,
-        debug=_CONF.development
+        debug=_CONF.development,
+        auto_reload=False  # handled by entr in development
     )
