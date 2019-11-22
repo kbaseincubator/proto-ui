@@ -1,0 +1,83 @@
+.dropdown-menu {
+  position: absolute;
+  top: 55px;
+  left: 5px;
+  z-index: 1000;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.dropdown-menu > li {
+  list-style-type: none;
+}
+.dropdown-menu > li > a {
+  white-space: nowrap;
+  color: #2196f3;
+  display: block;
+  padding: 3px 20px;
+  text-decoration: none;
+}
+.dropdown-menu > li > a > .fa {
+  text-align: center;
+  font-size: 21px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  width: 21px;
+}
+.hr-header {
+  border-top: #e5e5e5;
+  margin-block-start: 6px;
+  margin-block-end: 10px;
+}
+.hamburger:focus {
+  outline: none;
+}
+.hamburger {
+  padding: 6px 12px;
+  margin: 2px 4px 0 6px;
+  border-style: hidden;
+}
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 70px;
+  border-bottom: 5px solid #e0e0e0;
+  background: white;
+}
+.hamburger > i {
+  font-size: 24px;
+  color: #2196f3;
+  font-weight: 500;
+}
+.roboto-header {
+  padding-left: 12px;
+  font-family: 'RobotoBlack', Arial, sans-serif;
+  font-size: 29px;
+}
+.hamburger-menu {
+  display: flex;
+  align-items: center;
+  height: 65px;
+  width: 53px;
+}
+.logo-header {
+  padding-top: 4px;
+}
+
+.profile-dropdown {
+  border-width: 0px;
+  padding-right: 0px;
+  padding-top: 3px;
+}
