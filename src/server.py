@@ -39,51 +39,53 @@ async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))
 
 
-@app.route('/iframe/<path:path>', methods=['GET'])
-async def iframe_content(request, path):
-    """Iframe content pages."""
-    return _render_template('iframe/index.html')
-
-
 @app.route('/dashboard', methods=['GET'])
-async def dashboard(request):
+@app.route('/dashboard/<suffix:path>', methods=['GET'])
+async def dashboard(request, suffix=None):
     """Dashboard."""
     return _render_template('dashboard/index.html')
 
 
 @app.route('/notifications', methods=['GET'])
-async def notifications(request):
+@app.route('/notifications/<suffix:path>', methods=['GET'])
+async def notifications(request, suffix=None):
     """Notifications."""
     return _render_template('notifications/index.html')
 
 
-@app.route('/catalog', methods=['GET'])
-async def catalog(request):
+@app.route('/catalog/', methods=['GET'])
+@app.route('/catalog/<suffix:path>', methods=['GET'])
+async def catalog(request, suffix=None):
     """Catalog."""
     return _render_template('catalog/index.html')
 
 
 @app.route('/search', methods=['GET'])
-async def search(request):
+@app.route('/search/<suffix:path>', methods=['GET'])
+async def search(request, suffix=None):
     """Search."""
     return _render_template('search/index.html')
 
 
 @app.route('/account', methods=['GET'])
-async def account(request):
+@app.route('/account/<suffix:path>', methods=['GET'])
+async def account(request, suffix=None):
     """Account settings."""
     return _render_template('account/index.html')
 
 
 @app.route('/orgs', methods=['GET'])
-async def orgs(request):
+@app.route('/orgs/<suffix:path>', methods=['GET'])
+async def orgs(request, suffix=None):
     """Organizations."""
     return _render_template('orgs/index.html')
 
 
 @app.route('/feeds', methods=['GET'])
-async def feeds(request):
+@app.route('/feeds/<suffix:path>', methods=['GET'])
+async def feeds(request, suffix=None):
     """Feeds."""
+    # XXX redundant with /notifications
     return _render_template('feeds/index.html')
 
 
