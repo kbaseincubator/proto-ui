@@ -40,10 +40,12 @@ async def root(request):
 
 
 @app.route('/dashboard', methods=['GET'])
+@app.route('/newnav/dashboard', methods=['GET'])
 @app.route('/dashboard/<suffix:path>', methods=['GET'])
-async def dashboard(request, suffix=None):
+@app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
+async def dashboard(request, suffix=None, prefix=None):
     """Dashboard."""
-    return _render_template('dashboard/index.html')
+    return _render_template('dashboard/index.html', {'newnav': request.path.startswith('/newnav')})
 
 
 @app.route('/notifications', methods=['GET'])
@@ -128,6 +130,7 @@ def _render_template(path, args=None, status=200):
         args = {}
     args['app'] = app
     args['url_for'] = _url_for
+    args.setdefault('newnav', False)
     html = template.render(**args)
     return sanic.response.html(html, status=status)
 
