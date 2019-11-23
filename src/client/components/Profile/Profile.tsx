@@ -7,7 +7,8 @@ interface Props {
 }
 
 interface State {
-  username: string;
+  profileID: string;
+  edit: boolean;
 }
 
 export class Profile extends Component<Props, State> {
@@ -15,19 +16,22 @@ export class Profile extends Component<Props, State> {
     super(props);
 
     this.state = {
-      username: '',
+      profileID: '',
+      edit: false,
     }
 
     this.getProfile = this.getProfile.bind(this);
   }
   componentDidMount() {
+    let profileID = window.location.search.slice(1);
     if(this.props.authUsername){
-      if (window.location.search) {
-        let profileID = window.location.search.slice(1);
-        this.setState({ username: profileID });
-      } else {
-        this.setState({ username: this.props.authUsername });
+      if(profileID){
+        this.setState({profileID})
+        return
       }
+      this.setState({profileID:this.props.authUsername})
+    } else {
+      // you need auth
     }
     console.log(this.state)
   }
@@ -36,11 +40,11 @@ export class Profile extends Component<Props, State> {
    console.log(this.state, prevState)
   }
 
-  async getProfile() {
+  async getProfile(profileID:string) {
 
   }
 
   render() {
-    return <div>"WORKING?"</div>;
+    return <div>"Profile?"</div>;
   }
 }
