@@ -52,50 +52,42 @@ async def dashboard(request, suffix=None, prefix=None):
 @app.route('/notifications/<suffix:path>', methods=['GET'])
 async def notifications(request, suffix=None):
     """Notifications."""
-    # return _render_template('notifications/index.html')
-    url = app.config.URL_PREFIX + '/#jobbrowser'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('notifications/index.html')
+
 
 @app.route('/catalog/', methods=['GET'])
 @app.route('/catalog/<suffix:path>', methods=['GET'])
 async def catalog(request, suffix=None):
     """Catalog."""
-    # return _render_template('catalog/index.html')
-    url = app.config.URL_PREFIX + '/#feeds'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('catalog/index.html')
+
 
 @app.route('/search', methods=['GET'])
 @app.route('/search/<suffix:path>', methods=['GET'])
 async def search(request, suffix=None):
     """Search."""
-    # return _render_template('search/index.html')
-    url = app.config.URL_PREFIX + '/#search'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('search/index.html')
+
 
 @app.route('/account', methods=['GET'])
 @app.route('/account/<suffix:path>', methods=['GET'])
 async def account(request, suffix=None):
     """Account settings."""
-    # return _render_template('account/index.html')
-    url = app.config.URL_PREFIX + '/#auth2/account'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('account/index.html')
+
 
 @app.route('/orgs', methods=['GET'])
 @app.route('/orgs/<suffix:path>', methods=['GET'])
 async def orgs(request, suffix=None):
     """Organizations."""
-    # return _render_template('orgs/index.html')
-    url = app.config.URL_PREFIX + '/#orgs'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('orgs/index.html')
 
 
 @app.route('/feeds', methods=['GET'])
 @app.route('/feeds/<suffix:path>', methods=['GET'])
 async def feeds(request, suffix=None):
     """Feeds."""
-    # return _render_template('feeds/index.html')
-    url = app.config.URL_PREFIX + '/#feeds'
-    return sanic.response.redirect(url, headers=None, status=302, content_type='text/html; charset=utf-8')
+    return _render_template('feeds/index.html')
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):

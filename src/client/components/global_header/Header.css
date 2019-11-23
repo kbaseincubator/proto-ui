@@ -34,7 +34,7 @@
   margin-bottom: 4px;
   width: 21px;
 }
-.hr-header {
+.hr-global-header {
   border-top: #e5e5e5;
   margin-block-start: 6px;
   margin-block-end: 10px;
@@ -47,7 +47,7 @@
   margin: 2px 4px 0 6px;
   border-style: hidden;
 }
-.header {
+.global-header {
   position: sticky;
   top: 0;
   left: 0;

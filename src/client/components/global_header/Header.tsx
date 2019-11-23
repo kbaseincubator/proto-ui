@@ -16,7 +16,7 @@ interface State {
 }
 
 interface Props {
-  headerTitle: string;
+  title: string;
 }
 
 export class Header extends Component<Props, State> {
@@ -39,12 +39,12 @@ export class Header extends Component<Props, State> {
   }
 
   componentDidMount() {
-    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time. 
+    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time.
     // make change to stop second call
     this.setUrl_prefix();
     this.getUserID();
   }
-  
+
   componentDidUpdate(prevProps:Props, prevState:State){
     if(prevState === this.state){
       return
@@ -122,7 +122,7 @@ export class Header extends Component<Props, State> {
   gravaterSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
       // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={nouserpic} />;
-      return window._env.url_prefix + '/static/images/nouserpic.png';
+      return window._env.url_prefix + 'static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
         'https://www.gravatar.com/avatar/' +
@@ -136,7 +136,7 @@ export class Header extends Component<Props, State> {
   render() {
     return (
       <>
-        <h1 className="roboto-header">{this.props.headerTitle}</h1>
+        <h1 className="roboto-header">{this.props.title}</h1>
         <div
           className="flex top-0 right-0 absolute h-100"
           style={{ marginRight: '19px' }}
@@ -195,7 +195,7 @@ export class Header extends Component<Props, State> {
                 <div style={{ fontStyle: 'italic' }}>{this.state.username}</div>
               </div>
             </li>
-            <hr className="hr-header" />
+            <hr className="hr-global-header" />
             <li>
               <a>
                 <div className="dib" style={{ width: '34px' }}>

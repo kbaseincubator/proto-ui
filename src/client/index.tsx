@@ -6,9 +6,10 @@ import { render } from 'react-dom';
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
+// Used when a suffix from some base-path is not found, such as "/account/xyz"
 import { NotFoundPage } from './components/not_found';
-
-import { Header } from '../client/components/Header/Header';
+// Global navigation (legacy copy of previous kbase-ui)
+import { Header } from '../client/components/global_header/Header';
 
 // Utils
 import { getUsername } from './utils/auth';
@@ -51,13 +52,11 @@ class Page extends Component<Props, State> {
   }
 }
 
-// Header
-let headerEle = document.getElementById('header')
-if(headerEle !== null){
-  let pageTitle = headerEle.getAttribute('pageTitle')
-  if(pageTitle!==null){
-    render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
-  }
+// Global header
+const headerElem = document.getElementById('react-global-header');
+if (headerElem !== null){
+  const pageTitle = headerElem.getAttribute('data-page-title');
+  render(<Header title={pageTitle || ''} />, headerElem);
 }
 
 // Render the page component based on pathname
