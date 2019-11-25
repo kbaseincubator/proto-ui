@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './Header.css';
 
 import { fetchProfileAPI } from '../../utils/userInfo';
 import { getUsername } from '../../utils/auth';
@@ -36,8 +35,6 @@ export class AccountDropdown extends Component<Props, State> {
   }
 
   componentDidMount() {
-    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time.
-    // make change to stop second call
     this.bodyCloseHandler = (ev) => {
       const elm = document.querySelector('.account-dropdown');
       const target = ev.target;
@@ -63,25 +60,6 @@ export class AccountDropdown extends Component<Props, State> {
 
   toggleDropdown() {
     this.setState({ dropdownHidden: !this.state.dropdownHidden });
-  }
-
-  /**
-   * if open is true, then set dropdown Hidden to false
-   * if open is null, taggle dropdown Hidden
-   * @param open
-   */
-  dropDown(open: boolean | null): void {
-    if (open === true) {
-      this.setState({ dropdownHidden: true });
-    } else if (open === false) {
-      this.setState({ dropdownHidden: false });
-    } else {
-      if (this.state.dropdownHidden) {
-        this.setState({ dropdownHidden: false });
-      } else {
-        this.setState({ dropdownHidden: true });
-      }
-    }
   }
 
   // Set gravatarURL
@@ -146,4 +124,3 @@ export class AccountDropdown extends Component<Props, State> {
     );
   }
 }
-
