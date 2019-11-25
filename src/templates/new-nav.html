@@ -4,42 +4,42 @@
   style='width:12rem; box-shadow:-1px 2px 8px 0 rgba( 0, 0, 0, .2 ); overflow-y:auto;'>
   <ul class='list pa0'>
     <li class='ph2 pb3 pointer dim'>
-      <a href='{{ url_for('dashboard')}}'>
+      <a href='{{ url_for('dashboard_newnav')}}'>
         <img src='{{url_for('static', filename='images/logo.png')}}' alt='KBase logo'>
       </a>
     </li>
     <li>
-      <a data-hl-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="fas fa-tachometer-alt black-60 tc mr1" style='width:1.5rem'></i>
+      <a data-hl-nav='/dashboard' href='{{ url_for('dashboard_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="fa fa-tachometer black-60 tc mr1" style='width:1.5rem'></i>
         Dashboard
       </a>
     </li>
-    <a data-hl-nav='/search' href='{{ url_for('search') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="fas fa-search black-60 dib tc mr1" style='width:1.5rem'></i>
+    <a data-hl-nav='/search' href='{{ url_for('search_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="fa fa-search black-60 dib tc mr1" style='width:1.5rem'></i>
         Search
       </a>
     </li>
     <li>
-      <a data-hl-nav='/orgs' href='{{ url_for('orgs') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="dib fas fa-users black-60 dib tc mr1" style='width:1.5rem'></i>
+      <a data-hl-nav='/orgs' href='{{ url_for('orgs_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="dib fa fa-users black-60 dib tc mr1" style='width:1.5rem'></i>
         Orgs
       </a>
     </li>
     <li>
-      <a data-hl-nav='/catalog' href='{{ url_for('catalog') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="dib fas fa-book black-60 dib tc mr1" style='width:1.5rem'></i>
+      <a data-hl-nav='/catalog' href='{{ url_for('catalog_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="dib fa fa-book black-60 dib tc mr1" style='width:1.5rem'></i>
         Catalog
       </a>
     </li>
     <li>
-      <a data-hl-nav='/notifications' href='{{ url_for('notifications') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="fas fa-bell black-60 dib tc mr1" style='width:1.5rem'></i>
+      <a data-hl-nav='/notifications' href='{{ url_for('notifications_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="fa fa-bell black-60 dib tc mr1" style='width:1.5rem'></i>
         Notifications
       </a>
     </li>
     <li>
-      <a data-hl-nav='/account' href='{{ url_for('account') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
-        <i class="fas fa-user-circle black-60 dib tc mr1" style='width:1.5rem'></i>
+      <a data-hl-nav='/account' href='{{ url_for('account_newnav') }}' class='dib ph3 pv2 no-underline black-80 w-100 dim'>
+        <i class="fa fa-user-circle black-60 dib tc mr1" style='width:1.5rem'></i>
         Account
       </a>
     </li>

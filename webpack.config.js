@@ -15,14 +15,18 @@ const exp = {
   module: {
     rules: [
       {
-        test: /\.tsx$/,
+        test: /\.tsx$/i,
         exclude: /node_modules/,
-        use: {loader: 'ts-loader'},
+        use: {loader: 'ts-loader'}
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      }
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.js', '.jsx'],
+    extensions: ['.tsx', '.js', '.jsx', '.css'],
   },
   plugins: [
     new CompressionPlugin(),

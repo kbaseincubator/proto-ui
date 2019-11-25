@@ -1,4 +1,48 @@
-
-<div>
-  Hello world
+<div
+class='fixed left-0 h-100 flex flex-column justify-between z-1'
+style='width:75px; overflow-y:auto; text-align: center; top: 70px;'>
+  <ul class='list pa0 ma0'>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="fa fa-tachometer fa-2x tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Dashboard</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/orgs' href='{{ app.config.KBASE_UI_ROOT + '/#/orgs' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="dib fa fa-users fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Orgs</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/catalog' href='{{ app.config.KBASE_UI_ROOT + '/#/catalog/apps' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="dib fa fa-book fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Catalog</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+    <a data-hl-nav='/search' href='{{ app.config.KBASE_UI_ROOT + '/#/search' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="fa fa-search fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Search</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/notifications' href='{{ app.config.KBASE_UI_ROOT + '/#/jobbrowser' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="fa fa-suitcase fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Jobs</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/account' href='{{ app.config.KBASE_UI_ROOT + '/#/auth2/account' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="fa fa-user-circle-o fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Account</div>
+      </a>
+    </li>
+    <li style='margin-top: 6px'>
+      <a data-hl-nav='/feeds' href='{{ app.config.KBASE_UI_ROOT + '/#/feeds' }}' class='dib no-underline black-80 w-100 dim'>
+        <i class="fa fa-bullhorn fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
+        <div style='font-size:14px; padding-bottom: 4px;'>Feeds</div>
+      </a>
+    </li>
+  </ul>
 </div>
