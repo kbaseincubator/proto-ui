@@ -23,6 +23,7 @@ export class Account extends Component<Props, State> {
   }
   componentDidMount() {
     getUsername(authUsername => {
+      console.log("authUsername", authUsername);
       this.setState({ authUsername: authUsername });
     });
     let pathname = window.location.pathname.replace('/account/', '');

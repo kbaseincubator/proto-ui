@@ -45,11 +45,13 @@ export async function fetchProfileAPI(username: string) {
   let token = getToken();
   const bffServiceUrl = await getBFFServiceUrl(token);
   let url = bffServiceUrl + '/fetchUserProfile/' + username;
+  console.log(url)
   const response = await fetch(url, {
     method: 'GET',
   });
   if (response.status !== 200) {
     console.warn(response.status, response);
+    return {status: response.status, statusText: response.statusText}
     // return [response.status, response.statusText];
   } else {
     try {
@@ -58,7 +60,45 @@ export async function fetchProfileAPI(username: string) {
       return profile;
     } catch (err) {
       console.error('profile fetch failed', response);
+      return {status: response.status, statusText: response.statusText}
       // return [response.status, response.statusText];
     }
   }
 }
+
+/**
+ * update profile 
+ * method 'UserProfile.update_user_profile' takes top level key of profile object. 
+ * @param userdata 
+ * @param user
+ */
+export async function updateProfileAPI(userdata:any, user:{name: string; userID: string}) {
+  let token = getToken();
+  let newParam = [ { profile: { user: { realname: user.name, username: user.userID }, profile: {userdata: userdata}}}]
+  const body = {
+      version: '1.1',
+      method: 'UserProfile.update_user_profile',
+      params: newParam
+  };
+  const stringBody = JSON.stringify(body);
+  const url = window._env.url_prefix + '/services/user_profile/rpc';
+  const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+          Authorization: token,
+          'Content-Type': 'application/json'
+      },
+      body: stringBody
+  });
+  if(response.status === 200) {
+      return(response.status);
+  } else {
+      let responseJSON = await response.json();
+      let responseArray:Array<number|string> = [
+              response.status, 
+              responseJSON.error.message
+          ];
+      return responseArray;
+  };
+};
