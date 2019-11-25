@@ -43,14 +43,14 @@ async def root(request):
 @app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard_newnav(request, suffix=None, prefix=None):
     """Dashboard with new nav."""
-    return _render_template('dashboard/index.html', {'template': 'layout-newnav.html'})
+    return _render_template('dashboard/index.html', {'template': 'layout-newnav.html', 'auth_required': True})
 
 
 @app.route('/dashboard', methods=['GET'])
 @app.route('/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard(request, suffix=None, prefix=None):
     """Dashboard."""
-    return _render_template('dashboard/index.html', {'template': 'layout-legacy.html'})
+    return _render_template('dashboard/index.html', {'template': 'layout-legacy.html', 'auth_required': True})
 
 
 @app.route('/newnav/notifications', methods=['GET'])
@@ -127,6 +127,7 @@ def _render_template(path, args=None, status=200):
         args = {}
     args['app'] = app
     args['url_for'] = _url_for
+    args.setdefault('auth_required', False)
     args.setdefault('newnav', False)
     html = template.render(**args)
     return sanic.response.html(html, status=status)

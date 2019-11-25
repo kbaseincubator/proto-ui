@@ -7,13 +7,13 @@ import { fetchProfileAPI } from '../../utils/userInfo';
 import { getUsername } from '../../utils/auth';
 
 interface State {
-  gravatarHash: string;
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
   env: string | undefined;
   envIcon: string | undefined;
   username: string | null;
   realname: string | null;
+  gravatarHash: string;
 }
 
 interface Props {
@@ -25,13 +25,13 @@ export class Header extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      gravatarHash: '',
       avatarOption: undefined,
       gravatarDefault: undefined,
       env: undefined,
       envIcon: undefined,
       username: null,
       realname: null,
+      gravatarHash: '',
     };
     this.getUserID = this.getUserID.bind(this);
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
@@ -92,8 +92,8 @@ export class Header extends Component<Props, State> {
       const realname = res.user.realname;
       this.setState({
         avatarOption,
-        gravatarHash,
         gravatarDefault,
+        gravatarHash,
         realname,
         username,
       });
@@ -101,9 +101,8 @@ export class Header extends Component<Props, State> {
   }
 
   // Set gravatarURL
-  gravaterSrc() {
+  gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={nouserpic} />;
       return window._env.url_prefix + 'static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
@@ -112,8 +111,8 @@ export class Header extends Component<Props, State> {
         '?s=300&amp;r=pg&d=' +
         this.state.gravatarDefault
       );
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={gravaterSrc} />;
     }
+    return '';
   }
 
   render() {
@@ -150,7 +149,7 @@ export class Header extends Component<Props, State> {
               style={{ color: '#2196F3', fontSize: '28px' }}
             ></i>
           </div>
-          <AccountDropdown  username={this.state.username} realname={this.state.realname} />
+          <AccountDropdown  username={this.state.username} realname={this.state.realname} gravatarURL={this.gravatarSrc()} />
         </div>
       </div>
     );

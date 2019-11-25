@@ -4,7 +4,6 @@ import { getToken } from '../utils/auth';
 async function getBFFServiceUrl(token: string) {
   // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
   let versionNum: number | null = null;
-  console.log('window._env', window.window._env);
   let url: string;
   if (window._env.kbase_endpoint.includes('localhost')) {
     url = 'https://ci.kbase.us/services/service_wizard';

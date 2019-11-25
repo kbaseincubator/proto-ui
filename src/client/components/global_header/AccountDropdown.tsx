@@ -6,9 +6,6 @@ import { getUsername } from '../../utils/auth';
 
 interface State {
   dropdownHidden: boolean;
-  gravatarHash: string;
-  avatarOption: string | undefined;
-  gravatarDefault: string | undefined;
   env: string | undefined;
   envIcon: string | undefined;
 }
@@ -16,6 +13,7 @@ interface State {
 interface Props {
   username: string | null;
   realname: string | null;
+  gravatarURL: string;
 }
 
 export class AccountDropdown extends Component<Props, State> {
@@ -25,13 +23,9 @@ export class AccountDropdown extends Component<Props, State> {
     super(props);
     this.state = {
       dropdownHidden: true,
-      gravatarHash: '',
-      avatarOption: undefined,
-      gravatarDefault: undefined,
       env: undefined,
       envIcon: undefined,
     };
-    this.dropDown = this.dropDown.bind(this);
   }
 
   componentDidMount() {
@@ -62,33 +56,17 @@ export class AccountDropdown extends Component<Props, State> {
     this.setState({ dropdownHidden: !this.state.dropdownHidden });
   }
 
-  // Set gravatarURL
-  gravaterSrc() {
-    if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={nouserpic} />;
-      return window._env.url_prefix + 'static/images/nouserpic.png';
-    } else if (this.state.gravatarHash) {
-      return (
-        'https://www.gravatar.com/avatar/' +
-        this.state.gravatarHash +
-        '?s=300&amp;r=pg&d=' +
-        this.state.gravatarDefault
-      );
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={gravaterSrc} />;
-    }
-  }
-
   render() {
     return (
       <div className='account-dropdown'>
         <button
-          className="profile-dropdown flex"
+          className="profile-dropdown flex pointer"
           onClick={event => this.toggleDropdown()}
         >
           <img
             style={{ maxWidth: '40px' }}
             alt="avatar"
-            src={this.gravaterSrc()}
+            src={this.props.gravatarURL}
           />
           <i
             className="fa fa-caret-down"
