@@ -51,14 +51,14 @@ export function loadProfile(reponse: {}) {
  * @param username
  */
 export function fetchProfile(username: string) {
-  return async (dispatch: ThunkDispatch)=>{
+  return async (dispatch: ThunkDispatch) => {
     dispatch(requestProfile());
     let res = await fetchProfileAPI(username);
-    if(typeof res !== 'undefined') {
+    if (typeof res !== 'undefined') {
       dispatch(loadProfile(res));
     } else {
       dispatch(fetchErrorProfile(res));
     }
     console.log(res);
-  }
+  };
 }

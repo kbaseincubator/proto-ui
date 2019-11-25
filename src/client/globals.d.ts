@@ -11,6 +11,7 @@ declare global {
             narrative: string;
             kbase_endpoint: string;
             token: string;
+            auth_required: boolean;
         }
     }
 }

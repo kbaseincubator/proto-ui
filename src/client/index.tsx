@@ -4,15 +4,21 @@ import { render } from 'react-dom';
 // Imports for page-specific components
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
+import { Account } from './components/Account/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
+// Used when a suffix from some base-path is not found, such as "/account/xyz"
 import { NotFoundPage } from './components/not_found';
-
-import { Account } from './components/Account/index';
-import { Header } from '../client/components/Header/Header';
+// Global navigation (legacy copy of previous kbase-ui)
+import { Header } from '../client/components/global_header/Header';
 
 // Utils
-import { getUsername } from './utils/auth';
+import { getUsername, getToken } from './utils/auth';
+
+// Redirect to sign-in if this page requires auth
+if (window._env.auth_required && !getToken()) {
+  window.location.href = window._env.narrative + '/#login';
+}
 
 // Get a pathname for the page without the global prefix for routing purposes.
 // Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
@@ -52,13 +58,11 @@ class Page extends Component<Props, State> {
   }
 }
 
-// Header
-let headerEle = document.getElementById('header')
-if(headerEle !== null){
-  let pageTitle = headerEle.getAttribute('pageTitle')
-  if(pageTitle!==null){
-    render(<Header headerTitle={pageTitle} />, document.getElementById('react-header'));
-  }
+// Global header
+const headerElem = document.getElementById('react-global-header');
+if (headerElem !== null) {
+  const pageTitle = headerElem.getAttribute('data-page-title');
+  render(<Header title={pageTitle || ''} />, headerElem);
 }
 
 // Render the page component based on pathname
@@ -67,12 +71,17 @@ if (CONTAINER) {
   const routes: {
     [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
   } = {
-    '/dashboard': { component: Dashboard },
-    '/account': { component: Account },
-    '/iframe/dashboard': { component: Dashboard },
-    '/iframe/object_relations': { component: ObjectRelations },
+    '/dashboard': {
+      component: Dashboard,
+    },
+    // For testing out an alternative nav design
+    '/newnav/dashboard': {
+      component: Dashboard,
+    },
+    '/newnav/account': {
+      component: Account,
+    },
   };
-
   if (!(PATHNAME in routes)) {
     // Render 404
     render(<Page root={NotFoundPage} />, CONTAINER);

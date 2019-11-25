@@ -12,7 +12,6 @@ import { requestProfile } from '../../redux/actions';
 
 // import { profileFetchStatuses } from '../../redux/fetchStatuses';
 
-
 // interface PropsWithProfileData {
 //     userName: UserName;
 //     editEnable: boolean;
@@ -35,9 +34,7 @@ import { requestProfile } from '../../redux/actions';
 
 // function mapStateToProps(state: StoreState): Props {
 
-
 // };
-
 
 function mapDispatchToProps(dispatch: any) {
   return {
@@ -46,10 +43,9 @@ function mapDispatchToProps(dispatch: any) {
     // },
     getProfile: (profileID: string) => {
       return dispatch(requestProfile() as any);
-    }
+    },
   };
-
-};
+}
 
 export default connect(
   // mapStateToProps,

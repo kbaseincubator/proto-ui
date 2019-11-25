@@ -18,9 +18,5 @@ coverage_report/
 .coverage
 __pycache__/
 
-<<<<<<< HEAD
-.DS_Store
-=======
 # Editors
 .vscode/
->>>>>>> 35d185e46bc6e3035d89cd58728ba38a4696f8b0
