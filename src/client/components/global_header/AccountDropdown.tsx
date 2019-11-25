@@ -6,8 +6,6 @@ import { getUsername } from '../../utils/auth';
 
 interface State {
   dropdownHidden: boolean;
-  env: string | undefined;
-  envIcon: string | undefined;
 }
 
 interface Props {
@@ -23,8 +21,6 @@ export class AccountDropdown extends Component<Props, State> {
     super(props);
     this.state = {
       dropdownHidden: true,
-      env: undefined,
-      envIcon: undefined,
     };
   }
 
