@@ -45,9 +45,9 @@ export class Header extends Component<Props, State> {
     this.getUserID();
   }
 
-  componentDidUpdate(prevProps:Props, prevState:State){
-    if(prevState === this.state){
-      return
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState === this.state) {
+      return;
     }
   }
 
@@ -68,12 +68,12 @@ export class Header extends Component<Props, State> {
       case 'https://ci.kbase.us':
         prefix = 'CI';
         icon = 'fa fa-2x fa-flask';
-        this.setState({env: prefix, envIcon: icon})
+        this.setState({ env: prefix, envIcon: icon });
         break;
       case 'https://appdev.kbase.us':
         prefix = 'APPDEV';
         icon = 'fa fa-2x fa-wrench';
-        this.setState({env: prefix, envIcon: icon})
+        this.setState({ env: prefix, envIcon: icon });
         break;
       default:
         prefix = 'CI';

@@ -54,7 +54,7 @@ class Page extends Component<Props, State> {
 
 // Global header
 const headerElem = document.getElementById('react-global-header');
-if (headerElem !== null){
+if (headerElem !== null) {
   const pageTitle = headerElem.getAttribute('data-page-title');
   render(<Header title={pageTitle || ''} />, headerElem);
 }
