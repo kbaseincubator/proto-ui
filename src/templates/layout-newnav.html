@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %} | KBase</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {# Use font awesome from their official CDN. #}
+    <link href="https://use.fontawesome.com/5fbc4a9aa2.css" media="all" rel="stylesheet">
+    <script src="https://use.fontawesome.com/5fbc4a9aa2.js"></script>
+    {# Use the Oxygen font from the google font API #}
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
+    {# Base tachyons styles #}
+    <link rel='stylesheet' href='{{ url_for('static', filename='build/tachyons.min.css') }}'>
+    {% endblock %}
+  </head>
+
+  <body class='flex flex-column' style='min-height: 100vh;'>
+
+    {# Top nav bar #}
+    {% include 'new-nav.html' %}
+
+    {# Page contents replaced by React #}
+    <div class='flex justify-start-m justify-center-ns' style='margin-left: 12rem;'>
+      <main style='min-width: 1024px; max-width: 80rem;'>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    {# Server-provided global data into JS #}
+    <script type='text/javascript'>
+      window._env = {
+        url_prefix: '{{app.config.URL_PREFIX}}',
+        kbase_endpoint: '{{app.config.KBASE_ENDPOINT}}',
+        narrative: '{{app.config.KBASE_UI_ROOT}}'
+      };
+    </script>
+
+    {# Global JS bundle #}
+    <script src="{{ url_for('js') }}" type="text/javascript"></script>
+
+    {# Any additional page-specific JS #}
+    {% block js %} {% endblock %}
+  </body>
+</html>
+
+

@@ -12,7 +12,7 @@ export class Dashboard extends Component {
 
   render() {
     return (
-      <section className="mt3">
+      <section className="mt4">
         <NarrativeList />
       </section>
     );

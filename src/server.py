@@ -39,61 +39,60 @@ async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))
 
 
-@app.route('/dashboard', methods=['GET'])
 @app.route('/newnav/dashboard', methods=['GET'])
-@app.route('/dashboard/<suffix:path>', methods=['GET'])
 @app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
+async def dashboard_newnav(request, suffix=None, prefix=None):
+    """Dashboard with new nav."""
+    return _render_template('dashboard/index.html', {'template': 'layout-newnav.html'})
+
+
+@app.route('/dashboard', methods=['GET'])
+@app.route('/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard(request, suffix=None, prefix=None):
     """Dashboard."""
-    return _render_template('dashboard/index.html', {'newnav': request.path.startswith('/newnav')})
+    return _render_template('dashboard/index.html', {'template': 'layout-legacy.html'})
 
 
-@app.route('/notifications', methods=['GET'])
-@app.route('/notifications/<suffix:path>', methods=['GET'])
-async def notifications(request, suffix=None):
+@app.route('/newnav/notifications', methods=['GET'])
+@app.route('/newnav/notifications/<suffix:path>', methods=['GET'])
+async def notifications_newnav(request, suffix=None):
     """Notifications."""
-    return _render_template('notifications/index.html')
+    return _render_template('notifications/index.html', {'template': 'layout-newnav.html'})
 
 
-@app.route('/catalog/', methods=['GET'])
-@app.route('/catalog/<suffix:path>', methods=['GET'])
-async def catalog(request, suffix=None):
+@app.route('/newnav/catalog/', methods=['GET'])
+@app.route('/newnav/catalog/<suffix:path>', methods=['GET'])
+async def catalog_newnav(request, suffix=None):
     """Catalog."""
-    return _render_template('catalog/index.html')
+    return _render_template('catalog/index.html', {'template': 'layout-newnav.html'})
 
 
-@app.route('/search', methods=['GET'])
-@app.route('/search/<suffix:path>', methods=['GET'])
-async def search(request, suffix=None):
+@app.route('/newnav/search', methods=['GET'])
+@app.route('/newnav/search/<suffix:path>', methods=['GET'])
+async def search_newnav(request, suffix=None):
     """Search."""
-    return _render_template('search/index.html')
+    return _render_template('search/index.html', {'template': 'layout-newnav.html'})
 
 
-@app.route('/account', methods=['GET'])
-@app.route('/account/<suffix:path>', methods=['GET'])
-async def account(request, suffix=None):
+@app.route('/newnav/account', methods=['GET'])
+@app.route('/newnav/account/<suffix:path>', methods=['GET'])
+async def account_newnav(request, suffix=None):
     """Account settings."""
-    return _render_template('account/index.html')
+    return _render_template('account/index.html', {'template': 'layout-newnav.html'})
 
 
-@app.route('/orgs', methods=['GET'])
-@app.route('/orgs/<suffix:path>', methods=['GET'])
-async def orgs(request, suffix=None):
+@app.route('/newnav/orgs', methods=['GET'])
+@app.route('/newnav/orgs/<suffix:path>', methods=['GET'])
+async def orgs_newnav(request, suffix=None):
     """Organizations."""
-    return _render_template('orgs/index.html')
+    return _render_template('orgs/index.html', {'template': 'layout-newnav.html'})
 
-
-@app.route('/feeds', methods=['GET'])
-@app.route('/feeds/<suffix:path>', methods=['GET'])
-async def feeds(request, suffix=None):
-    """Feeds."""
-    return _render_template('feeds/index.html')
 
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
     """404 not found."""
     print('404:', request.path)
-    return _render_template('404.html', status=404)
+    return _render_template('404.html', {'template': 'layout-newnav.html'}, status=404)
 
 
 @app.exception(Exception)
