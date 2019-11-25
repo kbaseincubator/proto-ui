@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import './Header.css';
 
+import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
 import { getUsername } from '../../utils/auth';
 
 interface State {
-  dropdownHidden: boolean;
-  gravatarHash: string;
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
   env: string | undefined;
   envIcon: string | undefined;
   username: string | null;
-  realname: string | undefined;
+  realname: string | null;
+  gravatarHash: string;
 }
 
 interface Props {
@@ -20,22 +21,21 @@ interface Props {
 }
 
 export class Header extends Component<Props, State> {
+
   constructor(props: Props) {
     super(props);
     this.state = {
-      dropdownHidden: true,
-      gravatarHash: '',
       avatarOption: undefined,
       gravatarDefault: undefined,
       env: undefined,
       envIcon: undefined,
       username: null,
-      realname: undefined,
+      realname: null,
+      gravatarHash: '',
     };
     this.getUserID = this.getUserID.bind(this);
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
-    this.dropDown = this.dropDown.bind(this);
   }
 
   componentDidMount() {
@@ -92,36 +92,17 @@ export class Header extends Component<Props, State> {
       const realname = res.user.realname;
       this.setState({
         avatarOption,
-        gravatarHash,
         gravatarDefault,
+        gravatarHash,
         realname,
         username,
       });
     }
   }
-  /**
-   * if open is true, then set dropdown Hidden to false
-   * if open is null, taggle dropdown Hidden
-   * @param open
-   */
-  dropDown(open: boolean | null): void {
-    if (open === true) {
-      this.setState({ dropdownHidden: true });
-    } else if (open === false) {
-      this.setState({ dropdownHidden: false });
-    } else {
-      if (this.state.dropdownHidden) {
-        this.setState({ dropdownHidden: false });
-      } else {
-        this.setState({ dropdownHidden: true });
-      }
-    }
-  }
 
   // Set gravatarURL
-  gravaterSrc() {
+  gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={nouserpic} />;
       return window._env.url_prefix + 'static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
@@ -130,12 +111,13 @@ export class Header extends Component<Props, State> {
         '?s=300&amp;r=pg&d=' +
         this.state.gravatarDefault
       );
-      // let gravatar = <img style={{ maxWidth: '100%', margin: '8px 0px' }} alt='avatar' src={gravaterSrc} />;
     }
+    return '';
   }
+
   render() {
     return (
-      <>
+      <div>
         <h1 className="roboto-header">{this.props.title}</h1>
         <div
           className="flex top-0 right-0 absolute h-100"
@@ -167,49 +149,9 @@ export class Header extends Component<Props, State> {
               style={{ color: '#2196F3', fontSize: '28px' }}
             ></i>
           </div>
-          <button
-            className="profile-dropdown flex"
-            onClick={event => this.dropDown(null)}
-            onBlur={event => this.dropDown(false)}
-          >
-            <img
-              style={{ maxWidth: '40px' }}
-              alt="avatar"
-              src={this.gravaterSrc()}
-            />
-            <i
-              className="fa fa-caret-down"
-              style={{ marginLeft: '5px', marginTop: '14px', fontSize: '13px' }}
-            ></i>
-          </button>
-          <ul
-            className="dropdown-menu tc right-0"
-            style={{ left: 'auto' }}
-            role="menu"
-            hidden={this.state.dropdownHidden}
-            onBlur={event => this.dropDown(false)}
-          >
-            <li>
-              <div className="dib">
-                <div>{this.state.realname}</div>
-                <div style={{ fontStyle: 'italic' }}>{this.state.username}</div>
-              </div>
-            </li>
-            <hr className="hr-global-header" />
-            <li>
-              <a>
-                <div className="dib" style={{ width: '34px' }}>
-                  <i
-                    className="fa fa-sign-out"
-                    style={{ fontSize: '150%', marginRight: '10px' }}
-                  ></i>
-                </div>
-                Sign Out
-              </a>
-            </li>
-          </ul>
+          <AccountDropdown  username={this.state.username} realname={this.state.realname} gravatarURL={this.gravatarSrc()} />
         </div>
-      </>
+      </div>
     );
   }
 }
