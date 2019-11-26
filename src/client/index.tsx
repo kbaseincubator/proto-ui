@@ -15,11 +15,6 @@ import { Header } from '../client/components/global_header/Header';
 // Utils
 import { getUsername, getToken } from './utils/auth';
 
-// Redirect to sign-in if this page requires auth
-if (window._env.auth_required && !getToken()) {
-  window.location.href = window._env.narrative + '/#login';
-}
-
 // Get a pathname for the page without the global prefix for routing purposes.
 // Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
 let PATHNAME = document.location.pathname
@@ -50,7 +45,9 @@ getUsername((username: string | null) => {
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
 }
+
 interface State {}
+
 // Global page wrapper
 class Page extends Component<Props, State> {
   render() {

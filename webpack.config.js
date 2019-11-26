@@ -1,7 +1,7 @@
 const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
 const dir = path.resolve(__dirname);
-const inDevelopment = Boolean(process.env.DEVELOPMENT);
+const inDevelopment = !process.env.PRODUCTION;
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const exp = {

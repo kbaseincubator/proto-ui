@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import { fetchProfileAPI } from '../../utils/userInfo';
-import { getUsername } from '../../utils/auth';
+import { getUsername, getToken } from '../../utils/auth';
+import { removeCookie } from '../../utils/cookies';
 
 interface State {
   dropdownHidden: boolean;
@@ -52,6 +53,30 @@ export class AccountDropdown extends Component<Props, State> {
     this.setState({ dropdownHidden: !this.state.dropdownHidden });
   }
 
+  signOut() {
+    const token = getToken();
+    if (!token) {
+      console.warn('Tried to sign out a user with no token.')
+      return;
+    }
+    const headers = {
+      'Authorization': token,
+    }
+    fetch(window._env.kbase_endpoint + '/auth2/logout', {
+      method: 'POST',
+      headers,
+    })
+      .then(() => {
+        // Remove the cookie
+        removeCookie('kbase_session');
+        // Redirect to the legacy signed-out page
+        window.location.href = window._env.narrative + '/#auth2/signedout';
+      })
+      .catch((err) => {
+        console.error('Error signing out: ' + err);
+      })
+  }
+
   render() {
     return (
       <div className="account-dropdown">
@@ -83,7 +108,7 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
           <hr className="hr-global-header" />
           <li>
-            <a>
+            <a onClick={this.signOut.bind(this)} className="pointer">
               <div className="dib" style={{ width: '34px' }}>
                 <i
                   className="fa fa-sign-out"

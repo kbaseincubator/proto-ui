@@ -42,6 +42,9 @@ async function getBFFServiceUrl(token: string) {
 
 export async function fetchProfileAPI(username: string) {
   let token = getToken();
+  if (!token) {
+    throw new Error('Tried to fetch profile info without a token.');
+  }
   const bffServiceUrl = await getBFFServiceUrl(token);
   let url = bffServiceUrl + '/fetchUserProfile/' + username;
   console.log(url);

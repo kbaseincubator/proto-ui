@@ -94,8 +94,9 @@
   padding-right: 0px;
   padding-top: 3px;
 }
-.profile-dropdown:hover {
-  background: #d4d4d4;
+
+.profile-dropdown:focus {
+  outline: none;
 }
 
 .account-dropdown {
@@ -104,8 +105,4 @@
   height: 52px;
   padding-right: 15px;
   border-radius: 4px;
-}
-
-.account-dropdown:hover {
-  background-color: #d4d4d4;
 }
