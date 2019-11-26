@@ -35,29 +35,34 @@ export class Profile extends Component<Props, State> {
     this.getProfile = this.getProfile.bind(this);
   }
   componentDidMount() {
-    let profileID = window.location.search.slice(1);
-    if (this.props.authUsername) {
-      if (profileID) {
-        this.setState({ profileID });
-        return;
+    console.log('authUsername', this.props)
+    let profileID:string = ''; // profile ID that the page will be fetching
+    let searchParam = window.location.search.slice(1);
+    let authUsername = this.props.authUsername;
+    if(authUsername){ // check if user is logged in
+      if(searchParam){
+        if(authUsername !== searchParam){
+          profileID = searchParam
+        }
       }
-      this.setState({ profileID: this.props.authUsername, edit: true });
+      this.setState({ edit: true });
+      profileID = authUsername;
+      this.getProfile(profileID);
     } else {
-      // you need auth
+      // need to log in
     }
-    console.log(this.state);
-    this.getProfile(this.state.profileID);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    console.log(this.state, prevState);
+
   }
 
   async getProfile(profileID: string) {
     this.setState({ loading: LoadingStates.fetching });
-    let profileData = await fetchProfileAPI('foo');
+    let profileData = await fetchProfileAPI(profileID);
+    // let profileData = await fetchProfileAPI('amarukawa');
     if (typeof profileData !== 'undefined' && profileData.status === 200) {
-      this.setState({ loading: LoadingStates.success, profileData });
+      this.setState({ loading: LoadingStates.success, profileData: profileData.response});
     } else {
       this.setState({ loading: LoadingStates.error, profileData});
     }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { getUsername } from '../../utils/auth';
 import { AccuntNav } from './navigation';
 import { Profile } from '../Profile/Profile';
-import { combineReducers } from 'redux';
 
 interface Props {}
 
@@ -20,13 +19,13 @@ export class Account extends Component<Props, State> {
       pathname: null,
     };
     this.navOnClick = this.navOnClick.bind(this);
+    this.loadComponent = this.loadComponent.bind(this);
   }
   componentDidMount() {
     getUsername(authUsername => {
-      console.log('authUsername', authUsername);
       this.setState({ authUsername: authUsername });
     });
-    let pathname = window.location.pathname.replace('/account/', '');
+    let pathname = window.location.pathname.replace('/newnav/account/', '');
     this.setState({ pathname });
   }
 
@@ -37,15 +36,20 @@ export class Account extends Component<Props, State> {
       let ele = event.target as HTMLElement;
       let pathname = ele!.closest('li')!.getAttribute('data-hl-nav')!;
       this.setState({ pathname });
-      let url = window._env.url_prefix + 'account/' + pathname;
+      let url = window._env.url_prefix + 'newnav/account/' + pathname;
       console.log(url);
       window.history.pushState(null, '', url);
     }
   }
+
   loadComponent() {
-    switch (this.state.pathname) {
+    let path:string = window.location.pathname.replace('/newnav/account', '')
+    switch (path) {
       case 'profile':
-        return <Profile authUsername={this.state.authUsername} />;
+      case '':
+        if(this.state.authUsername){
+          return <Profile authUsername={this.state.authUsername} />;
+        }
       case 'account':
         return (
           <div>
@@ -73,7 +77,7 @@ export class Account extends Component<Props, State> {
       case 'usage_agreeements':
         return <div>usage_agreeements</div>;
       default:
-        return <Profile authUsername={this.state.authUsername} />;
+    return <div>URL{window.location.pathname.replace('/newnav/account', '')} 404</div>;
     }
   }
 
