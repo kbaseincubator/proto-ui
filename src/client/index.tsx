@@ -27,11 +27,18 @@ if (PATHNAME[0] !== '/') {
 
 const CONTAINER = document.getElementById('react-root');
 
-// change background of the current item in the top-nav. Plain JS. Uses tachyons classes.
+// Change the style of the current item in the top-nav.
+// For new nav:
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    // to add style, it has to be HTMLElement and not node or Element
+    HTMLEle.className = "dib ph3 pv2 no-underline black-80 w-100 dim b bg-light-gray br bw2 b--green";
+  }
+});
+// For legacy nav:
+document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
+  let HTMLEle: HTMLElement = node as HTMLElement;
+  if (PATHNAME === node.getAttribute('data-hl-legacy-nav')) {
     HTMLEle.style.backgroundColor = '#e4e3e4';
   }
 });

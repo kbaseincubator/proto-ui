@@ -7,9 +7,12 @@ import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
 // TODO
+// - get actual app data for each module
 // - table alignment
-// - util to make necessary ajax requests
-// - search, category, star/run sort, and pagination
+// - search, category, star/run sort, and pagination (all in-memory)
+// - mockup for an app page
+// Stretch
+// - Cache modules and apps in localstorage and update async
 
 // Objects we
 interface SDKApp {
@@ -128,9 +131,9 @@ function mungeData (inpData: Array<ServerResult>): Array<SDKApp> {
   return inpData.map(d => {
     return {
       name: d.module_name,
-      desc: '',
-      stars: 0,
-      runs: 0,
+      desc: 'This is a placeholder description',
+      stars: Math.floor(Math.random() * 1000),
+      runs: Math.floor(Math.random() * 1000),
       iconColor: 'blue',
       iconLetter: 'X',
       id: d.git_url,
