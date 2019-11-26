@@ -7,7 +7,7 @@ import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
 // path: /catalog
-import { AppCatalog } from './components/catalog/index';
+import { Catalog } from './components/catalog/index';
 // Used when a suffix from some base-path is not found, such as "/account/xyz"
 import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
@@ -76,8 +76,8 @@ if (CONTAINER) {
     '/newnav/dashboard': {
       component: Dashboard,
     },
-    '/catalog': {
-      component: AppCatalog,
+    '/newnav/catalog': {
+      component: Catalog,
     },
   };
   if (!(PATHNAME in routes)) {
