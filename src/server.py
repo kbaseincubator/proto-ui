@@ -92,7 +92,7 @@ async def orgs_newnav(request, suffix=None):
 async def page_not_found(request, err):
     """404 not found."""
     print('404:', request.path)
-    return _render_template('404.html', {'template': 'layout-newnav.html'}, status=404)
+    return _render_template('404.html', {'template': 'layout-legacy.html'}, status=404)
 
 
 @app.exception(Exception)
@@ -128,7 +128,7 @@ def _render_template(path, args=None, status=200):
     args['app'] = app
     args['url_for'] = _url_for
     args.setdefault('auth_required', False)
-    args.setdefault('newnav', False)
+    args.setdefault('template', 'layout-legacy.html')
     html = template.render(**args)
     return sanic.response.html(html, status=status)
 
