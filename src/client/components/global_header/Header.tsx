@@ -121,7 +121,7 @@ export class Header extends Component<Props, State> {
         <h1 className="roboto-header">{this.props.title}</h1>
         <div
           className="flex top-0 right-0 absolute h-100"
-          style={{ marginRight: '19px' }}
+          style={{ marginRight: '4px' }}
         >
           <div
             className="tc"
