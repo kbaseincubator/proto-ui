@@ -55,19 +55,23 @@ export class Profile extends Component<Props, State> {
 
   async getProfile(profileID: string) {
     this.setState({ loading: LoadingStates.fetching });
-    let profileData = await fetchProfileAPI('amarukawa');
-    if (typeof profileData !== 'undefined') {
+    let profileData = await fetchProfileAPI('foo');
+    if (typeof profileData !== 'undefined' && profileData.status === 200) {
       this.setState({ loading: LoadingStates.success, profileData });
     } else {
-      this.setState({ loading: LoadingStates.error });
+      this.setState({ loading: LoadingStates.error, profileData});
     }
   }
 
   render() {
     if (this.state.loading === LoadingStates.success) {
       return <div>'profile loaded'</div>;
-    } else {
+    } else if (this.state.loading === LoadingStates.fetching) {
       return <div>fetching</div>;
+    } else if (this.state.loading === LoadingStates.error) {
+      return <div>opps {this.state.profileData.status} {this.state.profileData.statusText}</div>
+    } else {
+      return <div>so empty</div>;
     }
   }
 }

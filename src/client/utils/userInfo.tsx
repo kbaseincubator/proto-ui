@@ -54,7 +54,8 @@ export async function fetchProfileAPI(username: string) {
     // return [response.status, response.statusText];
   } else {
     try {
-      return await response.json();
+      let res = await response.json();
+      return {status: response.status, response: res}
     } catch (err) {
       console.error('profile fetch failed', response);
       return { status: response.status, statusText: response.statusText };
