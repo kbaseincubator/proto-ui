@@ -13,4 +13,6 @@ RUN apk --update add --virtual build-dependencies python-dev build-base && \
     apk del build-dependencies
 
 ENV PYTHONPATH=/app
-CMD ["python", "/app/src/server.py"]
+# Use entr for auto-reloading on code changes
+RUN apk --update add entr
+CMD find /app -name \*.py -o -name \*.html | entr -r python /app/src/server.py

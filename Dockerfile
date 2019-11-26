@@ -6,6 +6,7 @@ COPY src/static /app/src/static
 WORKDIR /app
 
 # Install npm dependencies and build static css/js
+ENV PRODUCTION=true
 RUN yarn run build && rm -rf node_modules
 
 # Set up python

@@ -11,34 +11,16 @@
     <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet">
     {# Base tachyons styles #}
     <link rel='stylesheet' href='{{ url_for('static', filename='build/tachyons.min.css') }}'>
-    <link rel='stylesheet' href='{{ url_for('static', filename='legacy-header.css') }}'>
     {% endblock %}
   </head>
 
   <body class='flex flex-column' style='min-height: 100vh;'>
 
-    {# Legacy header and side navgation #}
-    <header id='global-header' class='flex items-center global-header z-2'>
-
-      {% include "hamburger-menu.html" %}
-
-      <a href="https://kbase.us" class="dib logo-header">
-        <img src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'>
-      </a>
-
-      <div
-        id='react-global-header'
-        class='flex'
-        style='height: 65px'
-        data-page-title="{% block titleheader %}{% endblock %}"
-      >
-      </div>
-
-    </header>
-    {% include 'legacy-nav.html' %}
+    {# Top nav bar #}
+    {% include 'new-nav.html' %}
 
     {# Page contents replaced by React #}
-    <div class='flex justify-start-m justify-center-ns' style='margin-left: 78px;'>
+    <div class='flex justify-start-m justify-center-ns' style='margin-left: 12rem;'>
       <main style='min-width: 1024px; max-width: 80rem;'>
         {% block content %}{% endblock %}
       </main>
@@ -49,8 +31,7 @@
       window._env = {
         url_prefix: '{{app.config.URL_PREFIX}}',
         kbase_endpoint: '{{app.config.KBASE_ENDPOINT}}',
-        narrative: '{{app.config.KBASE_UI_ROOT}}',
-        auth_required: {{"true" if auth_required else "false"}},
+        narrative: '{{app.config.KBASE_UI_ROOT}}'
       };
     </script>
 

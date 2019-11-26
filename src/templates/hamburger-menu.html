@@ -1,0 +1,73 @@
+<div class='hamburger-menu'>
+
+  <button class="hamburger">
+      <i class="fa fa-bars icon fa-2x dib"></i>
+  </button>
+
+  <ul class="dropdown-menu tl" tabindex="-1" role="menu" style = "display: none; align-self: flex-start;">
+    <li>
+      <a href="{{ app.config.KBASE_UI_ROOT + "/#narrativemanager/start" }}">
+        <span class="fa fa-file"></span>
+        <span class='label'>Narrative Interface</span>
+      </a>
+    </li>
+    <li>
+      <a href="{{ app.config.KBASE_UI_ROOT + "/#jgi-search" }}">
+        <span class="fa fa-search"></span>
+        <span class='label'>JGI Search</span>
+      </a>
+    </li>
+    <li>
+      <a href="{{ app.config.KBASE_UI_ROOT + "/#biochem-search" }}">
+        <span class="fa fa-search"></span>
+        <span class='label'>Biochem Search</span>
+      </a>
+    </li>
+    <hr class='hr-global-header'/>
+    <li>
+      <a href="{{ app.config.KBASE_UI_ROOT + "/#about/services" }}">
+        <span class="fa fa-server"></span>
+        <span class='label'>KBase Services Status</span>
+      </a>
+    </li>
+    <hr class='hr-global-header'/>
+    <li>
+      <a href="{{ app.config.KBASE_UI_ROOT + "/#about" }}">
+        <span class="fa fa-info-circle"></span>
+        <span class='label'>About</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://kbase.us/contact-us" target="_blank">
+        <span class="fa fa-envelope-o"></span>
+        <span class='label'>Contact KBase</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://kbase.us/narrative-guide/" target="_blank">
+        <span class="fa fa-question"></span><span class='label'>Help</span>
+      </a>
+    </li>
+  </ul>
+  <script type='text/javascript'>
+    // Open/close toggle on the hamburglar
+    var hamburglar = document.getElementsByClassName('hamburger')[0];
+    var hamburglarDropdown = document.querySelector('.dropdown-menu');
+    hamburglar.addEventListener('click', function() {
+      if (hamburglarDropdown.getAttribute("style") === "display: block;") {
+        hamburglarDropdown.style = "display: none;"
+      } else {
+        hamburglarDropdown.style = "display: block;"
+      }
+    });
+    document.body.addEventListener('click', function (ev) {
+      // check if it's hamburglarDropdown
+      if (ev.target === hamburglarDropdown || hamburglarDropdown.contains(ev.target) || ev.target === hamburglar || hamburglar.contains(ev.target)) {
+        return;
+      }
+      if (hamburglarDropdown.getAttribute("style") === "display: block;") {
+        hamburglarDropdown.style = "display: none;"
+      }
+    });
+  </script>
+</div>

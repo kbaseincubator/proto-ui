@@ -1,8 +1,8 @@
 const CompressionPlugin = require('compression-webpack-plugin');
 const path = require('path');
 const dir = path.resolve(__dirname);
-const inDevelopment = Boolean(process.env.DEVELOPMENT);
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const inDevelopment = !process.env.PRODUCTION;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const exp = {
   mode: inDevelopment ? 'development' : 'production',
@@ -15,14 +15,18 @@ const exp = {
   module: {
     rules: [
       {
-        test: /\.tsx$/,
+        test: /\.tsx$/i,
         exclude: /node_modules/,
-        use: {loader: 'ts-loader'},
+        use: {loader: 'ts-loader'}
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      }
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.js', '.jsx'],
+    extensions: ['.tsx', '.js', '.jsx', '.css'],
   },
   plugins: [
     new CompressionPlugin(),
@@ -30,11 +34,13 @@ const exp = {
 };
 
 if (inDevelopment) {
+  /* Uncomment this to enable the bundle analyzer server at localhost:8888
   exp.plugins.push(
     new BundleAnalyzerPlugin({
       openAnalyzer: false
     })
   )
+  */
 }
 
 module.exports = exp;

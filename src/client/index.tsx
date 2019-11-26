@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
+
 // Imports for page-specific components
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
@@ -7,9 +8,13 @@ import { Dashboard } from './components/dashboard/index';
 import { ObjectRelations } from './components/object_relations/index';
 // path: /catalog
 import { AppCatalog } from './components/catalog/index';
+// Used when a suffix from some base-path is not found, such as "/account/xyz"
+import { NotFoundPage } from './components/not_found';
+// Global navigation (legacy copy of previous kbase-ui)
+import { Header } from '../client/components/global_header/Header';
 
 // Utils
-import { getUsername } from './utils/auth';
+import { getUsername, getToken } from './utils/auth';
 
 // Get a pathname for the page without the global prefix for routing purposes.
 // Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
@@ -22,7 +27,7 @@ if (PATHNAME[0] !== '/') {
 
 const CONTAINER = document.getElementById('react-root');
 
-// Underline the current item in the top-nav. Plain JS. Uses tachyons classes.
+// change background of the current item in the top-nav. Plain JS. Uses tachyons classes.
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
@@ -41,12 +46,21 @@ getUsername((username: string | null) => {
 interface Props {
   root: typeof Dashboard | typeof ObjectRelations;
 }
+
 interface State {}
+
 // Global page wrapper
 class Page extends Component<Props, State> {
   render() {
     return <this.props.root />;
   }
+}
+
+// Global header
+const headerElem = document.getElementById('react-global-header');
+if (headerElem !== null) {
+  const pageTitle = headerElem.getAttribute('data-page-title');
+  render(<Header title={pageTitle || ''} />, headerElem);
 }
 
 // Render the page component based on pathname
@@ -58,25 +72,19 @@ if (CONTAINER) {
     '/dashboard': {
       component: Dashboard,
     },
-    '/iframe/dashboard': {
+    // For testing out an alternative nav design
+    '/newnav/dashboard': {
       component: Dashboard,
-    },
-    '/iframe/object_relations': {
-      component: ObjectRelations,
     },
     '/catalog': {
       component: AppCatalog,
     },
   };
-
-  if (PATHNAME in routes) {
+  if (!(PATHNAME in routes)) {
+    // Render 404
+    render(<Page root={NotFoundPage} />, CONTAINER);
+  } else {
     const topComponent = routes[PATHNAME].component;
     render(<Page root={topComponent} />, CONTAINER);
-  } else {
-    console.error(
-      `Unable to find a React component for this page. Path: ${PATHNAME}. Routes: ${Object.keys(
-        routes
-      )}`
-    ); // eslint-disable-line
   }
 }
