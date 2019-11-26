@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './Header.css';
 
 import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
@@ -83,6 +82,9 @@ export class Header extends Component<Props, State> {
   }
 
   async getUserInfo(username: string) {
+    if (!username || !username.length) {
+      return;
+    }
     const res = await fetchProfileAPI(username);
     if (res) {
       const avatarOption = res.profile.userdata.avatarOption;
