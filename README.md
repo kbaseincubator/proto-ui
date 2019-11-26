@@ -17,9 +17,9 @@
 
 ### Run the server
 
-Install `docker` and `docker-compose` first.
+In one terminal, run `make serve` to start the python server.
 
-**Start the server** with `make serve`. Point your browser to **`localhost:5000`**.
+In another terminal, run `yarn run watch` to start the bundler.
 
 ### Linting and formatting typescript
 

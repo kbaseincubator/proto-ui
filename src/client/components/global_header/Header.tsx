@@ -20,7 +20,6 @@ interface Props {
 }
 
 export class Header extends Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -151,7 +150,11 @@ export class Header extends Component<Props, State> {
               style={{ color: '#2196F3', fontSize: '28px' }}
             ></i>
           </div>
-          <AccountDropdown  username={this.state.username} realname={this.state.realname} gravatarURL={this.gravatarSrc()} />
+          <AccountDropdown
+            username={this.state.username}
+            realname={this.state.realname}
+            gravatarURL={this.gravatarSrc()}
+          />
         </div>
       </div>
     );

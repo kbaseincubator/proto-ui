@@ -26,7 +26,7 @@ export class AccountDropdown extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.bodyCloseHandler = (ev) => {
+    this.bodyCloseHandler = ev => {
       const elm = document.querySelector('.account-dropdown');
       const target = ev.target;
       if (!elm || !target) {
@@ -35,7 +35,7 @@ export class AccountDropdown extends Component<Props, State> {
       if (!elm.contains(ev.target as Node)) {
         this.setState({ dropdownHidden: true });
       }
-    }
+    };
     document.body.addEventListener('click', this.bodyCloseHandler);
   }
 
@@ -56,12 +56,12 @@ export class AccountDropdown extends Component<Props, State> {
   signOut() {
     const token = getToken();
     if (!token) {
-      console.warn('Tried to sign out a user with no token.')
+      console.warn('Tried to sign out a user with no token.');
       return;
     }
     const headers = {
-      'Authorization': token,
-    }
+      Authorization: token,
+    };
     fetch(window._env.kbase_endpoint + '/auth2/logout', {
       method: 'POST',
       headers,
@@ -72,14 +72,14 @@ export class AccountDropdown extends Component<Props, State> {
         // Redirect to the legacy signed-out page
         window.location.href = window._env.narrative + '/#auth2/signedout';
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('Error signing out: ' + err);
-      })
+      });
   }
 
   render() {
     return (
-      <div className='account-dropdown'>
+      <div className="account-dropdown">
         <button
           className="profile-dropdown flex pointer"
           onClick={event => this.toggleDropdown()}
@@ -102,8 +102,8 @@ export class AccountDropdown extends Component<Props, State> {
         >
           <li>
             <div className="dib">
-              <div className='black'>{this.props.realname}</div>
-              <div className='black i'>{this.props.username}</div>
+              <div className="black">{this.props.realname}</div>
+              <div className="black i">{this.props.username}</div>
             </div>
           </li>
           <hr className="hr-global-header" />
@@ -115,7 +115,7 @@ export class AccountDropdown extends Component<Props, State> {
                   style={{ fontSize: '150%', marginRight: '10px' }}
                 ></i>
               </div>
-              <span className='black'>Sign Out</span>
+              <span className="black">Sign Out</span>
             </a>
           </li>
         </ul>
