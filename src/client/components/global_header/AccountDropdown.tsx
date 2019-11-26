@@ -77,8 +77,8 @@ export class AccountDropdown extends Component<Props, State> {
         >
           <li>
             <div className="dib">
-              <div>{this.props.realname}</div>
-              <div style={{ fontStyle: 'italic' }}>{this.props.username}</div>
+              <div className='black'>{this.props.realname}</div>
+              <div className='black i'>{this.props.username}</div>
             </div>
           </li>
           <hr className="hr-global-header" />
@@ -90,7 +90,7 @@ export class AccountDropdown extends Component<Props, State> {
                   style={{ fontSize: '150%', marginRight: '10px' }}
                 ></i>
               </div>
-              Sign Out
+              <span className='black'>Sign Out</span>
             </a>
           </li>
         </ul>

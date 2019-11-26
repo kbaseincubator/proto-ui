@@ -94,3 +94,15 @@
   padding-right: 0px;
   padding-top: 3px;
 }
+
+.profile-dropdown:focus {
+  outline: none;
+}
+
+.account-dropdown {
+  padding-top: 2px;
+  margin-top: 7px;
+  height: 52px;
+  padding-right: 15px;
+  border-radius: 4px;
+}
