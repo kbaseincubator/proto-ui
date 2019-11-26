@@ -91,18 +91,20 @@
 
 .profile-dropdown {
   border-width: 0px;
-  padding-right: 0px;
-  padding-top: 3px;
+  background: white;
+  padding: 4px;
+  border-radius: 4px;
 }
-
 .profile-dropdown:focus {
   outline: none;
+}
+.profile-dropdown:hover {
+  background: #e6e6e6;
 }
 
 .account-dropdown {
   padding-top: 2px;
-  margin-top: 7px;
+  margin-top: 4px;
+  margin-right: 6px;
   height: 52px;
-  padding-right: 15px;
-  border-radius: 4px;
 }
