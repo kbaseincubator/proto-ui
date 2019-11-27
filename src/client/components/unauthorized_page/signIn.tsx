@@ -1,25 +1,34 @@
 import React, {Component} from 'react';
 import './singin.css';
+
+/**
+ * this sign in form will re-direct to narrative only
+ */
 export class SignIn extends Component {
 
     redirect(param:string){
-    // document.getElementById(e).click();
-    // document.getElementById('form').submit();
+      let ele = document.getElementById(param);
+      let form = document.getElementById('login-form') as HTMLFormElement;
+      if(ele && form){
+        ele.click();
+        form.submit();
+      }
     }
 
     render(){
      return (
      <>
         <div className="sign-in-container">
+        <h1>Sign in with...</h1>
 					<img style={{marginTop: '1em'}} src='http://kbase.us/wp-content/uploads/2014/11/kbase-logo-web.png'/>
 					<div className='sign-up-botton-container'>
-						<form className='login-form' id='form'
+						<form className='login-form' id='login-form'
 							action="https://kbase.us/services/auth/login/start"
 							method="post">
 							<div className='sign-up-botton-spacer'>
 								<div className='sign-up-botton'>
-									<svg className="logo" id='google-logo' width="45px" height="45px" viewBox="0 0 18 18" role="presentation" aria-hidden="true" focusable="false" style={{verticalAlign: 'middle'}}>
-										<g fill="none" fill-rule="evenodd">
+									<svg className="logo" id='google-logo' width="45px" height="45px" viewBox="0 0 18 18" role="presentation" aria-hidden="true" focusable="false">
+										<g fill="none" fillRule="evenodd">
 											<path d="M9 3.48c1.69 0 2.83.73 3.48 1.34l2.54-2.48C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96
 												4.96l2.91 2.26C4.6 5.05 6.62 3.48 9 3.48z" fill="#EA4335">
 											</path>

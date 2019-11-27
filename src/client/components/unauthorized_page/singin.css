@@ -1,36 +1,43 @@
 .sign-in-container {
     width: 400px;
-    opacity: 1;
-    z-index: 2;
     background: white;
     text-align: center;
-    opacity: unset;
-    border-radius: 8px;
+    margin: auto;
 }
 
 .sign-up-botton-container {
-    margin: 16px;
     border: 1px;
     border-radius: 4px;
-    padding: 1em;
+    margin: 1em;
     border-color: #b4b4b4;
+}
+
+.login-form {
+    position: relative;
 }
 /* just another empty div to give margin */
 .sign-up-botton-spacer {
     padding: 8px;
     height: 56px;
+    position: relative;
+    margin: 1.5em;
 }
+
+/* logo image and input radio */
+.sign-up-botton {
+    width: 100%;
+    height: 100%;
+}
+
 /* cover up radio input to look like a button */
 .input-radio::before {
     background: white;
     color: #999;
     width: 318px;
-    height: 41px;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    vertical-align: middle;
-    padding: 9px;
     z-index: 1;
     border-radius: 4px;
     border: 1px solid #D3D3D3;
@@ -41,15 +48,14 @@
 }
 /* colored part of cover up radio input to look like a button */
 .input-radio::after {
-    width: 278px;
-    height: 41px;
+    width: 228px;
+    height: 18px;
     text-align: center;
     color: white;
     position: absolute;
     top: 0;
     right: 0;
-    vertical-align: middle;
-    padding: 9px;
+    padding: 19px;
     z-index: 1;
     border-top: 1px;
     border-right: 1px;
@@ -62,7 +68,7 @@
     cursor: pointer;
 }
 .input-radio:hover:before {
-    box-shadow: 0 0 5px 4px #9df1ff;
+    box-shadow: 5px 6px 4px 1px #ccc;
     transition: box-shadow 0.5s ease-out;
 }
 
@@ -88,14 +94,7 @@
 .orcid-input:hover:after {
     background: #c7e965;
 }
-.login-form {
-    position: relative;
-}
-/* logo image and input radio */
-.sign-up-botton {
-    width: 100%;
-    height: 100%;
-}
+
 /* logo svg */
 .logo {
     width: 24px;
