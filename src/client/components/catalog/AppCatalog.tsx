@@ -10,33 +10,35 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 const PAGE_SIZE = 20;
 
 // TODO
-// - search
-// - sort by runs
 // - filter by category
-// - remove stars
-// - table alignment
+// - filter by tag
+// - icon images async
 // - mockup for an app page
 // Stretch
 // - filter by input and output types
 // - Cache modules and apps in localstorage and update async
 
+// https://ci.kbase.us/services/narrative_method_store/img?method_id=kb_assembly_compare/run_contig_distribution_compare&image_name=kb-blue.png&tag=release
+
 // Search results directly used in the presentation layer
 interface SDKApp {
   name: string;
   desc: string;
-  stars: number;
   runs: number;
   iconColor: string;
   iconLetter: string;
   id: string;
+  hidden?: boolean;
 }
 
 interface Props {}
 
 interface State {
-  data: Array<SDKApp>;
+  rawData: Array<SDKApp>;
+  results: Array<SDKApp>;
   loading: boolean;
   currentPage: number;
+  runsDesc: boolean;
 }
 
 // Parent page component for the dashboard page
@@ -45,8 +47,10 @@ export class AppCatalog extends Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      data: [],
+      rawData: [],
+      results: [],
       currentPage: 0,
+      runsDesc: true,
     };
   }
 
@@ -54,9 +58,10 @@ export class AppCatalog extends Component<Props, State> {
     this.setState({loading: true});
     fetchApps().then((result) => {
       const hasResults = result && result.details && result.details.length;
-      console.log('results', result);
+      const data = mungeData(result);
       this.setState({
-        data: mungeData(result),
+        results: data,
+        rawData: data,
         loading: false
       });
     });
@@ -67,16 +72,33 @@ export class AppCatalog extends Component<Props, State> {
     this.setState({ currentPage: this.state.currentPage + 1 });
   }
 
+  handleSearch(val: string) {
+    val = val.toLowerCase();
+    const results = this.state.rawData.filter((item: SDKApp) => {
+      return item.name.toLowerCase().indexOf(val) !== -1
+        || item.desc.toLowerCase().indexOf(val) !== -1;
+    });
+    this.setState({ results, currentPage: 0, runsDesc: true });
+  }
+
+  // Click the ascending/descending toggle to sort by app runs
+  handleClickRuns() {
+    const results = sortBy(this.state.results, (item) => {
+      return this.state.runsDesc ? item.runs : -item.runs;
+    });
+    this.setState({ runsDesc: !this.state.runsDesc, results });
+  }
+
   render() {
     const pg = this.state.currentPage;
-    const data = this.state.data.slice(0, PAGE_SIZE * pg + PAGE_SIZE);
+    const results = this.state.results.slice(0, PAGE_SIZE * pg + PAGE_SIZE);
     return (
       <div className="mt4">
         <div className='mt3 flex items-baseline justify-between'>
           <div className='flex' style={{ minWidth: '30rem' }}>
             <div className='relative'>
               <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
-              <SearchInput onSetVal={() => null} loading={false} />
+              <SearchInput onSetVal={(val) => this.handleSearch(val)} loading={false} />
             </div>
 
             <fieldset className='bn pa0 ml3'>
@@ -86,16 +108,23 @@ export class AppCatalog extends Component<Props, State> {
                 <option>Genome Assembly</option>
               </select>
             </fieldset>
+
+            <fieldset className='bn pa0 ml3'>
+              <select className='br2 bn bg-light-gray pa2 black-80'>
+                <option>Released</option>
+                <option>In beta</option>
+                <option>In development</option>
+              </select>
+            </fieldset>
           </div>
 
-          <div className='pr4 b black-70 blue pointer'>Stars <span className='fa fa-caret-down'></span></div>
-          <div className='b black-70 blue pointer'>Runs <span className='fa fa-caret-down'></span></div>
+          { runsSorterView(this) }
         </div>
 
         { loadingView(this) }
 
         <div>
-          { data.map(rowView) }
+          { results.map(rowView) }
         </div>
 
         { loadMoreButtonView(this) }
@@ -103,6 +132,25 @@ export class AppCatalog extends Component<Props, State> {
       </div>
     );
   }
+}
+
+// View for the button to sort results by number of app runs
+function runsSorterView (component: AppCatalog) {
+  if (!component.state.results.length) {
+    // Inactive state
+  return (
+    <div className='black-20'>
+      <span className='dib mr2'> Runs </span>
+      <span className='fa fa-circle black-10'></span>
+    </div>
+  );
+  }
+  return (
+    <div className='b black-70 blue pointer' onClick={component.handleClickRuns.bind(component)}>
+      <span className='dib mr2'> Runs </span>
+      <span className={component.state.runsDesc ? "fa fa-caret-down" : "fa fa-caret-up"}></span>
+    </div>
+  );
 }
 
 // Loading spinner
@@ -120,46 +168,45 @@ function loadMoreButtonView (component: AppCatalog) {
   if (component.state.loading) {
     return '';
   }
-  // loading: boolean;
-  // itemCount?: number;
-  // totalItems?: number;
-  // onLoadMore?: () => void;
+  const totalItems = component.state.results.length;
+  let itemCount = PAGE_SIZE * (component.state.currentPage + 1);
+  if (itemCount > totalItems) {
+    itemCount = totalItems;
+  }
   return (
     <div className='pt3 mt4 bt b--black-20'>
       <LoadMoreBtn
         loading={false}
         onLoadMore={() => component.appendPage()}
-        totalItems={component.state.data.length}
-        itemCount={PAGE_SIZE * component.state.currentPage}
+        totalItems={totalItems}
+        itemCount={itemCount}
       />
     </div>
   );
 }
 
-function rowView (data: SDKApp) {
+function rowView (result: SDKApp) {
+  if (result.hidden) {
+    return '';
+  }
   return (
-    <div className='mt3 pt3 bt b--black-20' key={data.id}>
+    <div className='mt3 pt3 bt b--black-20' key={result.id}>
       <div className='pointer flex justify-between hover-dark-blue'>
         <div className='w-70 flex'>
-          <div className={`mt1 db flex justify-center w2 h2 bg-${data.iconColor} br2 pt1`}>
-            <span className='db b white' style={{ paddingTop: '2px' }}>{data.iconLetter}</span>
+          <div className={`mt1 db flex justify-center w2 h2 bg-${result.iconColor} br2 pt1`}>
+            <span className='db b white' style={{ paddingTop: '2px' }}>{result.iconLetter}</span>
           </div>
 
           <div className='ph3 b' style={{ flexShrink: 100 }}>
-            { data.name }
+            { result.name }
             <span className='db normal black-60 pt1'>
-              { data.desc }
+              { result.desc }
             </span>
           </div>
         </div>
 
-        <div className='ph2 o-70'>
-          <span className='fa fa-star black-40 mr1'></span>
-          { data.stars }
-        </div>
-
         <div className='o-70'>
-          { data.runs }
+          { result.runs }
         </div>
       </div>
     </div>
@@ -169,12 +216,10 @@ function rowView (data: SDKApp) {
 function mungeData (inpData: CombinedResult): Array<SDKApp> {
   let ret = inpData.details.map((d: DetailsResult) => {
     const name = d.id.replace(d.module_name + '/', '');
-    const stars = inpData.stars[d.id.toLowerCase()] || 0;
     const runs = inpData.runs[d.id.toLowerCase()] || 0;
     return {
       name: d.name,
       desc: d.tooltip,
-      stars,
       runs,
       iconColor: 'blue',
       iconLetter: 'X',
