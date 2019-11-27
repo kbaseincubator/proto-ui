@@ -4,31 +4,26 @@ interface Props {
   loading: boolean;
   itemCount?: number;
   totalItems?: number;
+  onLoadMore?: () => void;
 }
 
-interface State {
-  loading: boolean;
-}
+interface State {}
 
 export class LoadMoreBtn extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: props.loading || false
-    };
-  }
 
   handleClick() {
-    this.setState({ loading: !this.state.loading });
+    if (this.props.onLoadMore) {
+      this.props.onLoadMore();
+    }
   }
 
   render() {
-    const { totalItems = 0, itemCount = 0 } = this.props;
+    const { loading = false, totalItems = 0, itemCount = 0 } = this.props;
     const hasMore = itemCount < totalItems;
     if (!hasMore) {
       return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
-    if (this.state.loading) {
+    if (loading) {
       return (
         <span className="black-60 pa3 tc dib">
           <i className="fa fa-cog fa-spin mr2"></i>

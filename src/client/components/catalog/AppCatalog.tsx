@@ -7,6 +7,8 @@ import { sortBy } from '../../utils/sortBy';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
+const PAGE_SIZE = 20;
+
 // TODO
 // - table alignment
 // - search, category, star/run sort, and pagination (all in-memory)
@@ -14,7 +16,7 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 // Stretch
 // - Cache modules and apps in localstorage and update async
 
-// Objects we
+// Search results directly used in the presentation layer
 interface SDKApp {
   name: string;
   desc: string;
@@ -30,6 +32,7 @@ interface Props {}
 interface State {
   data: Array<SDKApp>;
   loading: boolean;
+  currentPage: number;
 }
 
 // Parent page component for the dashboard page
@@ -38,7 +41,8 @@ export class AppCatalog extends Component<Props, State> {
     super(props);
     this.state = {
       loading: false,
-      data: []
+      data: [],
+      currentPage: 0,
     };
   }
 
@@ -54,7 +58,14 @@ export class AppCatalog extends Component<Props, State> {
     });
   }
 
+  // Load more button click; show more results
+  appendPage() {
+    this.setState({ currentPage: this.state.currentPage + 1 });
+  }
+
   render() {
+    const pg = this.state.currentPage;
+    const data = this.state.data.slice(0, PAGE_SIZE * pg + PAGE_SIZE);
     return (
       <div className="mt4">
         <div className='mt3 flex items-baseline justify-between'>
@@ -80,7 +91,7 @@ export class AppCatalog extends Component<Props, State> {
         { loadingView(this) }
 
         <div>
-          { this.state.data.map(rowView) }
+          { data.map(rowView) }
         </div>
 
         { loadMoreButtonView(this) }
@@ -90,6 +101,7 @@ export class AppCatalog extends Component<Props, State> {
   }
 }
 
+// Loading spinner
 function loadingView (component: AppCatalog) {
   if (!component.state.loading) {
     return '';
@@ -99,13 +111,23 @@ function loadingView (component: AppCatalog) {
   );
 }
 
+// Button to load more results (hide if we are initially loading)
 function loadMoreButtonView (component: AppCatalog) {
   if (component.state.loading) {
     return '';
   }
+  // loading: boolean;
+  // itemCount?: number;
+  // totalItems?: number;
+  // onLoadMore?: () => void;
   return (
     <div className='pt3 mt4 bt b--black-20'>
-      <LoadMoreBtn loading={ false } />
+      <LoadMoreBtn
+        loading={false}
+        onLoadMore={() => component.appendPage()}
+        totalItems={component.state.data.length}
+        itemCount={PAGE_SIZE * component.state.currentPage}
+      />
     </div>
   );
 }
