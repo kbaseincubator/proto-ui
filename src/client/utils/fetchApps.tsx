@@ -33,7 +33,7 @@ export interface DetailsResult {
 // - to the narrative method store to get the title/desc/etc for every app
 // For some reason, list_favorite_counts returns the module name as lowercased >x
 // So to have a canonical app id, we need module_name/app_id where module_name is always lowercased
-export async function fetchApps () {
+export async function fetchApps (tag = "release") {
   const catalogUrl = window._env.kbase_endpoint + '/catalog';
   const nmsUrl = window._env.kbase_endpoint + '/narrative_method_store/rpc';
   const runs = fetch(catalogUrl, {
@@ -51,7 +51,7 @@ export async function fetchApps () {
       method: 'NarrativeMethodStore.list_methods',
       version: '1.1',
       id: '0',
-      params: [{tag: "release"}]
+      params: [{tag: tag}]
     })
   });
   const [runsResult, detailsResult] = await Promise.all([runs, details])

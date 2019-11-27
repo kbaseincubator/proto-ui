@@ -33,12 +33,15 @@ interface SDKApp {
 
 interface Props {}
 
+enum Tag { Dev = 'dev', Beta = 'beta', Release = 'release' }
+
 interface State {
   rawData: Array<SDKApp>;
   results: Array<SDKApp>;
   loading: boolean;
   currentPage: number;
   runsDesc: boolean;
+  tag: Tag;
 }
 
 // Parent page component for the dashboard page
@@ -51,18 +54,26 @@ export class AppCatalog extends Component<Props, State> {
       results: [],
       currentPage: 0,
       runsDesc: true,
+      tag: Tag.Release,
     };
   }
 
   componentDidMount() {
-    this.setState({loading: true});
-    fetchApps().then((result) => {
+    this.fetchData();
+  }
+
+  // Fetch the app data
+  fetchData(tag: Tag = Tag.Release) {
+    this.setState({ loading: true });
+    fetchApps(tag).then((result) => {
       const hasResults = result && result.details && result.details.length;
       const data = mungeData(result);
       this.setState({
         results: data,
         rawData: data,
-        loading: false
+        loading: false,
+        currentPage: 0,
+        runsDesc: true,
       });
     });
   }
@@ -72,6 +83,7 @@ export class AppCatalog extends Component<Props, State> {
     this.setState({ currentPage: this.state.currentPage + 1 });
   }
 
+  // Handle input to the search box. In-memory search with no network request.
   handleSearch(val: string) {
     val = val.toLowerCase();
     const results = this.state.rawData.filter((item: SDKApp) => {
@@ -89,9 +101,25 @@ export class AppCatalog extends Component<Props, State> {
     this.setState({ runsDesc: !this.state.runsDesc, results });
   }
 
+  // Select an option in the release/beta/dev dropdown filter
+  handleChangeTag(ev: React.ChangeEvent<HTMLSelectElement>) {
+    const val = ev.currentTarget.value;
+    let tag = Tag.Release;
+    if (val === 'beta') {
+      tag = Tag.Beta;
+    } else if (val === 'dev') {
+      tag = Tag.Dev;
+    }
+    this.fetchData(tag);
+  }
+
   render() {
     const pg = this.state.currentPage;
     const results = this.state.results.slice(0, PAGE_SIZE * pg + PAGE_SIZE);
+    let rowWrapClassName = '';
+    if (this.state.loading && this.state.results.length) {
+      rowWrapClassName = 'o-30';
+    }
     return (
       <div className="mt4">
         <div className='mt3 flex items-baseline justify-between'>
@@ -110,10 +138,10 @@ export class AppCatalog extends Component<Props, State> {
             </fieldset>
 
             <fieldset className='bn pa0 ml3'>
-              <select className='br2 bn bg-light-gray pa2 black-80'>
-                <option>Released</option>
-                <option>In beta</option>
-                <option>In development</option>
+              <select className='br2 bn bg-light-gray pa2 black-80' onChange={this.handleChangeTag.bind(this)}>
+                <option value='released'>Released</option>
+                <option value='beta'>In beta</option>
+                <option value='dev'>In development</option>
               </select>
             </fieldset>
           </div>
@@ -123,7 +151,7 @@ export class AppCatalog extends Component<Props, State> {
 
         { loadingView(this) }
 
-        <div>
+        <div className={rowWrapClassName} style={{ transition: 'opacity linear 0.1s' }}>
           { results.map(rowView) }
         </div>
 
@@ -146,7 +174,7 @@ function runsSorterView (component: AppCatalog) {
   );
   }
   return (
-    <div className='b black-70 blue pointer' onClick={component.handleClickRuns.bind(component)}>
+    <div className='b black-70 blue pointer dim' onClick={component.handleClickRuns.bind(component)}>
       <span className='dib mr2'> Runs </span>
       <span className={component.state.runsDesc ? "fa fa-caret-down" : "fa fa-caret-up"}></span>
     </div>
@@ -155,7 +183,7 @@ function runsSorterView (component: AppCatalog) {
 
 // Loading spinner
 function loadingView (component: AppCatalog) {
-  if (!component.state.loading) {
+  if (!component.state.loading || component.state.results.length) {
     return '';
   }
   return (

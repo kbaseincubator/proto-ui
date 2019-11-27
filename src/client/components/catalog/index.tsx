@@ -13,20 +13,6 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 // - util to make necessary ajax requests
 // - search, category, star/run sort, and pagination
 
-/*
-const fakeData: Array<FakeDatum> = [
-  {
-    name: 'Assess Genome Quality with CheckM - v1.0.18',
-    desc: 'Runs the CheckM lineage workflow to assess the genome quality of isolates, single cells, or genome bins...',
-    stars: 30,
-    runs: 16148,
-    iconColor: 'green',
-    iconLetter: 'X',
-    id: '0',
-  }
-]
-*/
-
 const CONTENT_COMPONENTS = [
   AppCatalog,
 ];
