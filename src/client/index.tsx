@@ -11,7 +11,7 @@ import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
 import { Header } from '../client/components/global_header/Header';
 
-import { Unautherized } from '../client/components/unauthorized_page/UnautherizedPage';
+import { Unauthorized } from '../client/components/unauthorized_page/UnauthorizedPage';
 
 // Utils
 import { getUsername, getToken } from './utils/auth';
@@ -66,7 +66,7 @@ if (headerElem !== null) {
 
 function renderRootComponent () {
   if (!getToken()) {
-    render(<Page root={Unautherized} />, CONTAINER);
+    render(<Page root={Unauthorized} />, CONTAINER);
     return;
   }
   // Simple routing by looking at pathname

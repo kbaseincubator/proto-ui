@@ -138,7 +138,6 @@ export class Header extends Component<Props, State> {
         removeCookie('kbase_session');
         // Redirect to the legacy signed-out page
         window.location.href = window._env.narrative + '/#auth2/signedout';
-        this.setState({signedout: true})
       })
       .catch(err => {
         console.error('Error signing out: ' + err);
