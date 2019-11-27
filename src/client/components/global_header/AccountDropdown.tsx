@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
-import { fetchProfileAPI } from '../../utils/userInfo';
-import { getUsername, getToken } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 import { removeCookie } from '../../utils/cookies';
 
 interface State {
@@ -13,6 +11,8 @@ interface Props {
   username: string | null;
   realname: string | null;
   gravatarURL: string;
+  signedout: boolean;
+  signOut: ()=>void;
 }
 
 export class AccountDropdown extends Component<Props, State> {
@@ -53,33 +53,11 @@ export class AccountDropdown extends Component<Props, State> {
     this.setState({ dropdownHidden: !this.state.dropdownHidden });
   }
 
-  signOut() {
-    const token = getToken();
-    if (!token) {
-      console.warn('Tried to sign out a user with no token.');
-      return;
-    }
-    const headers = {
-      Authorization: token,
-    };
-    fetch(window._env.kbase_endpoint + '/auth2/logout', {
-      method: 'POST',
-      headers,
-    })
-      .then(() => {
-        // Remove the cookie
-        removeCookie('kbase_session');
-        // Redirect to the legacy signed-out page
-        window.location.href = window._env.narrative + '/#auth2/signedout';
-      })
-      .catch(err => {
-        console.error('Error signing out: ' + err);
-      });
-  }
 
   render() {
-    return (
-      <div className="account-dropdown">
+    if(this.props.signedout === false){
+      return (
+        <div className="account-dropdown">
         <button
           className="profile-dropdown flex pointer"
           onClick={event => this.toggleDropdown()}
@@ -108,7 +86,7 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
           <hr className="hr-global-header" />
           <li>
-            <a onClick={this.signOut.bind(this)} className="pointer">
+            <a onClick={()=>this.props.signOut()} className="pointer">
               <div className="dib" style={{ width: '34px' }}>
                 <i
                   className="fa fa-sign-out"
@@ -120,6 +98,16 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
         </ul>
       </div>
-    );
+      )
+    } else {
+      return (
+        <div className="signin" style={{padding: '10px 14px', textAlign: 'center', background: '#F5F5F5', margin: '3px 0px', borderRadius: '4px'}}>
+          <a className="no-underline" data-button="signin" href={window._env.url_prefix + "#login"}>
+            <div className="fa fa-sign-in" style={{marginRight: '5px',  fontSize: '25px', color: '#2196F3'}}></div>
+            <div style={{color: "#666", fontSize: '13px', marginTop: '2px'}}>Sign In</div>
+          </a>
+        </div>
+      )
+    }
   }
 }
