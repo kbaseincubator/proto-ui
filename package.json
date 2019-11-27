@@ -26,7 +26,6 @@
     "@kbase/base-css": "0.0.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",
-    "svg-inline-loader": "^0.8.0",
     "timeago.js": "^4.0.0"
   }
 }
