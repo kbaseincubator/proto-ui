@@ -10,15 +10,6 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
 const PAGE_SIZE = 20;
 
-// TODO
-// - icon images async
-// - mockup for an app page
-// Stretch
-// - filter by input and output types
-// - Cache state in localstorage and update async
-
-// https://ci.kbase.us/services/narrative_method_store/img?method_id=kb_assembly_compare/run_contig_distribution_compare&image_name=kb-blue.png&tag=release
-
 // Search results directly used in the presentation layer
 interface SDKApp {
   name: string;

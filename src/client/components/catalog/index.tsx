@@ -8,11 +8,6 @@ import { AppCatalog } from './AppCatalog';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
-// TODO
-// - table alignment
-// - util to make necessary ajax requests
-// - search, category, star/run sort, and pagination
-
 const CONTENT_COMPONENTS = [
   AppCatalog,
 ];
