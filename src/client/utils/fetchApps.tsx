@@ -3,6 +3,7 @@
 export interface CombinedResult {
   runs: Runs;
   details: Array<DetailsResult>;
+  categories: Array<string>;
 }
 
 // Object of app ID mapped to number of runs
@@ -65,9 +66,19 @@ export async function fetchApps (tag = "release") {
   }, {});
   let detailsJson = await details.json();
   detailsJson = detailsJson.result[0];
+  // Reduce all the details data into an array of category names
+  const categories: Array<string> = detailsJson.reduce((cats: Array<string>, det: DetailsResult) => {
+    for (let catName of det.categories) {
+      if (cats.indexOf(catName) === -1) {
+        cats.push(catName);
+      }
+    }
+    return cats;
+  }, []);
   // Combine all of the above into a single result of type CombinedResult
   return {
     runs: runsJson,
-    details: detailsJson
+    details: detailsJson,
+    categories,
   };
 }

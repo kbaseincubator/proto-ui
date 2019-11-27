@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { fetchApps, CombinedResult, DetailsResult } from '../../utils/fetchApps';
 import { sortBy } from '../../utils/sortBy';
+import { formatSnakeCase } from '../../utils/formatSnakeCase';
 
 // Components
 import { SearchInput } from '../generic/SearchInput';
@@ -10,13 +11,11 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 const PAGE_SIZE = 20;
 
 // TODO
-// - filter by category
-// - filter by tag
 // - icon images async
 // - mockup for an app page
 // Stretch
 // - filter by input and output types
-// - Cache modules and apps in localstorage and update async
+// - Cache state in localstorage and update async
 
 // https://ci.kbase.us/services/narrative_method_store/img?method_id=kb_assembly_compare/run_contig_distribution_compare&image_name=kb-blue.png&tag=release
 
@@ -29,6 +28,7 @@ interface SDKApp {
   iconLetter: string;
   id: string;
   hidden?: boolean;
+  categories: Array<string>;
 }
 
 interface Props {}
@@ -38,14 +38,18 @@ enum Tag { Dev = 'dev', Beta = 'beta', Release = 'release' }
 interface State {
   rawData: Array<SDKApp>;
   results: Array<SDKApp>;
+  categories: Array<string>;
   loading: boolean;
   currentPage: number;
-  runsDesc: boolean;
-  tag: Tag;
 }
 
 // Parent page component for the dashboard page
 export class AppCatalog extends Component<Props, State> {
+  category: string = 'any';
+  searchTerm: string = '';
+  tag: Tag = Tag.Release;
+  runsDesc: boolean = true;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -53,8 +57,7 @@ export class AppCatalog extends Component<Props, State> {
       rawData: [],
       results: [],
       currentPage: 0,
-      runsDesc: true,
-      tag: Tag.Release,
+      categories: [],
     };
   }
 
@@ -63,18 +66,17 @@ export class AppCatalog extends Component<Props, State> {
   }
 
   // Fetch the app data
-  fetchData(tag: Tag = Tag.Release) {
+  fetchData() {
     this.setState({ loading: true });
-    fetchApps(tag).then((result) => {
+    fetchApps(this.tag).then((result) => {
       const hasResults = result && result.details && result.details.length;
       const data = mungeData(result);
       this.setState({
-        results: data,
         rawData: data,
+        categories: result.categories,
         loading: false,
-        currentPage: 0,
-        runsDesc: true,
       });
+      this.applyResultFilters();
     });
   }
 
@@ -84,33 +86,60 @@ export class AppCatalog extends Component<Props, State> {
   }
 
   // Handle input to the search box. In-memory search with no network request.
-  handleSearch(val: string) {
-    val = val.toLowerCase();
-    const results = this.state.rawData.filter((item: SDKApp) => {
-      return item.name.toLowerCase().indexOf(val) !== -1
+  handleSearchInput(val: string) {
+    this.searchTerm = val;
+    this.applyResultFilters();
+  }
+
+  // Apply the search term and other filters to get a list of results
+  applyResultFilters() {
+    const val = this.searchTerm;
+    const cat = this.category;
+    let results = this.state.rawData.filter((item: SDKApp) => {
+      // Match the search term on name or description
+      const searchMatch = val === '' || item.name.toLowerCase().indexOf(val) !== -1
         || item.desc.toLowerCase().indexOf(val) !== -1;
+      if (!searchMatch) {
+        // Return early to save cycles
+        return false;
+      }
+      // Match the category filter against each result's category array
+      const catMatch = cat === 'any' || (item.categories.indexOf(cat) !== -1);
+      return searchMatch && catMatch;
     });
-    this.setState({ results, currentPage: 0, runsDesc: true });
+    results = sortBy(results, (item) => {
+      return this.runsDesc ? -item.runs : item.runs;
+    });
+    this.setState({ results, currentPage: 0 });
   }
 
   // Click the ascending/descending toggle to sort by app runs
   handleClickRuns() {
-    const results = sortBy(this.state.results, (item) => {
-      return this.state.runsDesc ? item.runs : -item.runs;
-    });
-    this.setState({ runsDesc: !this.state.runsDesc, results });
+    this.runsDesc = !this.runsDesc;
+    this.applyResultFilters();
   }
 
   // Select an option in the release/beta/dev dropdown filter
   handleChangeTag(ev: React.ChangeEvent<HTMLSelectElement>) {
     const val = ev.currentTarget.value;
-    let tag = Tag.Release;
+    this.tag = Tag.Release;
     if (val === 'beta') {
-      tag = Tag.Beta;
+      this.tag = Tag.Beta;
     } else if (val === 'dev') {
-      tag = Tag.Dev;
+      this.tag = Tag.Dev;
+    } else if (val === 'release') {
+      this.tag = Tag.Release;
+    } else {
+      throw new Error("Invalid tag: " + val);
     }
-    this.fetchData(tag);
+    this.fetchData();
+  }
+
+  // Handle the dropdown change event for the category filter
+  handleCategoryChange(ev: React.ChangeEvent<HTMLSelectElement>) {
+    const cat = ev.currentTarget.value;
+    this.category = cat;
+    this.applyResultFilters();
   }
 
   render() {
@@ -126,20 +155,14 @@ export class AppCatalog extends Component<Props, State> {
           <div className='flex' style={{ minWidth: '30rem' }}>
             <div className='relative'>
               <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
-              <SearchInput onSetVal={(val) => this.handleSearch(val)} loading={false} />
+              <SearchInput onSetVal={(val) => this.handleSearchInput(val)} loading={false} />
             </div>
 
-            <fieldset className='bn pa0 ml3'>
-              <select className='br2 bn bg-light-gray pa2 black-80'>
-                <option>Any category</option>
-                <option>Read Processing</option>
-                <option>Genome Assembly</option>
-              </select>
-            </fieldset>
+            { categoryDropdownView(this) }
 
             <fieldset className='bn pa0 ml3'>
               <select className='br2 bn bg-light-gray pa2 black-80' onChange={this.handleChangeTag.bind(this)}>
-                <option value='released'>Released</option>
+                <option value='release'>Released</option>
                 <option value='beta'>In beta</option>
                 <option value='dev'>In development</option>
               </select>
@@ -162,6 +185,32 @@ export class AppCatalog extends Component<Props, State> {
   }
 }
 
+// View for the category filter dropdown
+function categoryDropdownView (component: AppCatalog) {
+  const cats = component.state.categories;
+  if (cats.length === 0) {
+    // No categories available; disable and reduce opacity
+    <fieldset className='bn pa0 ml3'>
+      <select disabled className='o-30 br2 bn bg-light-gray pa2 black-80'>
+      </select>
+    </fieldset>
+  }
+  const optionView = (cat: string) => {
+    return <option key={cat} value={cat}>{formatSnakeCase(cat)}</option>
+  }
+  return (
+    <fieldset className='bn pa0 ml3'>
+      <select
+        className='br2 bn bg-light-gray pa2 black-80'
+        onChange={(ev) => component.handleCategoryChange(ev)}
+      >
+        <option value='any'>Any category</option>
+        { cats.map(optionView) }
+      </select>
+    </fieldset>
+  );
+}
+
 // View for the button to sort results by number of app runs
 function runsSorterView (component: AppCatalog) {
   if (!component.state.results.length) {
@@ -176,7 +225,7 @@ function runsSorterView (component: AppCatalog) {
   return (
     <div className='b black-70 blue pointer dim' onClick={component.handleClickRuns.bind(component)}>
       <span className='dib mr2'> Runs </span>
-      <span className={component.state.runsDesc ? "fa fa-caret-down" : "fa fa-caret-up"}></span>
+      <span className={component.runsDesc ? "fa fa-caret-down" : "fa fa-caret-up"}></span>
     </div>
   );
 }
@@ -251,7 +300,8 @@ function mungeData (inpData: CombinedResult): Array<SDKApp> {
       runs,
       iconColor: 'blue',
       iconLetter: 'X',
-      id: d.id
+      id: d.id,
+      categories: d.categories,
     };
   });
   ret = sortBy(ret, (d) => -d.runs);
