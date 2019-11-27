@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import { fetchApps } from '../../utils/fetchApps';
+import { fetchApps, CombinedResult, DetailsResult } from '../../utils/fetchApps';
+import { sortBy } from '../../utils/sortBy';
 
 // Components
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
 // TODO
-// - get actual app data for each module
 // - table alignment
 // - search, category, star/run sort, and pagination (all in-memory)
 // - mockup for an app page
@@ -23,12 +23,6 @@ interface SDKApp {
   iconColor: string;
   iconLetter: string;
   id: string;
-}
-
-// Catalog results directly in the server, converted into SDKApp above by mungeData
-interface ServerResult {
-  module_name: string;
-  git_url: string;
 }
 
 interface Props {}
@@ -50,10 +44,11 @@ export class AppCatalog extends Component<Props, State> {
 
   componentDidMount() {
     this.setState({loading: true});
-    fetchApps().then((json) => {
-      const hasResults = json.result && json.result.length && json.result[0].length;
+    fetchApps().then((result) => {
+      const hasResults = result && result.details && result.details.length;
+      console.log('results', result);
       this.setState({
-        data: mungeData(json.result[0]),
+        data: mungeData(result),
         loading: false
       });
     });
@@ -82,18 +77,37 @@ export class AppCatalog extends Component<Props, State> {
           <div className='b black-70 blue pointer'>Runs <span className='fa fa-caret-down'></span></div>
         </div>
 
+        { loadingView(this) }
+
         <div>
           { this.state.data.map(rowView) }
         </div>
 
-
-        <div className='pt3 mt4 bt b--black-20'>
-          <LoadMoreBtn loading={ false } />
-        </div>
+        { loadMoreButtonView(this) }
 
       </div>
     );
   }
+}
+
+function loadingView (component: AppCatalog) {
+  if (!component.state.loading) {
+    return '';
+  }
+  return (
+    <p className='black-60 mt3'><i className='fa fa-gear fa-spin'></i> Loading...</p>
+  );
+}
+
+function loadMoreButtonView (component: AppCatalog) {
+  if (component.state.loading) {
+    return '';
+  }
+  return (
+    <div className='pt3 mt4 bt b--black-20'>
+      <LoadMoreBtn loading={ false } />
+    </div>
+  );
 }
 
 function rowView (data: SDKApp) {
@@ -126,18 +140,21 @@ function rowView (data: SDKApp) {
   );
 }
 
-function mungeData (inpData: Array<ServerResult>): Array<SDKApp> {
-  const ret: Array<SDKApp> = [];
-  return inpData.map(d => {
+function mungeData (inpData: CombinedResult): Array<SDKApp> {
+  let ret = inpData.details.map((d: DetailsResult) => {
+    const name = d.id.replace(d.module_name + '/', '');
+    const stars = inpData.stars[d.id.toLowerCase()] || 0;
+    const runs = inpData.runs[d.id.toLowerCase()] || 0;
     return {
-      name: d.module_name,
-      desc: 'This is a placeholder description',
-      stars: Math.floor(Math.random() * 1000),
-      runs: Math.floor(Math.random() * 1000),
+      name: d.name,
+      desc: d.tooltip,
+      stars,
+      runs,
       iconColor: 'blue',
       iconLetter: 'X',
-      id: d.git_url,
+      id: d.id
     };
   });
+  ret = sortBy(ret, (d) => -d.runs);
   return ret;
 }
