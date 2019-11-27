@@ -10,10 +10,14 @@ import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 const PAGE_SIZE = 20;
 
 // TODO
+// - search
+// - sort by runs
+// - filter by category
+// - remove stars
 // - table alignment
-// - search, category, star/run sort, and pagination (all in-memory)
 // - mockup for an app page
 // Stretch
+// - filter by input and output types
 // - Cache modules and apps in localstorage and update async
 
 // Search results directly used in the presentation layer
