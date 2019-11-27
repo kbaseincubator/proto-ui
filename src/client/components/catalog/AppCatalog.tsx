@@ -24,11 +24,10 @@ interface SDKApp {
   name: string;
   desc: string;
   runs: number;
-  iconColor: string;
-  iconLetter: string;
   id: string;
   hidden?: boolean;
   categories: Array<string>;
+  icon?: {url: string};
 }
 
 interface Props {}
@@ -266,18 +265,35 @@ function rowView (result: SDKApp) {
   if (result.hidden) {
     return '';
   }
+  let appIcon = (
+    <span
+      className='f3 db b white bg-blue br3 flex justify-center items-center o-80'
+      style={{ width: '3rem' }}
+    >
+      <span className='fa fa-cube'></span>
+    </span>
+  );
+  if (result.icon && result.icon.url) {
+    const nmsUrl = window._env.kbase_endpoint + '/narrative_method_store/';
+    appIcon = <img src={nmsUrl + result.icon.url} />
+  }
+  // Truncate the description to 180 chars
+  let desc = result.desc;
+  if (desc.length > 180) {
+    desc = desc.slice(0, 180) + '...';
+  }
   return (
     <div className='mt3 pt3 bt b--black-20' key={result.id}>
       <div className='pointer flex justify-between hover-dark-blue'>
         <div className='w-70 flex'>
-          <div className={`mt1 db flex justify-center w2 h2 bg-${result.iconColor} br2 pt1`}>
-            <span className='db b white' style={{ paddingTop: '2px' }}>{result.iconLetter}</span>
+          <div className='mt1 db flex justify-center' style={{ width: '3rem', height: '3rem' }}>
+            {appIcon}
           </div>
 
           <div className='ph3 b' style={{ flexShrink: 100 }}>
             { result.name }
             <span className='db normal black-60 pt1'>
-              { result.desc }
+              { desc }
             </span>
           </div>
         </div>
@@ -290,6 +306,7 @@ function rowView (result: SDKApp) {
   );
 }
 
+// Convert data from the server into objects that we use directly in the UI
 function mungeData (inpData: CombinedResult): Array<SDKApp> {
   let ret = inpData.details.map((d: DetailsResult) => {
     const name = d.id.replace(d.module_name + '/', '');
@@ -298,10 +315,9 @@ function mungeData (inpData: CombinedResult): Array<SDKApp> {
       name: d.name,
       desc: d.tooltip,
       runs,
-      iconColor: 'blue',
-      iconLetter: 'X',
       id: d.id,
       categories: d.categories,
+      icon: d.icon,
     };
   });
   ret = sortBy(ret, (d) => -d.runs);

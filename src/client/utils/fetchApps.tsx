@@ -26,6 +26,7 @@ export interface DetailsResult {
   input_types: Array<string>;
   output_types: Array<string>;
   tooltip: string;
+  icon?: {url: string};
 }
 
 // Fetch app data from the backends.
