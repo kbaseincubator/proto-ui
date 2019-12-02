@@ -7,6 +7,7 @@ import { formatSnakeCase } from '../../utils/formatSnakeCase';
 // Components
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
+import { LoadingSpinner } from '../generic/LoadingSpinner';
 
 const PAGE_SIZE = 20;
 
@@ -59,7 +60,6 @@ export class AppCatalog extends Component<Props, State> {
   fetchData() {
     this.setState({ loading: true });
     fetchApps(this.tag).then((result) => {
-      const hasResults = result && result.details && result.details.length;
       const data = mungeData(result);
       this.setState({
         rawData: data,
@@ -162,7 +162,7 @@ export class AppCatalog extends Component<Props, State> {
           { runsSorterView(this) }
         </div>
 
-        { loadingView(this) }
+        <LoadingSpinner loading={this.state.loading && !this.state.results.length} />
 
         <div className={rowWrapClassName} style={{ transition: 'opacity linear 0.1s' }}>
           { results.map(rowView) }
