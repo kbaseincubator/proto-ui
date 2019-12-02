@@ -91,7 +91,7 @@ export class AppCatalog extends Component<Props, State> {
 
   // Apply the search term and other filters to get a list of results
   applyResultFilters() {
-    const val = this.searchTerm;
+    const val = this.searchTerm.toLowerCase();
     const cat = this.category;
     let results = this.state.rawData.filter((item: SDKApp) => {
       // Match the search term on name or description
