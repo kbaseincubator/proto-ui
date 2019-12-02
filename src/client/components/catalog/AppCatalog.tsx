@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-import { fetchApps, CombinedResult, DetailsResult } from '../../utils/fetchApps';
+import {
+  fetchApps,
+  CombinedResult,
+  DetailsResult,
+} from '../../utils/fetchApps';
 import { sortBy } from '../../utils/sortBy';
 import { formatSnakeCase } from '../../utils/formatSnakeCase';
 
@@ -19,12 +23,16 @@ interface SDKApp {
   id: string;
   hidden?: boolean;
   categories: Array<string>;
-  icon?: {url: string};
+  icon?: { url: string };
 }
 
 interface Props {}
 
-enum Tag { Dev = 'dev', Beta = 'beta', Release = 'release' }
+enum Tag {
+  Dev = 'dev',
+  Beta = 'beta',
+  Release = 'release',
+}
 
 interface State {
   rawData: Array<SDKApp>;
@@ -59,7 +67,7 @@ export class AppCatalog extends Component<Props, State> {
   // Fetch the app data
   fetchData() {
     this.setState({ loading: true });
-    fetchApps(this.tag).then((result) => {
+    fetchApps(this.tag).then(result => {
       const data = mungeData(result);
       this.setState({
         rawData: data,
@@ -87,17 +95,19 @@ export class AppCatalog extends Component<Props, State> {
     const cat = this.category;
     let results = this.state.rawData.filter((item: SDKApp) => {
       // Match the search term on name or description
-      const searchMatch = val === '' || item.name.toLowerCase().indexOf(val) !== -1
-        || item.desc.toLowerCase().indexOf(val) !== -1;
+      const searchMatch =
+        val === '' ||
+        item.name.toLowerCase().indexOf(val) !== -1 ||
+        item.desc.toLowerCase().indexOf(val) !== -1;
       if (!searchMatch) {
         // Return early to save cycles
         return false;
       }
       // Match the category filter against each result's category array
-      const catMatch = cat === 'any' || (item.categories.indexOf(cat) !== -1);
+      const catMatch = cat === 'any' || item.categories.indexOf(cat) !== -1;
       return searchMatch && catMatch;
     });
-    results = sortBy(results, (item) => {
+    results = sortBy(results, item => {
       return this.runsDesc ? -item.runs : item.runs;
     });
     this.setState({ results, currentPage: 0 });
@@ -120,7 +130,7 @@ export class AppCatalog extends Component<Props, State> {
     } else if (val === 'release') {
       this.tag = Tag.Release;
     } else {
-      throw new Error("Invalid tag: " + val);
+      throw new Error('Invalid tag: ' + val);
     }
     this.fetchData();
   }
@@ -141,87 +151,111 @@ export class AppCatalog extends Component<Props, State> {
     }
     return (
       <div className="mt4">
-        <div className='mt3 flex items-baseline justify-between'>
-          <div className='flex' style={{ minWidth: '30rem' }}>
-            <div className='relative'>
-              <i className='fas fa-search black-30 absolute' style={{ top: '0.65rem', left: '0.5rem' }}></i>
-              <SearchInput onSetVal={(val) => this.handleSearchInput(val)} loading={false} />
+        <div className="mt3 flex items-baseline justify-between">
+          <div className="flex" style={{ minWidth: '30rem' }}>
+            <div className="relative">
+              <i
+                className="fas fa-search black-30 absolute"
+                style={{ top: '0.65rem', left: '0.5rem' }}
+              ></i>
+              <SearchInput
+                onSetVal={val => this.handleSearchInput(val)}
+                loading={false}
+              />
             </div>
 
-            { categoryDropdownView(this) }
+            {categoryDropdownView(this)}
 
-            <fieldset className='bn pa0 ml3'>
-              <select className='br2 bn bg-light-gray pa2 black-80' onChange={this.handleChangeTag.bind(this)}>
-                <option value='release'>Released</option>
-                <option value='beta'>In beta</option>
-                <option value='dev'>In development</option>
+            <fieldset className="bn pa0 ml3">
+              <select
+                className="br2 bn bg-light-gray pa2 black-80"
+                onChange={this.handleChangeTag.bind(this)}
+              >
+                <option value="release">Released</option>
+                <option value="beta">In beta</option>
+                <option value="dev">In development</option>
               </select>
             </fieldset>
           </div>
 
-          { runsSorterView(this) }
+          {runsSorterView(this)}
         </div>
 
-        <LoadingSpinner loading={this.state.loading && !this.state.results.length} />
+        <LoadingSpinner
+          loading={this.state.loading && !this.state.results.length}
+        />
 
-        <div className={rowWrapClassName} style={{ transition: 'opacity linear 0.1s' }}>
-          { results.map(rowView) }
+        <div
+          className={rowWrapClassName}
+          style={{ transition: 'opacity linear 0.1s' }}
+        >
+          {results.map(rowView)}
         </div>
 
-        { loadMoreButtonView(this) }
-
+        {loadMoreButtonView(this)}
       </div>
     );
   }
 }
 
 // View for the category filter dropdown
-function categoryDropdownView (component: AppCatalog) {
+function categoryDropdownView(component: AppCatalog) {
   const cats = component.state.categories;
   if (cats.length === 0) {
     // No categories available; disable and reduce opacity
-    <fieldset className='bn pa0 ml3'>
-      <select disabled className='o-30 br2 bn bg-light-gray pa2 black-80'>
-      </select>
-    </fieldset>
+    <fieldset className="bn pa0 ml3">
+      <select
+        disabled
+        className="o-30 br2 bn bg-light-gray pa2 black-80"
+      ></select>
+    </fieldset>;
   }
   const optionView = (cat: string) => {
-    return <option key={cat} value={cat}>{formatSnakeCase(cat)}</option>
-  }
+    return (
+      <option key={cat} value={cat}>
+        {formatSnakeCase(cat)}
+      </option>
+    );
+  };
   return (
-    <fieldset className='bn pa0 ml3'>
+    <fieldset className="bn pa0 ml3">
       <select
-        className='br2 bn bg-light-gray pa2 black-80'
-        onChange={(ev) => component.handleCategoryChange(ev)}
+        className="br2 bn bg-light-gray pa2 black-80"
+        onChange={ev => component.handleCategoryChange(ev)}
       >
-        <option value='any'>Any category</option>
-        { cats.map(optionView) }
+        <option value="any">Any category</option>
+        {cats.map(optionView)}
       </select>
     </fieldset>
   );
 }
 
 // View for the button to sort results by number of app runs
-function runsSorterView (component: AppCatalog) {
+function runsSorterView(component: AppCatalog) {
   if (!component.state.results.length) {
     // Inactive state
-  return (
-    <div className='black-20'>
-      <span className='dib mr2'> Runs </span>
-      <span className='fa fa-circle black-10'></span>
-    </div>
-  );
+    return (
+      <div className="black-20">
+        <span className="dib mr2"> Runs </span>
+        <span className="fa fa-circle black-10"></span>
+      </div>
+    );
   }
   return (
-    <div className='b black-70 blue pointer dim' onClick={component.handleClickRuns.bind(component)}>
-      <span className='dib mr2'> Runs </span>
-      <span className={component.runsDesc ? "fa fa-caret-down" : "fa fa-caret-up"}></span>
+    <div
+      className="b black-70 blue pointer dim"
+      onClick={component.handleClickRuns.bind(component)}
+    >
+      <span className="dib mr2"> Runs </span>
+      <span
+        className={component.runsDesc ? 'fa fa-caret-down' : 'fa fa-caret-up'}
+      ></span>
     </div>
   );
 }
 
 // Button to load more results (hide if we are initially loading)
-function loadMoreButtonView (component: AppCatalog) {
+function loadMoreButtonView(component: AppCatalog) {
   if (component.state.loading) {
     return '';
   }
@@ -231,7 +265,7 @@ function loadMoreButtonView (component: AppCatalog) {
     itemCount = totalItems;
   }
   return (
-    <div className='pt3 mt4 bt b--black-20'>
+    <div className="pt3 mt4 bt b--black-20">
       <LoadMoreBtn
         loading={false}
         onLoadMore={() => component.appendPage()}
@@ -242,21 +276,21 @@ function loadMoreButtonView (component: AppCatalog) {
   );
 }
 
-function rowView (result: SDKApp) {
+function rowView(result: SDKApp) {
   if (result.hidden) {
     return '';
   }
   let appIcon = (
     <span
-      className='f3 db b white bg-blue br3 flex justify-center items-center o-80'
+      className="f3 db b white bg-blue br3 flex justify-center items-center o-80"
       style={{ width: '3rem' }}
     >
-      <span className='fa fa-cube'></span>
+      <span className="fa fa-cube"></span>
     </span>
   );
   if (result.icon && result.icon.url) {
     const nmsUrl = window._env.kbase_endpoint + '/narrative_method_store/';
-    appIcon = <img src={nmsUrl + result.icon.url} />
+    appIcon = <img src={nmsUrl + result.icon.url} />;
   }
   // Truncate the description to 180 chars
   let desc = result.desc;
@@ -264,31 +298,30 @@ function rowView (result: SDKApp) {
     desc = desc.slice(0, 180) + '...';
   }
   return (
-    <div className='mt3 pt3 bt b--black-20' key={result.id}>
-      <div className='pointer flex justify-between hover-dark-blue'>
-        <div className='w-70 flex'>
-          <div className='mt1 db flex justify-center' style={{ width: '3rem', height: '3rem' }}>
+    <div className="mt3 pt3 bt b--black-20" key={result.id}>
+      <div className="pointer flex justify-between hover-dark-blue">
+        <div className="w-70 flex">
+          <div
+            className="mt1 db flex justify-center"
+            style={{ width: '3rem', height: '3rem' }}
+          >
             {appIcon}
           </div>
 
-          <div className='ph3 b' style={{ flexShrink: 100 }}>
-            { result.name }
-            <span className='db normal black-60 pt1'>
-              { desc }
-            </span>
+          <div className="ph3 b" style={{ flexShrink: 100 }}>
+            {result.name}
+            <span className="db normal black-60 pt1">{desc}</span>
           </div>
         </div>
 
-        <div className='o-70'>
-          { result.runs }
-        </div>
+        <div className="o-70">{result.runs}</div>
       </div>
     </div>
   );
 }
 
 // Convert data from the server into objects that we use directly in the UI
-function mungeData (inpData: CombinedResult): Array<SDKApp> {
+function mungeData(inpData: CombinedResult): Array<SDKApp> {
   let ret = inpData.details.map((data: DetailsResult) => {
     const name = data.id.replace(data.module_name + '/', '');
     const runs = inpData.runs[data.id.toLowerCase()] || 0;
@@ -301,6 +334,6 @@ function mungeData (inpData: CombinedResult): Array<SDKApp> {
       icon: data.icon,
     };
   });
-  ret = sortBy(ret, (d) => -d.runs);
+  ret = sortBy(ret, d => -d.runs);
   return ret;
 }

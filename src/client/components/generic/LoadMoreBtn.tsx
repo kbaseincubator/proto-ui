@@ -10,7 +10,6 @@ interface Props {
 interface State {}
 
 export class LoadMoreBtn extends Component<Props, State> {
-
   handleClick() {
     if (this.props.onLoadMore) {
       this.props.onLoadMore();

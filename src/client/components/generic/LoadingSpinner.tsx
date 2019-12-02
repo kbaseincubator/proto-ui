@@ -5,11 +5,13 @@ interface Props {
 }
 
 // Loading spinner
-export function LoadingSpinner (props: Props) {
+export function LoadingSpinner(props: Props) {
   if (!props.loading) {
-    return (<></>);
+    return <></>;
   }
   return (
-    <p className='black-60 mt3'><i className='fa fa-gear fa-spin'></i> Loading...</p>
+    <p className="black-60 mt3">
+      <i className="fa fa-gear fa-spin"></i> Loading...
+    </p>
   );
 }

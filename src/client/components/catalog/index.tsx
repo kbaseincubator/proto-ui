@@ -8,9 +8,7 @@ import { AppCatalog } from './AppCatalog';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
-const CONTENT_COMPONENTS = [
-  AppCatalog,
-];
+const CONTENT_COMPONENTS = [AppCatalog];
 
 interface Props {}
 
@@ -23,7 +21,7 @@ export class Catalog extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      selectedTabIdx: 0
+      selectedTabIdx: 0,
     };
   }
 
@@ -44,8 +42,8 @@ export class Catalog extends Component<Props, State> {
   render() {
     return (
       <div className="mw8 ph4 pt4">
-        <CatalogNav onSelect={(idx) => this.handleTabChange(idx)} />
-        { this.contentView() }
+        <CatalogNav onSelect={idx => this.handleTabChange(idx)} />
+        {this.contentView()}
       </div>
     );
   }

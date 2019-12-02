@@ -32,7 +32,8 @@ const CONTAINER = document.getElementById('react-root');
 document.querySelectorAll('[data-hl-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
   if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    HTMLEle.className = "dib ph3 pv2 no-underline black-80 w-100 dim b bg-light-gray br bw2 b--green";
+    HTMLEle.className =
+      'dib ph3 pv2 no-underline black-80 w-100 dim b bg-light-gray br bw2 b--green';
   }
 });
 // For legacy nav:
