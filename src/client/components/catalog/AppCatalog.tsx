@@ -220,16 +220,6 @@ function runsSorterView (component: AppCatalog) {
   );
 }
 
-// Loading spinner
-function loadingView (component: AppCatalog) {
-  if (!component.state.loading || component.state.results.length) {
-    return '';
-  }
-  return (
-    <p className='black-60 mt3'><i className='fa fa-gear fa-spin'></i> Loading...</p>
-  );
-}
-
 // Button to load more results (hide if we are initially loading)
 function loadMoreButtonView (component: AppCatalog) {
   if (component.state.loading) {
