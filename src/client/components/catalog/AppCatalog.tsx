@@ -289,16 +289,16 @@ function rowView (result: SDKApp) {
 
 // Convert data from the server into objects that we use directly in the UI
 function mungeData (inpData: CombinedResult): Array<SDKApp> {
-  let ret = inpData.details.map((d: DetailsResult) => {
-    const name = d.id.replace(d.module_name + '/', '');
-    const runs = inpData.runs[d.id.toLowerCase()] || 0;
+  let ret = inpData.details.map((data: DetailsResult) => {
+    const name = data.id.replace(data.module_name + '/', '');
+    const runs = inpData.runs[data.id.toLowerCase()] || 0;
     return {
-      name: d.name,
-      desc: d.tooltip,
+      name: data.name,
+      desc: data.tooltip,
       runs,
-      id: d.id,
-      categories: d.categories,
-      icon: d.icon,
+      id: data.id,
+      categories: data.categories,
+      icon: data.icon,
     };
   });
   ret = sortBy(ret, (d) => -d.runs);

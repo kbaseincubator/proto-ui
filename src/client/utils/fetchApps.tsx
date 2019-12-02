@@ -1,4 +1,4 @@
-// Return type of fetchApps; aggregated data bout every app
+// Return type of fetchApps; aggregated data about every app
 // Details is an array of app info, while runs is an object where the keys are app IDs
 export interface CombinedResult {
   runs: Runs;
