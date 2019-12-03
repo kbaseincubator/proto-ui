@@ -92,7 +92,7 @@ export class ProfilePlainText extends Component<Props, State> {
             </div>
           </div>
         </div>
-        <div className='vw10'></div>
+        <div className='vw10'></div> {/* gutter */}
         <div>
           <h1>{this.props.profileRealName}</h1>
           <p>{this.props.profileId}</p>
