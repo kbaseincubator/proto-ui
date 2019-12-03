@@ -70,6 +70,7 @@ export class ProfilePlainText extends Component<Props, State> {
     return (
       <>
         <div className='vw30'>
+          <NumInput required={true}/>
           <div className='kbase-card pa3 ma3 tc'>
             <img src={this.props.gravatarSrc} />
           </div>
