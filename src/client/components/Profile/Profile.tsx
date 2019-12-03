@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
-import { buildResearchInterests } from './fragments';
+import TextInput from '../generic/TextInput';
+import NumInput from '../generic/NumInput';
+import ProfilePlainText from './ProfilePlainText';
 import { fetchProfileAPI } from '../../utils/userInfo';
+
 
 interface Props {
   authUsername?: string | null;
@@ -19,6 +22,7 @@ interface State {
   edit: boolean;
   loading: LoadingStates | null;
   profileData: {};
+  fullname: string;
 }
 
 export class Profile extends Component<Props, State> {
@@ -30,6 +34,7 @@ export class Profile extends Component<Props, State> {
       edit: false,
       loading: LoadingStates.none,
       profileData: {},
+      fullname: ''
     };
 
     this.getProfile = this.getProfile.bind(this);
@@ -59,18 +64,34 @@ export class Profile extends Component<Props, State> {
 
   async getProfile(profileID: string) {
     this.setState({ loading: LoadingStates.fetching });
-    let profileData = await fetchProfileAPI(profileID);
+    let res = await fetchProfileAPI(profileID);
+    console.log(res)
     // let profileData = await fetchProfileAPI('amarukawa');
-    if (typeof profileData !== 'undefined' && profileData.status === 200) {
-      this.setState({ loading: LoadingStates.success, profileData: profileData.response});
+    if (typeof res !== 'undefined' && res.status === 200) {
+      this.setState({ loading: LoadingStates.success, profileData: res.response.profile, fullname: res.response.user.realname});
     } else {
-      this.setState({ loading: LoadingStates.error, profileData});
+      this.setState({ loading: LoadingStates.error, profileData:res});
     }
+  }
+  // Set gravatarURL
+  gravatarSrc() {
+    const profile = this.state.profileData;
+    if (profile.userdata.avatarOption === 'silhoutte' || !profile.synced.gravatarHash) {
+      return window._env.url_prefix + 'static/images/nouserpic.png';
+    } else if (profile.synced.gravatarHash) {
+      return (
+        'https://www.gravatar.com/avatar/' +
+        profile.synced.gravatarHash +
+        '?s=300&amp;r=pg&d=' +
+        profile.userdata.gravatarDefault
+      );
+    }
+    return '';
   }
 
   render() {
     if (this.state.loading === LoadingStates.success) {
-      return <div>'profile loaded'</div>;
+      return <div style={{display: 'flex' padding: '2rem'}}><ProfilePlainText profileId={this.state.profileID} profileRealName={this.state.fullname} profileData={this.state.profileData} gravatarSrc={this.gravatarSrc()}/></div>;
     } else if (this.state.loading === LoadingStates.fetching) {
       return <div>fetching</div>;
     } else if (this.state.loading === LoadingStates.error) {
