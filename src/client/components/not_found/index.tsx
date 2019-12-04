@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-// Parent page component for the dashboard page
 export class NotFoundPage extends Component {
   render() {
     return (

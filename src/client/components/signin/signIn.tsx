@@ -17,7 +17,7 @@ export class SignIn extends Component {
 
     render(){
      return (
-     <>
+      <>
       <div className="sign-in-container">
         <h1>Sign in with...</h1>
         <img style={{marginTop: '1em'}} src='http://kbase.us/wp-content/uploads/2014/11/kbase-logo-web.png'/>
@@ -54,8 +54,8 @@ export class SignIn extends Component {
         </div>  {/* end of sign-up-botton-container*/}
       </div>  {/* end of sign-in-container*/}
       </>
-    )
-  }
+      )
+    }
 }
 
 export default SignIn;
