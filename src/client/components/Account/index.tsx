@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getUsername } from '../../utils/auth';
 import { AccuntNav } from './navigation';
 import { Profile } from '../Profile/Profile';
+import { fetchProfileAPI } from '../../utils/userInfo';
 
 interface Props {}
 
@@ -26,10 +27,23 @@ export class Account extends Component<Props, State> {
       this.setState({ authUsername: authUsername });
     });
     let pathname = window.location.pathname.replace('/newnav/account/', '');
+    console.log(pathname)
     this.setState({ pathname });
+    
   }
 
   componentDidUpdate() {}
+
+  async getProfile(profileID: string) {
+    let res = await fetchProfileAPI(profileID);
+    console.log(res)
+    // let profileData = await fetchProfileAPI('amarukawa');
+    if (typeof res !== 'undefined' && res.status === 200) {
+      this.setState({ profileData: res.response.profile, fullname: res.response.user.realname});
+    } else {
+      this.setState({ loading: LoadingStates.error, profileData:res});
+    }
+  }
 
   navOnClick() {
     if (event && event.target) {
@@ -85,7 +99,7 @@ export class Account extends Component<Props, State> {
     return (
       <>
         <AccuntNav navOnClick={this.navOnClick} />
-        {this.loadComponent()}
+        {this.loadComponent}
       </>
     );
   }

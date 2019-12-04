@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import TextInput from '../generic/TextInput';
 import NumInput from '../generic/NumInput';
+import {LoadingSpinner} from '../generic/LoadingSpinner';
 import ProfilePlainText from './ProfilePlainText';
 import { fetchProfileAPI } from '../../utils/userInfo';
 
@@ -93,7 +94,7 @@ export class Profile extends Component<Props, State> {
     if (this.state.loading === LoadingStates.success) {
       return <div style={{display: 'flex' padding: '2rem'}}><ProfilePlainText profileId={this.state.profileID} profileRealName={this.state.fullname} profileData={this.state.profileData} gravatarSrc={this.gravatarSrc()}/></div>;
     } else if (this.state.loading === LoadingStates.fetching) {
-      return <div>fetching</div>;
+      return <div style={{padding:'50%'}}><LoadingSpinner loading={true} /></div>;
     } else if (this.state.loading === LoadingStates.error) {
       return <div>opps {this.state.profileData.status} {this.state.profileData.statusText}</div>
     } else {
