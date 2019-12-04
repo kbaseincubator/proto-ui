@@ -60,7 +60,7 @@ async def notifications_newnav(request, suffix=None):
     return _render_template('notifications/index.html', {'template': 'layout-newnav.html'})
 
 
-@app.route('/newnav/catalog/', methods=['GET'])
+@app.route('/newnav/catalog', methods=['GET'])
 @app.route('/newnav/catalog/<suffix:path>', methods=['GET'])
 async def catalog_newnav(request, suffix=None):
     """Catalog."""
