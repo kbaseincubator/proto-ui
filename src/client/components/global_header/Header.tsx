@@ -182,7 +182,7 @@ export class Header extends Component<Props, State> {
             username={this.state.username}
             realname={this.state.realname}
             gravatarURL={this.gravatarSrc()}
-            signOut={this.signOut}
+            onSignOut={this.signOut}
             signedout={this.state.signedout}
           />
         </div>

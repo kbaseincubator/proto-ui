@@ -12,7 +12,7 @@ interface Props {
   realname: string | null;
   gravatarURL: string;
   signedout: boolean;
-  signOut: ()=>void;
+  onSignOut: ()=>void;
 }
 
 export class AccountDropdown extends Component<Props, State> {
@@ -86,7 +86,7 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
           <hr className="hr-global-header" />
           <li>
-            <a onClick={()=>this.props.signOut()} className="pointer">
+            <a onClick={()=>this.props.onSignOut()} className="pointer">
               <div className="dib" style={{ width: '34px' }}>
                 <i
                   className="fa fa-sign-out"
