@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
+import { removeCookie } from '../../utils/cookies';
 import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
-import { getUsername } from '../../utils/auth';
+import { getUsername, getToken } from '../../utils/auth';
 
 interface State {
   avatarOption: string | undefined;
@@ -13,6 +13,7 @@ interface State {
   username: string | null;
   realname: string | null;
   gravatarHash: string;
+  signedout: boolean;
 }
 
 interface Props {
@@ -30,10 +31,12 @@ export class Header extends Component<Props, State> {
       username: null,
       realname: null,
       gravatarHash: '',
+      signedout: false,
     };
     this.getUserID = this.getUserID.bind(this);
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -43,13 +46,14 @@ export class Header extends Component<Props, State> {
     this.getUserID();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState === this.state) {
-      return;
-    }
-  }
+  componentDidUpdate(prevProps: Props, prevState: State) {}
 
   getUserID() {
+    const token = getToken();
+    if (!token) {
+      this.setState({signedout: true})
+      return;
+    }
     getUsername(username => {
       if (typeof username === 'string') {
         window._env.username = username;
@@ -116,6 +120,30 @@ export class Header extends Component<Props, State> {
     return '';
   }
 
+  signOut() {
+    const token = getToken();
+    if (!token) {
+      console.warn('Tried to sign out a user with no token.');
+      return;
+    }
+    const headers = {
+      Authorization: token,
+    };
+    fetch(window._env.kbase_endpoint + '/auth/logout', {
+      method: 'POST',
+      headers,
+    })
+      .then(() => {
+        // Remove the cookie
+        removeCookie('kbase_session');
+        // Redirect to the legacy signed-out page
+        window.location.href = window._env.narrative + '/#auth2/signedout';
+      })
+      .catch(err => {
+        console.error('Error signing out: ' + err);
+      });
+  }
+
   render() {
     return (
       <div>
@@ -154,6 +182,8 @@ export class Header extends Component<Props, State> {
             username={this.state.username}
             realname={this.state.realname}
             gravatarURL={this.gravatarSrc()}
+            signOut={this.signOut}
+            signedout={this.state.signedout}
           />
         </div>
       </div>

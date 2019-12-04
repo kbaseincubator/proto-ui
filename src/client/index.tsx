@@ -13,6 +13,8 @@ import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
 import { Header } from '../client/components/global_header/Header';
 
+import { Unauthorized } from '../client/components/unauthorized_page/UnauthorizedPage';
+
 // Utils
 import { getUsername, getToken } from './utils/auth';
 
@@ -24,6 +26,7 @@ let PATHNAME = document.location.pathname
 if (PATHNAME[0] !== '/') {
   PATHNAME = '/' + PATHNAME;
 }
+
 
 const CONTAINER = document.getElementById('react-root');
 
@@ -68,11 +71,14 @@ class Page extends Component<Props, State> {
 const headerElem = document.getElementById('react-global-header');
 if (headerElem !== null) {
   const pageTitle = headerElem.getAttribute('data-page-title');
-  render(<Header title={pageTitle || ''} />, headerElem);
+    render(<Header title={pageTitle || ''} />, headerElem)
 }
 
-// Render the page component based on pathname
-if (CONTAINER) {
+function renderRootComponent () {
+  if (!getToken()) {
+    render(<Page root={Unauthorized} />, CONTAINER);
+    return;
+  }
   // Simple routing by looking at pathname
   const routes: {
     [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
@@ -91,8 +97,13 @@ if (CONTAINER) {
   if (!(PATHNAME in routes)) {
     // Render 404
     render(<Page root={NotFoundPage} />, CONTAINER);
-  } else {
-    const topComponent = routes[PATHNAME].component;
-    render(<Page root={topComponent} />, CONTAINER);
+    return;
   }
+  const topComponent = routes[PATHNAME].component;
+  render(<Page root={topComponent} />, CONTAINER);
+}
+
+// Render the page component based on pathname
+if (CONTAINER) {
+  renderRootComponent();
 }

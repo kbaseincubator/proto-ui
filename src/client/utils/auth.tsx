@@ -31,5 +31,6 @@ export function getUsername(callBack: (username: string | null) => void) {
       const username = json.user;
       sessionStorage.setItem('kbase_username', username);
       callBack(username);
-    });
+    })
+    .catch(reason => console.log(reason));
 }
