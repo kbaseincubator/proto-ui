@@ -37,10 +37,8 @@
     </header>
     {% include 'legacy-nav.html' %}
     {# Page contents replaced by React #}
-    <div class='flex justify-start-m justify-center-ns' style='margin-left: 78px;'>
-      <main style='min-width: 1024px; max-width: 80rem;'>
-        {% block content %}{% endblock %}
-      </main>
+    <div style='margin-left: 78px; min-width: 1024px;'>
+      {% block content %}{% endblock %}
     </div>
 
     {% include 'js-globals.html' %}
