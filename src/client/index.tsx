@@ -14,6 +14,8 @@ import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
 import { Header } from '../client/components/global_header/Header';
 
+import { Unauthorized } from '../client/components/unauthorized_page/UnauthorizedPage';
+
 // Utils
 import { getUsername, getToken } from './utils/auth';
 import { createBrowserHistory, History } from 'history';
@@ -52,7 +54,10 @@ getUsername((username: string | null) => {
 // Global header (legacy design)
 const headerElem = document.querySelector('#react-global-header');
 if (headerElem) {
-  const pageTitle = headerElem.getAttribute('data-page-title');
+  let pageTitle = '';
+  if (getToken()) {
+    pageTitle = headerElem.getAttribute('data-page-title') || '';
+  }
   render(<Header title={pageTitle || ''} />, headerElem);
 }
 
@@ -126,5 +131,14 @@ function Todo(props: { text?: string }) {
 
 // Render the top level page component
 if (CONTAINER) {
-  render(<Page />, CONTAINER);
+  if (!getToken()) {
+    render(<Unauthorized />, CONTAINER);
+    // Hide the legacy side nav, if present
+    const sidenav = document.querySelector('.legacy-nav');
+    if (sidenav) {
+      (sidenav as HTMLElement).style.display = 'none';
+    }
+  } else {
+    render(<Page />, CONTAINER);
+  }
 }
