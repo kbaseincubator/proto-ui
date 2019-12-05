@@ -13,14 +13,14 @@ import { AppDetails } from '../app_details';
 
 // Every component in an array, where the index of each component corresponds to
 // its tab index
-const ROUTES: {[key: string]: {component?: typeof Component}} = {
-  '/': { component: AppCatalog },
-  '/apps': { component: AppCatalog },
-  '/modules': {},
-  '/types': {},
-  '/services': {},
-  '/admin': {},
-}
+const ROUTES: Array<{path: string, component?: typeof Component}> = [
+  {path: '/apps', component: AppCatalog },
+  {path: '/modules' },
+  {path: '/types' },
+  {path: '/services' },
+  {path: '/admin' },
+];
+
 const APP_DETAILS_REGEX = /\/apps\/(.+)/;
 
 interface Props {
@@ -46,6 +46,10 @@ export class Catalog extends Component<Props, State> {
 
   componentDidMount() {
     // Listen to changes to location history to update the page
+    if (this.history.location.pathname === '/') {
+      this.history.push('/apps');
+      this.setState({ path: '/apps' });
+    }
     this.historyUnlisten = this.history.listen((location, action) => {
       this.setState({ path: location.pathname });
     });
@@ -60,7 +64,11 @@ export class Catalog extends Component<Props, State> {
 
   // View the content beneath the tabs
   contentView() {
-    const route = ROUTES[this.state.path];
+    const routeIdx = ROUTES.findIndex(route => {
+      const regex = new RegExp('^' + route.path);
+      return this.state.path.match(regex);
+    });
+    const route = ROUTES[routeIdx];
     if (route) {
       if (route.component) {
         return React.createElement(route.component, {});
