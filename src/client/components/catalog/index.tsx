@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { History, UnregisterCallback } from 'history';
 
 import { fetchApps } from '../../utils/fetchApps';
+import { autoRedirect } from '../../utils/autoRedirect';
 
 // Components
 import { NotFoundPage } from '../not_found';
@@ -21,15 +22,10 @@ interface State {}
 // Parent page component for the dashboard page
 export class Catalog extends Component<Props, State> {
   history: History;
-  historyUnlisten?: UnregisterCallback;
 
   constructor(props: Props) {
     super(props);
     this.history = props.history;
-    if (this.history.location.pathname === '/') {
-      // Redirect root to /apps
-      this.history.push('/apps');
-    }
     this.state = {};
   }
 

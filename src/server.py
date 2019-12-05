@@ -1,5 +1,4 @@
 """The main entrypoint for running the web server."""
-import os
 import sanic
 import traceback
 import jinja2
@@ -46,7 +45,7 @@ async def newnav_root(request):
 
 @app.route('/newnav/dashboard', methods=['GET'])
 @app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
-async def dashboard_newnav(request, suffix=None, prefix=None):
+async def dashboard_newnav(request, suffix=None):
     """Dashboard with new nav."""
     opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
     return _render_template('dashboard/index.html', opts)
@@ -54,7 +53,7 @@ async def dashboard_newnav(request, suffix=None, prefix=None):
 
 @app.route('/dashboard', methods=['GET'])
 @app.route('/dashboard/<suffix:path>', methods=['GET'])
-async def dashboard(request, suffix=None, prefix=None):
+async def dashboard(request, suffix=None):
     """Dashboard."""
     opts = {'template': 'layout-legacy.html'}
     return _render_template('dashboard/index.html', opts)
@@ -69,6 +68,10 @@ async def notifications_newnav(request, suffix=None):
 
 
 @app.route('/newnav/catalog', methods=['GET'])
+async def catalog_root(request):
+    return sanic.response.redirect(_url_for('catalog_newnav', suffix='apps'))
+
+
 @app.route('/newnav/catalog/<suffix:path>', methods=['GET'])
 async def catalog_newnav(request, suffix=None):
     """Catalog."""
