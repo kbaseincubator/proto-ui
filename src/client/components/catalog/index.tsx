@@ -12,16 +12,6 @@ import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 import { AppDetails } from '../app_details';
 
-// Every component in an array, where the index of each component corresponds to
-// its tab index
-const ROUTES: Array<{ path: string; component?: typeof Component }> = [
-  { path: '/apps', component: AppCatalog },
-  { path: '/modules' },
-  { path: '/types' },
-  { path: '/services' },
-  { path: '/admin' },
-];
-
 interface Props {
   history: History;
 }
