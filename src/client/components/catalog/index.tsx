@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { History, UnregisterCallback } from 'history';
 
 import { fetchApps } from '../../utils/fetchApps';
-import { autoRedirect } from '../../utils/autoRedirect';
 
 // Components
 import { NotFoundPage } from '../not_found';
