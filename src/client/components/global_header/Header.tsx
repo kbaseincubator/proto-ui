@@ -51,7 +51,7 @@ export class Header extends Component<Props, State> {
   getUserID() {
     const token = getToken();
     if (!token) {
-      this.setState({signedout: true})
+      this.setState({ signedout: true });
       return;
     }
     getUsername(username => {

@@ -27,7 +27,6 @@ if (PATHNAME[0] !== '/') {
   PATHNAME = '/' + PATHNAME;
 }
 
-
 const CONTAINER = document.getElementById('react-root');
 
 // Change the style of the current item in the top-nav.
@@ -71,10 +70,10 @@ class Page extends Component<Props, State> {
 const headerElem = document.getElementById('react-global-header');
 if (headerElem !== null) {
   const pageTitle = headerElem.getAttribute('data-page-title');
-    render(<Header title={pageTitle || ''} />, headerElem)
+  render(<Header title={pageTitle || ''} />, headerElem);
 }
 
-function renderRootComponent () {
+function renderRootComponent() {
   if (!getToken()) {
     render(<Page root={Unauthorized} />, CONTAINER);
     return;
