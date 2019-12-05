@@ -6,6 +6,7 @@ export { }
 declare global {
   interface Window {
     _env: {
+      basepath: string;
       urlPrefix: string;
       username?: string | null;
       narrative: string;

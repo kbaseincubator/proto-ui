@@ -100,30 +100,19 @@ export class AccountDropdown extends Component<Props, State> {
       );
     } else {
       return (
-        <div
-          className="signin"
-          style={{
-            padding: '10px 14px',
-            textAlign: 'center',
-            background: '#F5F5F5',
-            margin: '3px 0px',
-            borderRadius: '4px',
-          }}
+        <a
+          className="db no-underline br2 account-dropdown-signin"
+          data-button="signin"
+          href={window._env.narrative + '/#login'}
         >
-          <a
-            className="no-underline"
-            data-button="signin"
-            href={window._env.url_prefix + '#login'}
-          >
-            <div
-              className="fa fa-sign-in"
-              style={{ marginRight: '5px', fontSize: '25px', color: '#2196F3' }}
-            ></div>
-            <div style={{ color: '#666', fontSize: '13px', marginTop: '2px' }}>
-              Sign In
-            </div>
-          </a>
-        </div>
+          <div
+            className="fa fa-sign-in"
+            style={{ marginRight: '5px', fontSize: '25px', color: '#2196F3' }}
+          ></div>
+          <div style={{ color: '#666', fontSize: '13px', marginTop: '2px' }}>
+            Sign In
+          </div>
+        </a>
       );
     }
   }

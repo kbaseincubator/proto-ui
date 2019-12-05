@@ -54,7 +54,10 @@ getUsername((username: string | null) => {
 // Global header (legacy design)
 const headerElem = document.querySelector('#react-global-header');
 if (headerElem) {
-  const pageTitle = headerElem.getAttribute('data-page-title');
+  let pageTitle = '';
+  if (getToken()) {
+    pageTitle = headerElem.getAttribute('data-page-title') || '';
+  }
   render(<Header title={pageTitle || ''} />, headerElem);
 }
 
@@ -130,6 +133,11 @@ function Todo(props: { text?: string }) {
 if (CONTAINER) {
   if (!getToken()) {
     render(<Unauthorized />, CONTAINER);
+    // Hide the legacy side nav, if present
+    const sidenav = document.querySelector('.legacy-nav');
+    if (sidenav) {
+      sidenav.style.display = 'none';
+    }
   } else {
     render(<Page />, CONTAINER);
   }
