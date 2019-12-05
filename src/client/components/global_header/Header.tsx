@@ -65,7 +65,7 @@ export class Header extends Component<Props, State> {
   setUrl_prefix() {
     let prefix: string = '';
     let icon: string = '';
-    switch (window._env.url_prefix) {
+    switch (window._env.urlPrefix) {
       case '':
       case 'https://ci.kbase.us':
         prefix = 'CI';
@@ -108,7 +108,7 @@ export class Header extends Component<Props, State> {
   // Set gravatarURL
   gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      return window._env.url_prefix + 'static/images/nouserpic.png';
+      return window._env.urlPrefix + 'static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
         'https://www.gravatar.com/avatar/' +

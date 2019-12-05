@@ -39,53 +39,70 @@ async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))
 
 
+@app.route('/newnav', methods=['GET'])
+async def newnav_root(request):
+    return sanic.response.redirect(_url_for('dashboard_newnav'))
+
+
 @app.route('/newnav/dashboard', methods=['GET'])
 @app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard_newnav(request, suffix=None, prefix=None):
     """Dashboard with new nav."""
-    return _render_template('dashboard/index.html', {'template': 'layout-newnav.html', 'auth_required': True})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('dashboard/index.html', opts)
 
 
 @app.route('/dashboard', methods=['GET'])
 @app.route('/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard(request, suffix=None, prefix=None):
     """Dashboard."""
-    return _render_template('dashboard/index.html', {'template': 'layout-legacy.html', 'auth_required': True})
+    opts = {'template': 'layout-legacy.html'}
+    return _render_template('dashboard/index.html', opts)
 
 
 @app.route('/newnav/notifications', methods=['GET'])
 @app.route('/newnav/notifications/<suffix:path>', methods=['GET'])
 async def notifications_newnav(request, suffix=None):
     """Notifications."""
-    return _render_template('notifications/index.html', {'template': 'layout-newnav.html'})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('notifications/index.html', opts)
 
 
 @app.route('/newnav/catalog', methods=['GET'])
 @app.route('/newnav/catalog/<suffix:path>', methods=['GET'])
 async def catalog_newnav(request, suffix=None):
     """Catalog."""
-    return _render_template('catalog/index.html', {'template': 'layout-newnav.html'})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('catalog/index.html', opts)
 
 
 @app.route('/newnav/search', methods=['GET'])
 @app.route('/newnav/search/<suffix:path>', methods=['GET'])
 async def search_newnav(request, suffix=None):
     """Search."""
-    return _render_template('search/index.html', {'template': 'layout-newnav.html'})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('search/index.html', opts)
 
 
 @app.route('/newnav/account', methods=['GET'])
 @app.route('/newnav/account/<suffix:path>', methods=['GET'])
 async def account_newnav(request, suffix=None):
     """Account settings."""
-    return _render_template('account/index.html', {'template': 'layout-newnav.html'})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('account/index.html', opts)
 
 
 @app.route('/newnav/orgs', methods=['GET'])
 @app.route('/newnav/orgs/<suffix:path>', methods=['GET'])
 async def orgs_newnav(request, suffix=None):
     """Organizations."""
-    return _render_template('orgs/index.html', {'template': 'layout-newnav.html'})
+    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
+    return _render_template('orgs/index.html', opts)
+
+
+@app.route('/newnav/<suffix:path>', methods=['GET'])
+async def newnav_catch_all(request, suffix=None):
+    return _render_template('404.html', {'template': 'layout-newnav.html'}, status=404)
 
 
 @app.exception(sanic.exceptions.NotFound)
@@ -114,7 +131,7 @@ def _url_for(arg, *args, **kwargs):
     """
     url = app.url_for(arg, *args, **kwargs)
     # Note that _CONF.url_prefix will have leading slash and no trailing slash
-    return os.path.join(_CONF.url_prefix, url.strip('/'))
+    return _CONF.url_prefix + '/' + url.strip('/')
 
 
 def _render_template(path, args=None, status=200):
@@ -127,8 +144,9 @@ def _render_template(path, args=None, status=200):
         args = {}
     args['app'] = app
     args['url_for'] = _url_for
-    args.setdefault('auth_required', False)
     args.setdefault('template', 'layout-legacy.html')
+    args.setdefault('path_prefix', '')
+    args['url_prefix'] = _CONF.url_prefix + args['path_prefix']
     html = template.render(**args)
     return sanic.response.html(html, status=status)
 
