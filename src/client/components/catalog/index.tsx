@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { History, UnregisterCallback } from 'history';
 
 import { fetchApps } from '../../utils/fetchApps';
-import { History, UnregisterCallback } from 'history';
 
 // Components
 import { NotFoundPage } from '../not_found';
+import { Router, Route } from '../generic/Router';
 import { CatalogNav } from './CatalogNav';
 import { AppCatalog } from './AppCatalog';
 import { SearchInput } from '../generic/SearchInput';
@@ -21,15 +22,11 @@ const ROUTES: Array<{ path: string; component?: typeof Component }> = [
   { path: '/admin' },
 ];
 
-const APP_DETAILS_REGEX = /\/apps\/(.+)/;
-
 interface Props {
   history: History;
 }
 
-interface State {
-  path: string;
-}
+interface State {}
 
 // Parent page component for the dashboard page
 export class Catalog extends Component<Props, State> {
@@ -39,59 +36,58 @@ export class Catalog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.history = props.history;
-    this.state = {
-      path: this.history.location.pathname || '/',
-    };
-  }
-
-  componentDidMount() {
-    // Listen to changes to location history to update the page
     if (this.history.location.pathname === '/') {
       this.history.push('/apps');
-      this.setState({ path: '/apps' });
     }
-    this.historyUnlisten = this.history.listen((location, action) => {
-      this.setState({ path: location.pathname });
-    });
-  }
-
-  componentWillUnmount() {
-    // Stop listening to location history
-    if (this.historyUnlisten) {
-      this.historyUnlisten();
-    }
-  }
-
-  // View the content beneath the tabs
-  contentView() {
-    const routeIdx = ROUTES.findIndex(route => {
-      const regex = new RegExp('^' + route.path);
-      return this.state.path.match(regex);
-    });
-    const route = ROUTES[routeIdx];
-    if (route) {
-      if (route.component) {
-        return React.createElement(route.component, {});
-      } else {
-        return <p>TODO! {this.state.path}</p>;
-      }
-    } else {
-      return (
-        <NotFoundPage href="/newnav/catalog/apps" linkText="View the catalog" />
-      );
-    }
+    this.state = {};
   }
 
   render() {
-    // Render app details for a path like /apps/app-id
-    if (this.state.path.match(APP_DETAILS_REGEX)) {
-      return <AppDetails />;
-    }
     return (
-      <div className="mw8 ph4 pt4">
-        <CatalogNav history={this.history} />
-        {this.contentView()}
+      <div className='mw8 center pv4'>
+        <Router history={this.history}>
+
+          <Route path={/^\/apps\/(.+)/}>
+            <AppDetails />
+          </Route>
+
+          <Route path={/.*/}>
+
+            <CatalogNav history={this.history} />
+
+            <Router history={this.history}>
+              <Route path="/apps">
+                <AppCatalog />
+              </Route>
+              <Route path="/modules">
+                <Todo text='modules' />
+              </Route>
+              <Route path="/types">
+                <Todo text='types' />
+              </Route>
+              <Route path="/services">
+                <Todo text='services' />
+              </Route>
+              <Route path="/admin">
+                <Todo text='admin' />
+              </Route>
+              <Route path={/.*/}>
+                <NotFoundPage />
+              </Route>
+            </Router>
+            
+          </Route>
+
+        </Router>
       </div>
     );
   }
+}
+
+interface TodoProps {
+  text: string;
+}
+
+function Todo (props: TodoProps) {
+  return <p>TODO! {props.text || ''}</p>
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 
 // Imports for page-specific components
+import { Router, Route } from '../client/components/generic/Router';
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
@@ -54,41 +55,77 @@ if (headerElem) {
 }
 
 interface Props {
-  root: typeof Component;
   history?: History;
 }
 
-// Global page component wrapper
+// Top level page component
 class Page extends Component<Props, {}> {
+  history: History;
+  // History with a basename such as '/newnav/catalogog'
+  nestedHistory: History;
+
+  constructor(props: Props) {
+    super(props);
+    let basename = '';
+    if (PATHNAME.match(/^\/newnav/)) {
+      basename = '/newnav';
+    }
+    this.history = createBrowserHistory({basename});
+    const paths = [
+      '/dashboard',
+      '/search',
+      '/orgs',
+      '/catalog',
+      '/notifications',
+      '/account'
+    ];
+    let nestedBasename = basename;
+    // Set the basename to something like "/newnav/dashboard"
+    const pathMatch = paths.find(path => {
+      const reg = new RegExp('^' + basename + path);
+      return PATHNAME.match(reg)
+    });
+    if (pathMatch) {
+      nestedBasename += pathMatch;
+    }
+    console.log('basename, nestedbasename', basename, nestedBasename);
+    this.nestedHistory = createBrowserHistory({ basename: nestedBasename });
+  }
+
   render() {
-    return <this.props.root history={this.props.history} />;
+    return (
+      <Router history={this.history}>
+        <Route path="/dashboard">
+          <Dashboard history={this.nestedHistory} />
+        </Route>
+        <Route path="/search">
+          <Todo text='Search' />
+        </Route>
+        <Route path="/orgs">
+          <Todo text='Orgs' />
+        </Route>
+        <Route path="/catalog">
+          <Catalog history={this.nestedHistory} />
+        </Route>
+        <Route path="/notifications">
+          <Todo text='Notifications' />
+        </Route>
+        <Route path="/account">
+          <Todo text='Account' />
+        </Route>
+        <Route path={/.*/}>
+          <NotFoundPage />
+        </Route>
+      </Router>
+    );
   }
 }
 
-// What components map to what base pathnames
-const ROUTES: { [key: string]: { component: typeof Component } } = {
-  '/newnav/dashboard': { component: Dashboard },
-  '/dashboard': { component: Dashboard },
-  '/newnav/catalog': { component: Catalog },
-};
+function Todo (props: {text?: string}) {
+  return <p>TODO {props.text}</p>;
+}
 
-// Render the page component based on pathname
+// Render the top level page component
 if (CONTAINER) {
-  let matchedPath = false;
-  for (const path in ROUTES) {
-    if (PATHNAME.match(new RegExp('^' + path))) {
-      window._env.basepath = path;
-      const history = createBrowserHistory({ basename: path });
-      render(
-        <Page root={ROUTES[path].component} history={history} />,
-        CONTAINER
-      );
-      matchedPath = true;
-      break;
-    }
-  }
-  if (!matchedPath) {
-    // Render 404
-    render(<Page root={NotFoundPage} />, CONTAINER);
-  }
+  render(<Page />, CONTAINER);
 }
