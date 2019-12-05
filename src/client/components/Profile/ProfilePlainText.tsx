@@ -85,9 +85,9 @@ export class ProfilePlainText extends Component<Props, State> {
             if (position.title) {
               return (
                 <div className='affiliation-row'>
-                  <p style={{ width: '20%', display: 'inline-block', marginRight: '1em', verticalAlign: 'middle' }}>{position.title}</p>
-                  <p style={{ width: '45%', display: 'inline-block', marginRight: '1em', verticalAlign: 'middle' }}>{position.organization}</p>
-                  <div style={{ width: '29%', display: 'inline-block', verticalAlign: 'text-bottom', whiteSpace: 'nowrap' }}>
+                  <p style={{ marginTop: '0px'}}>{position.title}</p>
+                  <p style={{  marginTop: '0px' }}>{position.organization}</p>
+                  <div style={{  marginTop: '0px', verticalAlign: 'text-bottom', whiteSpace: 'nowrap' }}>
                     <p style={{ display: 'inline', marginRight: '1em' }}>{position.started}</p>
                     <p style={{ display: 'inline', marginRight: '1em' }}> - </p>
                     <p style={{ display: 'inline', marginRight: '1em' }}>{position.ended ? position.ended : 'present'}</p>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
+import { removeCookie } from '../../utils/cookies';
 import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
-import { getUsername } from '../../utils/auth';
+import { getUsername, getToken } from '../../utils/auth';
 
 interface State {
   avatarOption: string | undefined;
@@ -13,6 +13,7 @@ interface State {
   username: string | null;
   realname: string | null;
   gravatarHash: string;
+  signedout: boolean;
 }
 
 interface Props {
@@ -30,9 +31,11 @@ export class Header extends Component<Props, State> {
       username: null,
       realname: null,
       gravatarHash: '',
+      signedout: false,
     };
     this.setUrl_prefix = this.setUrl_prefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
@@ -42,13 +45,14 @@ export class Header extends Component<Props, State> {
     this.getUserID();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState === this.state) {
-      return;
-    }
-  }
+  componentDidUpdate(prevProps: Props, prevState: State) {}
 
   getUserID() {
+    const token = getToken();
+    if (!token) {
+      this.setState({ signedout: true });
+      return;
+    }
     getUsername(username => {
       if (typeof username === 'string') {
         window._env.username = username;
@@ -60,7 +64,7 @@ export class Header extends Component<Props, State> {
   setUrl_prefix() {
     let prefix: string = '';
     let icon: string = '';
-    switch (window._env.url_prefix) {
+    switch (window._env.urlPrefix) {
       case '':
       case 'https://ci.kbase.us':
         prefix = 'CI';
@@ -103,7 +107,7 @@ export class Header extends Component<Props, State> {
   // Set gravatarURL
   gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      return window._env.url_prefix + 'static/images/nouserpic.png';
+      return window._env.urlPrefix + 'static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
         'https://www.gravatar.com/avatar/' +
@@ -113,6 +117,30 @@ export class Header extends Component<Props, State> {
       );
     }
     return '';
+  }
+
+  signOut() {
+    const token = getToken();
+    if (!token) {
+      console.warn('Tried to sign out a user with no token.');
+      return;
+    }
+    const headers = {
+      Authorization: token,
+    };
+    fetch(window._env.kbase_endpoint + '/auth/logout', {
+      method: 'POST',
+      headers,
+    })
+      .then(() => {
+        // Remove the cookie
+        removeCookie('kbase_session');
+        // Redirect to the legacy signed-out page
+        window.location.href = window._env.narrative + '/#auth2/signedout';
+      })
+      .catch(err => {
+        console.error('Error signing out: ' + err);
+      });
   }
 
   render() {
@@ -153,6 +181,8 @@ export class Header extends Component<Props, State> {
             username={this.state.username}
             realname={this.state.realname}
             gravatarURL={this.gravatarSrc()}
+            onSignOut={this.signOut}
+            signedout={this.state.signedout}
           />
         </div>
       </div>

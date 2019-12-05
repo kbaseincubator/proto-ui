@@ -21,7 +21,7 @@ class ServerConf:
         self.server_port = os.environ.get('SANIC_PORT', 5000)
         self.n_workers = int(os.environ.get('WORKERS', 8))
         self.url_prefix = os.environ.get('URL_PREFIX', '').strip('/')
-        if not self.url_prefix.startswith('/'):
+        if self.url_prefix and not self.url_prefix.startswith('/'):
             self.url_prefix = '/' + self.url_prefix
         self.kbase_endpoint = os.environ.get('KBASE_ENDPOINT', 'https://ci.kbase.us/services').strip('/')
         self.kbase_root = os.environ.get('KBASE_ROOT', 'https://ci.kbase.us').strip('/')

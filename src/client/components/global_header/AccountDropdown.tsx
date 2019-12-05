@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
-import { fetchProfileAPI } from '../../utils/userInfo';
-import { getUsername, getToken } from '../../utils/auth';
+import { getToken } from '../../utils/auth';
 import { removeCookie } from '../../utils/cookies';
 
 interface State {
@@ -13,6 +11,8 @@ interface Props {
   username: string | null;
   realname: string | null;
   gravatarURL: string;
+  signedout: boolean;
+  onSignOut: () => void;
 }
 
 export class AccountDropdown extends Component<Props, State> {
@@ -53,31 +53,8 @@ export class AccountDropdown extends Component<Props, State> {
     this.setState({ dropdownHidden: !this.state.dropdownHidden });
   }
 
-  signOut() {
-    const token = getToken();
-    if (!token) {
-      console.warn('Tried to sign out a user with no token.');
-      return;
-    }
-    const headers = {
-      Authorization: token,
-    };
-    fetch(window._env.kbase_endpoint + '/auth2/logout', {
-      method: 'POST',
-      headers,
-    })
-      .then(() => {
-        // Remove the cookie
-        removeCookie('kbase_session');
-        // Redirect to the legacy signed-out page
-        window.location.href = window._env.narrative + '/#auth2/signedout';
-      })
-      .catch(err => {
-        console.error('Error signing out: ' + err);
-      });
-  }
-
-  render() {
+  // View for the account drop down when signed in
+  dropdownView() {
     return (
       <div className="account-dropdown">
         <button
@@ -108,7 +85,7 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
           <hr className="hr-global-header" />
           <li>
-            <a onClick={this.signOut.bind(this)} className="pointer">
+            <a onClick={() => this.props.onSignOut()} className="pointer">
               <div className="dib" style={{ width: '34px' }}>
                 <i
                   className="fa fa-sign-out"
@@ -121,5 +98,28 @@ export class AccountDropdown extends Component<Props, State> {
         </ul>
       </div>
     );
+  }
+
+  // View for the "Sign In" link when the user is signed out
+  signInView() {
+    return (
+      <a
+        className="db no-underline br2 account-dropdown-signin"
+        data-button="signin"
+        href={window._env.narrative + '/#login'}
+      >
+        <div
+          className="fa fa-sign-in"
+          style={{ marginRight: '5px', fontSize: '25px', color: '#2196F3' }}
+        ></div>
+        <div style={{ color: '#666', fontSize: '13px', marginTop: '2px' }}>
+          Sign In
+        </div>
+      </a>
+    );
+  }
+
+  render() {
+    return this.props.signedout ? this.signInView() : this.dropdownView();
   }
 }
