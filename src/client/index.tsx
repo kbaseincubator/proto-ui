@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 
 // Imports for page-specific components
+import { Router, Route } from '../client/components/generic/Router';
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
@@ -15,31 +16,28 @@ import { Header } from '../client/components/global_header/Header';
 
 // Utils
 import { getUsername, getToken } from './utils/auth';
+import { createBrowserHistory, History } from 'history';
 
-// Get a pathname for the page without the global prefix for routing purposes.
-// Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
-let PATHNAME = document.location.pathname
-  .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
-  .replace(/\/$/, ''); // Remove trailing slash
-if (PATHNAME[0] !== '/') {
-  PATHNAME = '/' + PATHNAME;
-}
-
+// Top-level URL history object, possibly with basename of '/newnav'
+const history = createBrowserHistory({ basename: window._env.urlPrefix });
 const CONTAINER = document.getElementById('react-root');
 
 // Change the style of the current item in the top-nav.
 // For new nav:
-document.querySelectorAll('[data-hl-nav]').forEach(node => {
-  let HTMLEle: HTMLElement = node as HTMLElement;
-  if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    HTMLEle.className =
+document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
+  // Highlight the dashboard for the root path
+  const path = history.location.pathname;
+  if (path.match(new RegExp('^' + node.getAttribute('data-hl-nav')))) {
+    node.className =
       'dib ph3 pv2 no-underline black-80 w-100 dim b bg-light-gray br bw2 b--green';
   }
 });
+// Highlight dashboard for root path
 // For legacy nav:
 document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
-  if (PATHNAME === node.getAttribute('data-hl-legacy-nav')) {
+  const path = history.location.pathname;
+  if (path === node.getAttribute('data-hl-legacy-nav')) {
     HTMLEle.style.backgroundColor = '#e4e3e4';
   }
 });
@@ -51,48 +49,82 @@ getUsername((username: string | null) => {
   }
 });
 
-interface Props {
-  root: typeof Dashboard | typeof ObjectRelations;
-}
-
-interface State {}
-
-// Global page wrapper
-class Page extends Component<Props, State> {
-  render() {
-    return <this.props.root />;
-  }
-}
-
-// Global header
-const headerElem = document.getElementById('react-global-header');
-if (headerElem !== null) {
+// Global header (legacy design)
+const headerElem = document.querySelector('#react-global-header');
+if (headerElem) {
   const pageTitle = headerElem.getAttribute('data-page-title');
   render(<Header title={pageTitle || ''} />, headerElem);
 }
 
-// Render the page component based on pathname
-if (CONTAINER) {
-  // Simple routing by looking at pathname
-  const routes: {
-    [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
-  } = {
-    '/dashboard': {
-      component: Dashboard,
-    },
-    // For testing out an alternative nav design
-    '/newnav/dashboard': {
-      component: Dashboard,
-    },
-    '/newnav/catalog': {
-      component: Catalog,
-    },
-  };
-  if (!(PATHNAME in routes)) {
-    // Render 404
-    render(<Page root={NotFoundPage} />, CONTAINER);
-  } else {
-    const topComponent = routes[PATHNAME].component;
-    render(<Page root={topComponent} />, CONTAINER);
+interface Props {
+  history?: History;
+}
+
+// Top level page component
+class Page extends Component<Props, {}> {
+  // Nested history object for routing in child components
+  // With a basename such as '/newnav/catalog'
+  nestedHistory: History;
+
+  constructor(props: Props) {
+    super(props);
+    // Created a nested history object with a basename for the child component
+    const paths = [
+      '/dashboard',
+      '/search',
+      '/orgs',
+      '/catalog',
+      '/notifications',
+      '/account',
+    ];
+    let nestedBasename = '';
+    const pathMatch = paths.find(path => {
+      const reg = new RegExp('^' + path);
+      return history.location.pathname.match(reg);
+    });
+    if (pathMatch) {
+      nestedBasename = pathMatch;
+    }
+    this.nestedHistory = createBrowserHistory({
+      basename: window._env.urlPrefix + nestedBasename,
+    });
   }
+
+  render() {
+    return (
+      <Router history={history}>
+        <Route path="/dashboard">
+          <Dashboard history={this.nestedHistory} />
+        </Route>
+        <Route path="/search">
+          <Todo text="Search" />
+        </Route>
+        <Route path="/orgs">
+          <Todo text="Orgs" />
+        </Route>
+        <Route path="/catalog.*">
+          <Catalog history={this.nestedHistory} />
+        </Route>
+        <Route path="/notifications">
+          <Todo text="Notifications" />
+        </Route>
+        <Route path="/account">
+          <Todo text="Account" />
+        </Route>
+        <Route path={/.*/}>
+          <NotFoundPage />
+        </Route>
+      </Router>
+    );
+  }
+}
+
+// Placeholder component for pages we have not implemented yet
+function Todo(props: { text?: string }) {
+  return <p>TODO {props.text}</p>;
+}
+
+// Render the top level page component
+if (CONTAINER) {
+  render(<Page />, CONTAINER);
 }
