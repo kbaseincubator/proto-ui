@@ -1,7 +1,8 @@
 {# Server-provided global data into JS #}
 <script type='text/javascript'>
+  // {{url_prefix}}
   window._env = {
-    url_prefix: '{{app.config.URL_PREFIX}}',
+    urlPrefix: '{{url_prefix}}',
     kbase_endpoint: '{{app.config.KBASE_ENDPOINT}}',
     narrative: '{{app.config.KBASE_UI_ROOT}}',
     auth_required: {{"true" if auth_required else "false"}},

@@ -5,8 +5,7 @@ interface RouterProps {
   history: History;
 }
 
-interface RouterState {
-}
+interface RouterState {}
 
 // URL routing component
 export class Router extends Component<RouterProps, RouterState> {
@@ -40,7 +39,7 @@ export class Router extends Component<RouterProps, RouterState> {
           return;
         }
         if (child.type && child.type !== Route) {
-          throw new Error("Router children must all be `Route` components.");
+          throw new Error('Router children must all be `Route` components.');
         }
         let path = child.props.path;
         if (typeof path === 'string') {
@@ -64,5 +63,4 @@ interface RouteProps {
 
 interface RouteState {}
 
-export class Route extends Component<RouteProps, RouteState> {
-}
+export class Route extends Component<RouteProps, RouteState> {}

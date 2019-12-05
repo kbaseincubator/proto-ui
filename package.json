@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "prettier --check \"src/client/**/*.tsx\"",
+    "test": "tsc --project tsconfig.json --noEmit && prettier --check \"src/client/**/*.tsx\"",
     "build": "yarn install && yarn run css && webpack --mode production",
     "watch": "yarn install && yarn run css && webpack --watch --progress --colors",
     "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css",

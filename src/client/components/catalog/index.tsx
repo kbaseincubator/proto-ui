@@ -26,7 +26,9 @@ export class Catalog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.history = props.history;
+    console.log('catalog path', this.history.location.pathname);
     if (this.history.location.pathname === '/') {
+      // Redirect root to /apps
       this.history.push('/apps');
     }
     this.state = {};
@@ -34,15 +36,13 @@ export class Catalog extends Component<Props, State> {
 
   render() {
     return (
-      <div className='mw8 center pv4'>
+      <div className="mw8 center pv4">
         <Router history={this.history}>
-
           <Route path={/^\/apps\/(.+)/}>
             <AppDetails />
           </Route>
 
           <Route path={/.*/}>
-
             <CatalogNav history={this.history} />
 
             <Router history={this.history}>
@@ -50,24 +50,22 @@ export class Catalog extends Component<Props, State> {
                 <AppCatalog />
               </Route>
               <Route path="/modules">
-                <Todo text='modules' />
+                <Todo text="modules" />
               </Route>
               <Route path="/types">
-                <Todo text='types' />
+                <Todo text="types" />
               </Route>
               <Route path="/services">
-                <Todo text='services' />
+                <Todo text="services" />
               </Route>
               <Route path="/admin">
-                <Todo text='admin' />
+                <Todo text="admin" />
               </Route>
               <Route path={/.*/}>
                 <NotFoundPage />
               </Route>
             </Router>
-            
           </Route>
-
         </Router>
       </div>
     );
@@ -78,6 +76,6 @@ interface TodoProps {
   text: string;
 }
 
-function Todo (props: TodoProps) {
-  return <p>TODO! {props.text || ''}</p>
+function Todo(props: TodoProps) {
+  return <p>TODO! {props.text || ''}</p>;
 }
