@@ -136,7 +136,7 @@ if (CONTAINER) {
     // Hide the legacy side nav, if present
     const sidenav = document.querySelector('.legacy-nav');
     if (sidenav) {
-      sidenav.style.display = 'none';
+      (sidenav as HTMLElement).style.display = 'none';
     }
   } else {
     render(<Page />, CONTAINER);
