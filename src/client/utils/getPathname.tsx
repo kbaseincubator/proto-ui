@@ -1,4 +1,3 @@
-
 // Get the current path without the global prefix.
 // Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
 // Always returns a leading slash and no trailing slash.

@@ -5,8 +5,7 @@ interface Props {
   linkText?: string;
 }
 
-interface State {
-}
+interface State {}
 
 // Parent page component for the dashboard page
 export class NotFoundPage extends Component<Props, State> {

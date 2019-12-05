@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 
-interface Props {
-}
+interface Props {}
 
-interface State {
-}
+interface State {}
 
 export class AppDetails extends Component<Props, State> {
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props);
   }
 
-  render () {
+  render() {
     return <p>App Details placeholder</p>;
   }
 }

@@ -18,7 +18,7 @@ import { getUsername, getToken } from './utils/auth';
 import { getPathname } from './utils/getPathname';
 import { createBrowserHistory, History } from 'history';
 
-const PATHNAME = getPathname()
+const PATHNAME = getPathname();
 const CONTAINER = document.getElementById('react-root');
 
 // Change the style of the current item in the top-nav.
@@ -66,11 +66,11 @@ class Page extends Component<Props, {}> {
 }
 
 // What components map to what base pathnames
-const ROUTES: {[key: string]: {component: typeof Component}} = {
+const ROUTES: { [key: string]: { component: typeof Component } } = {
   '/newnav/dashboard': { component: Dashboard },
   '/dashboard': { component: Dashboard },
   '/newnav/catalog': { component: Catalog },
-}
+};
 
 // Render the page component based on pathname
 if (CONTAINER) {
@@ -79,7 +79,10 @@ if (CONTAINER) {
     if (PATHNAME.match(new RegExp('^' + path))) {
       window._env.basepath = path;
       const history = createBrowserHistory({ basename: path });
-      render(<Page root={ROUTES[path].component} history={history} />, CONTAINER);
+      render(
+        <Page root={ROUTES[path].component} history={history} />,
+        CONTAINER
+      );
       matchedPath = true;
       break;
     }

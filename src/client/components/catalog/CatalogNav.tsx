@@ -4,7 +4,7 @@ import { History, UnregisterCallback } from 'history';
 // Components
 
 // Constants
-const ROUTES: Array<{paths: Array<string>, name: string}> = [
+const ROUTES: Array<{ paths: Array<string>; name: string }> = [
   { paths: ['/apps', '/'], name: 'Apps' },
   { paths: ['/modules'], name: 'Modules' },
   { paths: ['/types'], name: 'Data types' },
@@ -37,7 +37,7 @@ export class CatalogNav extends Component<Props, State> {
     const getIdx = () => {
       const path = this.history.location.pathname;
       return ROUTES.findIndex(tab => tab.paths.indexOf(path) !== -1) || 0;
-    }
+    };
     const idx = getIdx();
     this.setState({ selectedIdx: idx });
     // On any url change, set the current tab
@@ -76,7 +76,8 @@ export class CatalogNav extends Component<Props, State> {
         href={window._env.basepath + ROUTES[idx].paths[0]}
         key={name}
         className={cls}
-        onClick={(ev) => this.handleClickItem(ev, idx)}>
+        onClick={ev => this.handleClickItem(ev, idx)}
+      >
         {name}
       </a>
     );
