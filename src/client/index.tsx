@@ -12,8 +12,6 @@ import { Catalog } from './components/catalog/index';
 import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
 import { Header } from '../client/components/global_header/Header';
-// App catalog details page
-import { AppDetails } from '../client/components/app_details';
 
 // Utils
 import { getUsername, getToken } from './utils/auth';

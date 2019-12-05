@@ -4,7 +4,7 @@ import { History, UnregisterCallback } from 'history';
 // Components
 
 // Constants
-const ROUTES: Array<{path: string, name: string}> = [
+const ROUTES: Array<{paths: Array<string>, name: string}> = [
   { paths: ['/apps', '/'], name: 'Apps' },
   { paths: ['/modules'], name: 'Modules' },
   { paths: ['/types'], name: 'Data types' },
@@ -13,7 +13,6 @@ const ROUTES: Array<{path: string, name: string}> = [
 ];
 
 interface Props {
-  onSelect?: (idx: number) => void;
   history: History;
 }
 interface State {
@@ -64,9 +63,6 @@ export class CatalogNav extends Component<Props, State> {
       return;
     }
     this.setState({ selectedIdx: idx });
-    if (this.props.onSelect) {
-      this.props.onSelect(idx);
-    }
     // Push tab state to window location history
     this.history.push(ROUTES[idx].paths[0]);
   }

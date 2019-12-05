@@ -9,6 +9,7 @@ import { CatalogNav } from './CatalogNav';
 import { AppCatalog } from './AppCatalog';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
+import { AppDetails } from '../app_details';
 
 // Every component in an array, where the index of each component corresponds to
 // its tab index
@@ -20,6 +21,7 @@ const ROUTES: {[key: string]: {component?: typeof Component}} = {
   '/services': {},
   '/admin': {},
 }
+const APP_DETAILS_REGEX = /\/apps\/(.+)/;
 
 interface Props {
   history: History;
@@ -71,6 +73,10 @@ export class Catalog extends Component<Props, State> {
   }
 
   render() {
+    // Render app details for a path like /apps/app-id
+    if (this.state.path.match(APP_DETAILS_REGEX)) {
+      return <AppDetails />
+    }
     return (
       <div className="mw8 ph4 pt4">
         <CatalogNav history={this.history} />
