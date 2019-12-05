@@ -39,6 +39,11 @@ async def root(request):
     return sanic.response.redirect(_url_for('dashboard'))
 
 
+@app.route('/newnav', methods=['GET'])
+async def newnav_root(request):
+    return sanic.response.redirect(_url_for('dashboard_newnav'))
+
+
 @app.route('/newnav/dashboard', methods=['GET'])
 @app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
 async def dashboard_newnav(request, suffix=None, prefix=None):
@@ -86,6 +91,11 @@ async def account_newnav(request, suffix=None):
 async def orgs_newnav(request, suffix=None):
     """Organizations."""
     return _render_template('orgs/index.html', {'template': 'layout-newnav.html'})
+
+
+@app.route('/newnav/<suffix:path>', methods=['GET'])
+async def newnav_catch_all(request, suffix=None):
+    return _render_template('404.html', {'template': 'layout-newnav.html'}, status=404)
 
 
 @app.exception(sanic.exceptions.NotFound)

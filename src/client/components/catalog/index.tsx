@@ -1,48 +1,79 @@
 import React, { Component } from 'react';
 
 import { fetchApps } from '../../utils/fetchApps';
+import { History, UnregisterCallback } from 'history';
 
 // Components
+import { NotFoundPage } from '../not_found';
 import { CatalogNav } from './CatalogNav';
 import { AppCatalog } from './AppCatalog';
 import { SearchInput } from '../generic/SearchInput';
 import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 
-const CONTENT_COMPONENTS = [AppCatalog];
+// Every component in an array, where the index of each component corresponds to
+// its tab index
+const ROUTES: {[key: string]: {component?: typeof Component}} = {
+  '/': { component: AppCatalog },
+  '/apps': { component: AppCatalog },
+  '/modules': {},
+  '/types': {},
+  '/services': {},
+  '/admin': {},
+}
 
-interface Props {}
+interface Props {
+  history: History;
+}
 
 interface State {
-  selectedTabIdx: number;
+  path: string;
 }
 
 // Parent page component for the dashboard page
 export class Catalog extends Component<Props, State> {
-  constructor(props: any) {
+  history: History;
+  historyUnlisten?: UnregisterCallback;
+
+  constructor(props: Props) {
     super(props);
+    this.history = props.history;
     this.state = {
-      selectedTabIdx: 0,
+      path: this.history.location.pathname || '/',
     };
   }
 
-  handleTabChange(idx: number) {
-    this.setState({ selectedTabIdx: idx });
+  componentDidMount() {
+    // Listen to changes to location history to update the page
+    this.historyUnlisten = this.history.listen((location, action) => {
+      this.setState({ path: location.pathname });
+    });
+  }
+
+  componentWillUnmount() {
+    // Stop listening to location history
+    if (this.historyUnlisten) {
+      this.historyUnlisten();
+    }
   }
 
   // View the content beneath the tabs
   contentView() {
-    const contentComponent = CONTENT_COMPONENTS[this.state.selectedTabIdx];
-    if (contentComponent) {
-      return React.createElement(contentComponent, {});
+    const route = ROUTES[this.state.path];
+    if (route) {
+      if (route.component) {
+        return React.createElement(route.component, {});
+      } else {
+        return <p>TODO! {this.state.path}</p>;
+      }
     } else {
-      return <p>TODO!</p>;
+      return <NotFoundPage href="/newnav/catalog/apps" linkText="View the catalog" />;
     }
   }
 
   render() {
     return (
       <div className="mw8 ph4 pt4">
-        <CatalogNav onSelect={idx => this.handleTabChange(idx)} />
+        <CatalogNav history={this.history} />
         {this.contentView()}
       </div>
     );

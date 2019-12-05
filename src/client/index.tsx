@@ -12,30 +12,27 @@ import { Catalog } from './components/catalog/index';
 import { NotFoundPage } from './components/not_found';
 // Global navigation (legacy copy of previous kbase-ui)
 import { Header } from '../client/components/global_header/Header';
+// App catalog details page
+import { AppDetails } from '../client/components/app_details';
 
 // Utils
 import { getUsername, getToken } from './utils/auth';
+import { getPathname } from './utils/getPathname';
+import { createBrowserHistory, History } from 'history';
 
-// Get a pathname for the page without the global prefix for routing purposes.
-// Eg. given a prefix of '/x/y' and a pathname of '/x/y/a/b', we want to get '/a/b'
-let PATHNAME = document.location.pathname
-  .replace(new RegExp('^' + window._env.url_prefix), '') // Remove global url prefix
-  .replace(/\/$/, ''); // Remove trailing slash
-if (PATHNAME[0] !== '/') {
-  PATHNAME = '/' + PATHNAME;
-}
-
+const PATHNAME = getPathname()
 const CONTAINER = document.getElementById('react-root');
 
 // Change the style of the current item in the top-nav.
 // For new nav:
-document.querySelectorAll('[data-hl-nav]').forEach(node => {
-  let HTMLEle: HTMLElement = node as HTMLElement;
-  if (PATHNAME === node.getAttribute('data-hl-nav')) {
-    HTMLEle.className =
+document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
+  // Highlight the dashboard for the root path
+  if (PATHNAME.match(new RegExp('^' + node.getAttribute('data-hl-nav')))) {
+    node.className =
       'dib ph3 pv2 no-underline black-80 w-100 dim b bg-light-gray br bw2 b--green';
   }
 });
+// Highlight dashboard for root path
 // For legacy nav:
 document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
   let HTMLEle: HTMLElement = node as HTMLElement;
@@ -51,48 +48,46 @@ getUsername((username: string | null) => {
   }
 });
 
-interface Props {
-  root: typeof Dashboard | typeof ObjectRelations;
-}
-
-interface State {}
-
-// Global page wrapper
-class Page extends Component<Props, State> {
-  render() {
-    return <this.props.root />;
-  }
-}
-
-// Global header
-const headerElem = document.getElementById('react-global-header');
-if (headerElem !== null) {
+// Global header (legacy design)
+const headerElem = document.querySelector('#react-global-header');
+if (headerElem) {
   const pageTitle = headerElem.getAttribute('data-page-title');
   render(<Header title={pageTitle || ''} />, headerElem);
 }
 
+interface Props {
+  root: typeof Component;
+  history?: History;
+}
+
+// Global page component wrapper
+class Page extends Component<Props, {}> {
+  render() {
+    return <this.props.root history={this.props.history} />;
+  }
+}
+
+// What components map to what base pathnames
+const ROUTES: {[key: string]: {component: typeof Component}} = {
+  '/newnav/dashboard': { component: Dashboard },
+  '/dashboard': { component: Dashboard },
+  '/newnav/catalog': { component: Catalog },
+}
+
 // Render the page component based on pathname
 if (CONTAINER) {
-  // Simple routing by looking at pathname
-  const routes: {
-    [key: string]: { [key: string]: typeof Dashboard | typeof ObjectRelations };
-  } = {
-    '/dashboard': {
-      component: Dashboard,
-    },
-    // For testing out an alternative nav design
-    '/newnav/dashboard': {
-      component: Dashboard,
-    },
-    '/newnav/catalog': {
-      component: Catalog,
-    },
-  };
-  if (!(PATHNAME in routes)) {
+  let matchedPath = false;
+  for (const path in ROUTES) {
+    if (PATHNAME.match(new RegExp('^' + path))) {
+      window._env.basepath = path;
+      const history = createBrowserHistory({ basename: path });
+      render(<Page root={ROUTES[path].component} history={history} />, CONTAINER);
+      matchedPath = true;
+      break;
+    }
+  }
+  if (!matchedPath) {
     // Render 404
     render(<Page root={NotFoundPage} />, CONTAINER);
-  } else {
-    const topComponent = routes[PATHNAME].component;
-    render(<Page root={topComponent} />, CONTAINER);
   }
 }
