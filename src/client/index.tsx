@@ -102,7 +102,7 @@ class Page extends Component<Props, {}> {
         <Route path="/orgs">
           <Todo text="Orgs" />
         </Route>
-        <Route path="/catalog">
+        <Route path="/catalog.*">
           <Catalog history={this.nestedHistory} />
         </Route>
         <Route path="/notifications">

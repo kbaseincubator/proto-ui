@@ -26,7 +26,6 @@ export class Catalog extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.history = props.history;
-    console.log('catalog path', this.history.location.pathname);
     if (this.history.location.pathname === '/') {
       // Redirect root to /apps
       this.history.push('/apps');
