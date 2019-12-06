@@ -1,2 +1,2 @@
-export {ProfileEdit} from  './ProfileEdit';
-export {ProfilePlainText} from './ProfilePlainText';
+export { ProfileEdit } from './ProfileEdit';
+export { ProfilePlainText } from './ProfilePlainText';

@@ -115,7 +115,7 @@ class Page extends Component<Props, {}> {
           <Todo text="Notifications" />
         </Route>
         <Route path="/account">
-          <Todo text="Account" />
+          <Account history={this.nestedHistory} />
         </Route>
         <Route path={/.*/}>
           <NotFoundPage />

@@ -1,9 +1,8 @@
 /**
- * Input field with validation 
+ * Input field with validation
  */
 
 import React, { Component } from 'react';
-
 
 interface Props {
   disabled?: boolean;
@@ -11,7 +10,7 @@ interface Props {
   form?: string;
   list?: string;
   name?: string;
-  placeholder?: string
+  placeholder?: string;
   required?: boolean;
   readOnly?: boolean;
   defaultValue?: string;
@@ -22,56 +21,54 @@ interface Props {
   validation?: boolean;
   onPressEnter?: () => void;
   onChange?: () => void;
-};
+}
 
 interface State {
   inputValue?: string | undefined;
-  validateStatus?: "" | "error" | "success" | "warning" | "validating" | null;
+  validateStatus?: '' | 'error' | 'success' | 'warning' | 'validating' | null;
   requiredNotification?: boolean | null;
   helpText?: string;
 }
 
-class NumInput extends Component<Props, State>{
+class NumInput extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       inputValue: undefined,
       validateStatus: null,
-      requiredNotification: null
+      requiredNotification: null,
     };
   }
-  componentDidMount() {
-
-  }
-  checkforE(ev:any){
-    console.log(ev.charCode, ev.keyCode, this.state)
-    if(ev.charCode === 101){
-        this.setState({validateStatus: 'error', helpText: 'Expecting numbers'})
+  componentDidMount() {}
+  checkforE(ev: any) {
+    console.log(ev.charCode, ev.keyCode, this.state);
+    if (ev.charCode === 101) {
+      this.setState({ validateStatus: 'error', helpText: 'Expecting numbers' });
     }
   }
-  onChangeHandler(ev:any){
-    console.log( ev.currentTarget, ev.charCode)
-    let inputValue:string = ev.currentTarget.value;
+  onChangeHandler(ev: any) {
+    console.log(ev.currentTarget, ev.charCode);
+    let inputValue: string = ev.currentTarget.value;
     // this.props.onChange
-    if(typeof inputValue === 'string'){
-      this.setState({inputValue});
+    if (typeof inputValue === 'string') {
+      this.setState({ inputValue });
     }
-    if(this.props.validation){
-      this.validateInput(inputValue)
+    if (this.props.validation) {
+      this.validateInput(inputValue);
     }
   }
   /**
-   * Validate value against 
+   * Validate value against
    *  - max and min length
    *  - if it's a required field
-   *  - input type 
+   *  - input type
    * and set state per validation result.
-   * @param inputValue 
+   * @param inputValue
    */
   validateInput(inputValue: string) {
     if (isNaN(parseInt(inputValue, 10)) || inputValue === 'e') {
-        this.setState({ validateStatus: 'error', helpText: 'Expecting numbers' });
-        return;
+      this.setState({ validateStatus: 'error', helpText: 'Expecting numbers' });
+      return;
     }
     // check against min and max length
     // this could be dobe by ternary operator, but typescript doesn't like it.
@@ -80,45 +77,53 @@ class NumInput extends Component<Props, State>{
       maxLength = this.props.maxLength;
     } else {
       maxLength = 10000; // number is picked randomly. Number.MAX_SAFE_INTEGER seemed a bit overkill.
-    };
+    }
 
     let minLength: number;
     if (typeof this.props.minLength !== 'undefined') {
       minLength = this.props.minLength;
     } else {
       minLength = 2;
-    };
+    }
 
     if (inputValue.length <= maxLength && inputValue.length >= minLength) {
-
-      this.setState({ validateStatus: 'success', helpText: undefined});
-
+      this.setState({ validateStatus: 'success', helpText: undefined });
     } else if (!this.props.required && inputValue.length === 0) {
-
-      this.setState({ validateStatus: 'success', helpText: undefined});
-
+      this.setState({ validateStatus: 'success', helpText: undefined });
     } else if (inputValue.length < minLength) {
-
-      this.setState({ validateStatus: 'error', helpText: 'input must be at least ' + minLength + ' numbers' });
-
+      this.setState({
+        validateStatus: 'error',
+        helpText: 'input must be at least ' + minLength + ' numbers',
+      });
     } else if (inputValue.length > maxLength) {
       // this shouldn't happen since input field max length is set
-      this.setState({ validateStatus: 'error', helpText: 'input must be less than ' + maxLength + ' numbers' });
-
-    };
-  };
+      this.setState({
+        validateStatus: 'error',
+        helpText: 'input must be less than ' + maxLength + ' numbers',
+      });
+    }
+  }
 
   render() {
     return (
       <>
-        <fieldset style={{ padding: '0.35em', margin: '0.5rem' }} className={this.state.validateStatus==='error' ? 'b--red' : ''}>
-          <legend style={{
-            fontSize: '10px',
-            padding: '0',
-            textAlign: 'left',
-            transition: 'width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms',
-            lineHeight: '12px',
-          }}><span className='mh1 gray'>{this.props.required ? 'Required*' : 'Optional'}</span></legend>
+        <fieldset
+          style={{ padding: '0.35em', margin: '0.5rem' }}
+          className={this.state.validateStatus === 'error' ? 'b--red' : ''}
+        >
+          <legend
+            style={{
+              fontSize: '10px',
+              padding: '0',
+              textAlign: 'left',
+              transition: 'width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms',
+              lineHeight: '12px',
+            }}
+          >
+            <span className="mh1 gray">
+              {this.props.required ? 'Required*' : 'Optional'}
+            </span>
+          </legend>
           <input
             className="w-100 pa2 bn"
             type="number"
@@ -137,9 +142,9 @@ class NumInput extends Component<Props, State>{
             onKeyPress={this.checkforE.bind(this)}
           />
         </fieldset>
-        <p className='f7 ml3 mr3 red'>{this.state.helpText}</p>
+        <p className="f7 ml3 mr3 red">{this.state.helpText}</p>
       </>
-    )
+    );
   }
 }
 

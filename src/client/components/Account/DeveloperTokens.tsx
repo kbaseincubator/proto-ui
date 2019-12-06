@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-
-export class DeveloperTokens extends Component {
-    render(){
-        return (
-            <div>Developer Tokens</div>
-        )
-    }
+interface Props{
+  text: string
+}
+export class DeveloperTokens extends Component<Props, any>{
+  
+  render() {
+    return <div>Developer Tokens {this.props.text}</div>;
+  }
 }

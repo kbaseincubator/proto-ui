@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { getUsername } from '../../utils/auth';
-import { AccuntNav } from './navigation';
-import { ProfilePlainText, ProfileEdit } from '../Profile';
 import { fetchProfileAPI } from '../../utils/userInfo';
 import { DeveloperTokens } from './DeveloperTokens';
-import { NotFoundPage } from '../not_found/index';
 
+import { History, UnregisterCallback } from 'history';
+
+
+import { AccuntNav } from './navigation';
+import { Router, Route } from '../generic/Router';
+import { ProfilePlainText, ProfileEdit } from '../Profile';
+
+import { NotFoundPage } from '../not_found/index';
 export enum LoadingStates {
   fetching = 'fetching',
   success = 'success',
@@ -29,20 +34,21 @@ export interface Userdata {
   state?: string;
 }
 
-
 export interface Profile {
   metadata: {
     createdBy: string;
     created: string;
-  }
-  synced?: { gravatarHash?: string; }
-  userdata?: Userdata
+  };
+  synced?: { gravatarHash?: string };
+  userdata?: Userdata;
 }
 
-interface Props { }
+interface Props {
+  history: History;
+}
 
 interface State {
-  profileLoading: LoadingStates
+  profileLoading: LoadingStates;
   authUsername?: string;
   pathname?: string;
   user?: {
@@ -55,47 +61,70 @@ interface State {
 }
 
 export class Account extends Component<Props, State> {
-  constructor(props: Props) {
+  // URL location history
+  history: History;
+  // Callback to stop listening to history
+  historyUnlisten?: UnregisterCallback; constructor(props: Props) {
     super(props);
-
+    this.history = props.history;
     this.state = {
       profileLoading: LoadingStates.none,
       pathname: undefined,
       user: undefined,
-      profile: undefined
+      profile: undefined,
     };
     this.navOnClick = this.navOnClick.bind(this);
-    this.loadComponent = this.loadComponent.bind(this);
+    // this.loadComponent = this.loadComponent.bind(this);
   }
   componentDidMount() {
     getUsername(authUsername => {
-      if(authUsername !== null){
+      if (authUsername !== null) {
         this.setState({ authUsername });
         this.getProfile(authUsername);
       }
     });
-    let pathname = window.location.pathname.replace('/newnav/account', '');
-    console.log('window.location.pathname', window.location.pathname, pathname)
-    this.setState({ pathname });
+    this.historyUnlisten = this.history.listen((location, action) => {
+      let pathname = window.location.pathname.replace('/newnav/account', '');
+      console.log('window.location.pathname', window.location.pathname, pathname);
+      this.setState({ pathname });
+    });
   }
 
   componentDidUpdate() {
-    let pathname = window.location.pathname.replace('/newnav/account', '');
-    console.log('window.location.pathname updated', window.location.pathname, pathname);
-    if (pathname !== this.state.pathname) {
-      this.setState({ pathname });
+    // let pathname = window.location.pathname.replace('/newnav/account', '');
+    // console.log(
+    //   'window.location.pathname updated',
+    //   window.location.pathname,
+    //   pathname
+    // );
+    // if (pathname !== this.state.pathname) {
+    //   this.setState({ pathname });
+    // }
+  }
+
+  componentWillUnmount() {
+    // Stop listening to the location history
+    if (this.historyUnlisten) {
+      this.historyUnlisten();
     }
   }
 
   async getProfile(profileID: string) {
     this.setState({ profileLoading: LoadingStates.fetching });
     let res = await fetchProfileAPI(profileID);
-    console.log(res)
+    console.log(res);
     // let profileData = await fetchProfileAPI('amarukawa');
     if (typeof res !== 'undefined' && res.status === 200) {
-      this.setState({ profile: res.response.profile, user: res.response.user, profileLoading: LoadingStates.success });
+      this.setState({
+        profile: res.response.profile,
+        user: res.response.user,
+        profileLoading: LoadingStates.success,
+      });
     } else {
-      this.setState({ profileLoading: LoadingStates.error, profileFetchErrorText: res.statusText });
+      this.setState({
+        profileLoading: LoadingStates.error,
+        profileFetchErrorText: res.statusText,
+      });
     }
   }
 
@@ -103,11 +132,9 @@ export class Account extends Component<Props, State> {
   gravatarSrc(): string | undefined {
     const userdata = this.state.profile && this.state.profile.userdata;
     const synced = this.state.profile && this.state.profile.synced;
-    console.log(this.state.profile, userdata, synced)
     if (userdata && synced) {
-      
       if (userdata.avatarOption === 'silhoutte' || !synced.gravatarHash) {
-        return window._env.url_prefix + 'static/images/nouserpic.png';
+        return window._env.urlPrefix + 'static/images/nouserpic.png';
       } else if (synced.gravatarHash) {
         return (
           'https://www.gravatar.com/avatar/' +
@@ -121,7 +148,7 @@ export class Account extends Component<Props, State> {
 
   isAuthUser(): boolean {
     // return true or false depending on if the search param is auth uer or not
-    return true
+    return true;
   }
 
   navOnClick(): void {
@@ -129,64 +156,42 @@ export class Account extends Component<Props, State> {
       let ele = event.target as HTMLElement;
       let pathname = ele!.closest('li')!.getAttribute('data-hl-nav')!;
       this.setState({ pathname });
-      let url = window._env.url_prefix + 'newnav/account/' + pathname;
-      console.log(url);
-      window.history.pushState(null, '', url);
+      // let url = window.location.origin + 'newnav/account/' + pathname;
+      console.log(pathname);
+      // window.history.pushState(null, '', url);
+      this.history.push(pathname)
     }
   }
 
-  loadComponent(): JSX.Element {
-    const pathname = this.state.pathname;
-    let path: string = '';
-    console.log("loadComponent", this.state.profileLoading)
-    if (typeof pathname === 'string') { path = pathname.replace('/', ''), console.log(path) }
-    switch (path) {
-      case 'profile':
-      case '':
-        if (this.isAuthUser() === true) {
-          return <ProfileEdit
-            loading={this.state.profileLoading}
-            profile={this.state.profile}
-            user={this.state.user}
-            gravatarSrc={this.gravatarSrc()}
-          />;
-        } else {
-          return <ProfilePlainText
-            loading={this.state.profileLoading}
-            profile={this.state.profile}
-            user={this.state.user}
-            gravatarSrc={this.gravatarSrc()}
-          />;
-        }
-      case 'account':
-        return (
-          <DeveloperTokens />
-        );
-      case 'linked_accounts':
-        return (
-          <DeveloperTokens />
-        );
-      case 'developer_tokens':
-        return (
-          <DeveloperTokens />
-        );
-      case 'running_jobs':
-        return (
-          <DeveloperTokens />
-        );
-      case 'usage_agreeements':
-        return <DeveloperTokens />
-      default:
-        return < NotFoundPage />
-    }
-  }
 
   render() {
     return (
-      <>
-        <AccuntNav navOnClick={this.navOnClick} />
-        {this.loadComponent()}
-      </>
+      <Router history={this.history}>
+        <Route path={/.*/} >
+          <AccuntNav navOnClick={this.navOnClick} />
+          <Router history={this.history}>
+            <Route path="/">
+              <ProfileEdit
+                loading={this.state.profileLoading}
+                profile={this.state.profile}
+                user={this.state.user}
+                gravatarSrc={this.gravatarSrc()}
+              />
+            </Route>
+            <Route path="/profile">
+              <ProfileEdit
+                loading={this.state.profileLoading}
+                profile={this.state.profile}
+                user={this.state.user}
+                gravatarSrc={this.gravatarSrc()}
+              />
+            </Route>
+            <Route path="/account">
+                <DeveloperTokens text="tyaccountaccountpes" />
+            </Route>
+          </Router>
+        </Route>
+      </Router>
     );
   }
 }
