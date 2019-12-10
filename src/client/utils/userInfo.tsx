@@ -93,7 +93,7 @@ export async function updateProfileAPI(
     params: newParam,
   };
   const stringBody = JSON.stringify(body);
-  const url = window._env.url_prefix + '/services/user_profile/rpc';
+  const url = window._env.kbase_endpoint + '/user_profile/rpc';
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',

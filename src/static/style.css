@@ -1,5 +1,8 @@
 /* Generic styling that are not included in tachyons */
 .vw30{
+  width: 30vw;
+}
+.vw30{
     width: 30vw;
 }
 
@@ -9,4 +12,8 @@
 
 .vw10 {
   width: 10vw;
+}
+
+.vw5 {
+  width: 5vw;
 }

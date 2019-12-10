@@ -5,12 +5,10 @@ import { DeveloperTokens } from './DeveloperTokens';
 
 import { History, UnregisterCallback } from 'history';
 
-
 import { AccuntNav } from './navigation';
 import { Router, Route } from '../generic/Router';
 import { ProfilePlainText, ProfileEdit } from '../Profile';
 
-import { NotFoundPage } from '../not_found/index';
 export enum LoadingStates {
   fetching = 'fetching',
   success = 'success',
@@ -50,7 +48,6 @@ interface Props {
 interface State {
   profileLoading: LoadingStates;
   authUsername?: string;
-  pathname?: string;
   user?: {
     realname?: string;
     username?: string;
@@ -64,42 +61,35 @@ export class Account extends Component<Props, State> {
   // URL location history
   history: History;
   // Callback to stop listening to history
-  historyUnlisten?: UnregisterCallback; constructor(props: Props) {
+  historyUnlisten?: UnregisterCallback;
+  constructor(props: Props) {
     super(props);
     this.history = props.history;
     this.state = {
       profileLoading: LoadingStates.none,
-      pathname: undefined,
       user: undefined,
       profile: undefined,
     };
     this.navOnClick = this.navOnClick.bind(this);
-    // this.loadComponent = this.loadComponent.bind(this);
   }
   componentDidMount() {
+    console.log('componentDidMount');
+
     getUsername(authUsername => {
       if (authUsername !== null) {
         this.setState({ authUsername });
-        this.getProfile(authUsername);
       }
     });
     this.historyUnlisten = this.history.listen((location, action) => {
-      let pathname = window.location.pathname.replace('/newnav/account', '');
-      console.log('window.location.pathname', window.location.pathname, pathname);
-      this.setState({ pathname });
+      console.log('location.pathname', location.pathname);
     });
   }
 
   componentDidUpdate() {
-    // let pathname = window.location.pathname.replace('/newnav/account', '');
-    // console.log(
-    //   'window.location.pathname updated',
-    //   window.location.pathname,
-    //   pathname
-    // );
-    // if (pathname !== this.state.pathname) {
-    //   this.setState({ pathname });
-    // }
+    console.log('account index componentDidUpdate', this.state);
+    if (this.state.authUsername && this.state.profileLoading === 'none') {
+      this.getProfile(this.state.authUsername);
+    }
   }
 
   componentWillUnmount() {
@@ -113,7 +103,6 @@ export class Account extends Component<Props, State> {
     this.setState({ profileLoading: LoadingStates.fetching });
     let res = await fetchProfileAPI(profileID);
     console.log(res);
-    // let profileData = await fetchProfileAPI('amarukawa');
     if (typeof res !== 'undefined' && res.status === 200) {
       this.setState({
         profile: res.response.profile,
@@ -130,8 +119,8 @@ export class Account extends Component<Props, State> {
 
   // Set gravatarURL
   gravatarSrc(): string | undefined {
-    const userdata = this.state.profile && this.state.profile.userdata;
-    const synced = this.state.profile && this.state.profile.synced;
+    const userdata = this.state?.profile?.userdata;
+    const synced = this.state.profile?.synced;
     if (userdata && synced) {
       if (userdata.avatarOption === 'silhoutte' || !synced.gravatarHash) {
         return window._env.urlPrefix + 'static/images/nouserpic.png';
@@ -146,39 +135,39 @@ export class Account extends Component<Props, State> {
     }
   }
 
-  isAuthUser(): boolean {
-    // return true or false depending on if the search param is auth uer or not
-    return true;
-  }
-
   navOnClick(): void {
-    if (event && event.target) {
-      let ele = event.target as HTMLElement;
-      let pathname = ele!.closest('li')!.getAttribute('data-hl-nav')!;
-      this.setState({ pathname });
-      // let url = window.location.origin + 'newnav/account/' + pathname;
-      console.log(pathname);
-      // window.history.pushState(null, '', url);
-      this.history.push(pathname)
+    const location = this.history.location.pathname;
+    if (location.includes('profile')) {
+      this.history.push('');
+    }
+    let ele = event!.target as HTMLElement;
+    let pathname =
+      ele?.closest('li')?.getAttribute('data-hl-nav') ||
+      ele?.getAttribute('data-hl-nav');
+    if (pathname === 'profile') {
+      pathname = pathname + '/' + this.state.user?.username;
+    }
+    if (pathname) {
+      this.history.push(pathname);
     }
   }
-
 
   render() {
     return (
       <Router history={this.history}>
-        <Route path={/.*/} >
+        <Route path={/.*/}>
           <AccuntNav navOnClick={this.navOnClick} />
           <Router history={this.history}>
             <Route path="/">
-              <ProfileEdit
+              <ProfilePlainText
+                redirect={this.navOnClick}
                 loading={this.state.profileLoading}
                 profile={this.state.profile}
                 user={this.state.user}
                 gravatarSrc={this.gravatarSrc()}
               />
             </Route>
-            <Route path="/profile">
+            <Route path={/^\/profile/}>
               <ProfileEdit
                 loading={this.state.profileLoading}
                 profile={this.state.profile}
@@ -187,7 +176,16 @@ export class Account extends Component<Props, State> {
               />
             </Route>
             <Route path="/account">
-                <DeveloperTokens text="tyaccountaccountpes" />
+              <DeveloperTokens text="account" />
+            </Route>
+            <Route path="/developer_tokens">
+              <DeveloperTokens text="developer_tokens" />
+            </Route>
+            <Route path="/running_jobs">
+              <DeveloperTokens text="running_jobs" />
+            </Route>
+            <Route path="/usage_agreeements">
+              <DeveloperTokens text="usage_agreeements" />
             </Route>
           </Router>
         </Route>

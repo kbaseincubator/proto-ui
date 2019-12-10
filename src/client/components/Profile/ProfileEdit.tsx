@@ -4,6 +4,7 @@ import './profile.css';
 import { LoadingSpinner } from '../generic/LoadingSpinner';
 import { Profile, LoadingStates } from '../Account/index';
 import { NotFoundPage } from '../not_found/index';
+
 interface Props {
   loading: LoadingStates;
   profile: Profile | undefined;
@@ -29,13 +30,18 @@ export class ProfileEdit extends Component<Props, State> {
 
     this.state = {};
   }
-  componentDidMount() {}
+  componentDidMount() {
+    if(this.props.user?.username === window._env.username) {
+      return;
+    }
+    
+  }
 
   componentDidUpdate(prevProps: Props, prevState: State) {}
 
   researchInterests() {
-    const userdata = this.props.profile && this.props.profile.userdata;
-    const researchInterests = userdata && userdata.researchInterests;
+    const userdata = this.props.profile?.userdata;
+    const researchInterests = userdata?.researchInterests;
     if (!researchInterests || !userdata) {
       return;
     }
@@ -66,9 +72,7 @@ export class ProfileEdit extends Component<Props, State> {
 
   buildAffliations() {
     const affiliationsArray =
-      this.props.profile &&
-      this.props.profile.userdata &&
-      (this.props.profile.userdata.affiliations as Array<Affiliation>);
+      this.props.profile?.userdata?.affiliations as Array<Affiliation>);
     if (!affiliationsArray) {
       return;
     }
@@ -79,7 +83,7 @@ export class ProfileEdit extends Component<Props, State> {
           {affiliationsArray.map((position: Affiliation) => {
             if (position.title) {
               return (
-                <div className="affiliation-row">
+                <div key={position.title} className="affiliation-row">
                   <p
                     style={{
                       width: '20%',
@@ -163,6 +167,7 @@ export class ProfileEdit extends Component<Props, State> {
         <>
           <div className="vw30">
             <div className="kbase-card pa3 ma3 tc">
+              <p>edit profile</p>
               <img src={this.props.gravatarSrc} />
             </div>
             <div className="kbase-card pa3 ma3">
@@ -209,4 +214,3 @@ export class ProfileEdit extends Component<Props, State> {
     }
   }
 }
-//export default ProfilePlainText;

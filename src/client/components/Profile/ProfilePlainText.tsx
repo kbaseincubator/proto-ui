@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 
 import './profile.css';
 import { LoadingSpinner } from '../generic/LoadingSpinner';
+import { Button } from '../generic/Button';
 import { Profile, LoadingStates } from '../Account/index';
 import { NotFoundPage } from '../not_found/index';
 
 interface Props {
+  redirect: () => void;
   loading: LoadingStates;
   profile: Profile | undefined;
   user:
@@ -34,7 +36,7 @@ export class ProfilePlainText extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {}
 
-  researchInterests() {
+  researchInterests(): JSX.Element | undefined {
     const userdata = this.props.profile && this.props.profile.userdata;
     const researchInterests = userdata && userdata.researchInterests;
     if (!researchInterests || !userdata) {
@@ -65,7 +67,7 @@ export class ProfilePlainText extends Component<Props, State> {
     }
   }
 
-  buildAffliations() {
+  buildAffliations(): JSX.Element | undefined {
     const affiliationsArray =
       this.props.profile &&
       this.props.profile.userdata &&
@@ -107,7 +109,7 @@ export class ProfilePlainText extends Component<Props, State> {
     }
   }
 
-  location() {
+  location(): JSX.Element | undefined {
     const userdata = this.props.profile && this.props.profile.userdata;
     if (!userdata) {
       return;
@@ -129,14 +131,18 @@ export class ProfilePlainText extends Component<Props, State> {
   render() {
     const userdata = this.props.profile && this.props.profile.userdata;
     if (this.props.loading === 'none' || this.props.loading === 'fetching') {
-      return <LoadingSpinner loading={true} />;
+      return (
+        <div style={{ margin: '20%' }}>
+          <LoadingSpinner loading={true} />
+        </div>
+      );
     } else if (this.props.loading === 'error') {
       return <NotFoundPage />;
     } else if (this.props.loading === 'success' && userdata) {
       return (
         <>
-          <div className="vw30">
-            <div className="kbase-card pa3 ma3 tc">
+          <div style={{ minWidth: '200px', flexGrow: 1 }}>
+            <div className="kbase-card pt1 ma3 tc">
               <img src={this.props.gravatarSrc} />
             </div>
             <div className="kbase-card pa3 ma3">
@@ -149,10 +155,11 @@ export class ProfilePlainText extends Component<Props, State> {
               </div>
             </div>
           </div>
-          <div className="vw10"></div> {/* gutter */}
-          <div>
+          <div className="mw5"></div> {/* gutter */}
+          <div style={{ minWidth: '470px', flexGrow: 2 }}>
             <div className="kbase-card pa3 ma3">
               <h1>{this.props.user ? this.props.user.realname : undefined}</h1>
+              <Button innerText={'EDIT'} onClick={this.props.redirect} />
               <p>{this.props.user ? this.props.user.username : undefined}</p>
               <p style={{ fontStyle: 'italic' }}>
                 {userdata.jobTitle === 'Other'
@@ -179,5 +186,3 @@ export class ProfilePlainText extends Component<Props, State> {
     }
   }
 }
-
-//export default ProfilePlainText;

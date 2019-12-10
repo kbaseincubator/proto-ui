@@ -1,7 +1,10 @@
 import React from 'react';
 export const AccuntNav = (props: { navOnClick: () => void }) => (
   <>
-    <ul className="list pa0 ml3" style={{ position: 'sticky', top: 0 }}>
+    <ul
+      className="list pa0 ml3"
+      style={{ position: 'sticky', top: 0, minWidth: '160px' }}
+    >
       <li
         data-hl-nav="profile"
         className="mv1 pointer bg-dark-blue white b br2 pa2 flex justify-between"
