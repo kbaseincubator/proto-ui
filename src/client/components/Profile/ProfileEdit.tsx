@@ -31,10 +31,9 @@ export class ProfileEdit extends Component<Props, State> {
     this.state = {};
   }
   componentDidMount() {
-    if(this.props.user?.username === window._env.username) {
+    if (this.props.user?.username === window._env.username) {
       return;
     }
-    
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {}
@@ -71,8 +70,8 @@ export class ProfileEdit extends Component<Props, State> {
   }
 
   buildAffliations() {
-    const affiliationsArray =
-      this.props.profile?.userdata?.affiliations as Array<Affiliation>);
+    const affiliationsArray = this.props.profile?.userdata
+      ?.affiliations as Array<Affiliation>;
     if (!affiliationsArray) {
       return;
     }
