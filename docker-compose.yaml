@@ -24,4 +24,4 @@ services:
     ports:
       - "127.0.0.1:5011:5011"
     volumes:
-      - ./dev/nginx-default.conf:/etc/nginx/conf.d/deafult.conf
+      - ./dev/nginx-default.conf:/etc/nginx/conf.d/default.conf
