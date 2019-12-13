@@ -102,7 +102,10 @@ export class NarrativeDetails extends Component<Props, State> {
     return (
       <div
         className="w-60 h-100 bg-white pv2 ph3"
-        style={{ top: window._env.legacyNav ? '4.5rem' : '0.75rem', position: 'sticky' }}
+        style={{
+          top: window._env.legacyNav ? '4.5rem' : '0.75rem',
+          position: 'sticky',
+        }}
       >
         <div className="flex justify-between mb3">
           <h4 className="ma0 pa0 pt2 f4">
