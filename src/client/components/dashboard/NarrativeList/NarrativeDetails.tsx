@@ -7,6 +7,11 @@ import { MiniTabs } from '../../generic/MiniTabs';
 import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/getWSTypeName';
 
+let LEGACY_NAV = false;
+if (document.querySelector('#global-header')) {
+  LEGACY_NAV = true;
+}
+
 interface Props {
   activeItem: NarrativeData;
   selectedTabIdx?: number;
@@ -102,7 +107,7 @@ export class NarrativeDetails extends Component<Props, State> {
     return (
       <div
         className="w-60 h-100 bg-white pv2 ph3"
-        style={{ top: '1rem', position: 'sticky' }}
+        style={{ top: LEGACY_NAV ? '4.5rem' : '0.75rem', position: 'sticky' }}
       >
         <div className="flex justify-between mb3">
           <h4 className="ma0 pa0 pt2 f4">
