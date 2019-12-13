@@ -7,42 +7,31 @@ interface Props {
   activeIdx?: number;
 }
 
-interface State {
-  activeIdx: number;
-}
+interface State {}
 
 // Small horizontal, in-page tab navigation.
 export class MiniTabs extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      activeIdx: this.props.activeIdx || 0,
-    };
-  }
 
   // Select a new tab by index
   select(idx: number) {
-    if (idx == this.state.activeIdx) {
+    if (idx === this.props.activeIdx) {
       return;
     }
     if (idx < 0 || idx >= this.props.tabs.length) {
       throw new Error(`Invalid tab index ${idx}. Min is 0
         and max is ${this.props.tabs.length - 1}.`);
     }
-    this.setState({ activeIdx: idx });
     if (this.props.onSelect) {
       this.props.onSelect(idx);
     }
   }
 
   render() {
-    const { tabs } = this.props;
-    const { activeIdx } = this.state;
-    const className =
-      (this.props.className || '') + ' list pa0 ma0 flex items-center';
+    const { activeIdx, tabs } = this.props;
+    const className = (this.props.className || '') + ' list pa0 ma0 flex items-center';
     return (
       <ul className={className} style={{ position: 'relative', top: '1px' }}>
-        {tabs.map((tabText, idx) => {
+        {tabs.map((tabText: string, idx: number) => {
           const className =
             activeIdx === idx ? tabClasses.active : tabClasses.inactive;
           return (

@@ -143,6 +143,7 @@ export class NarrativeDetails extends Component<Props, State> {
         <MiniTabs
           tabs={['Overview', 'Data', 'Preview']}
           onSelect={this.handleOnTabSelect.bind(this)}
+          activeIdx={selectedTabIdx}
           className="mb3"
         />
         {content}
