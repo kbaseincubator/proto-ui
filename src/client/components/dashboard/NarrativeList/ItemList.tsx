@@ -14,7 +14,6 @@ interface State {}
 
 // Simple UI for a list of selectable search results
 export class ItemList extends Component<Props, State> {
-
   selectItem(idx: number) {
     if (idx < 0 || idx >= this.props.items.length) {
       throw new Error(`Invalid index for ItemList: ${idx}.

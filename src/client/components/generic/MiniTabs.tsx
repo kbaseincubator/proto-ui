@@ -11,7 +11,6 @@ interface State {}
 
 // Small horizontal, in-page tab navigation.
 export class MiniTabs extends Component<Props, State> {
-
   // Select a new tab by index
   select(idx: number) {
     if (idx === this.props.activeIdx) {
@@ -28,7 +27,8 @@ export class MiniTabs extends Component<Props, State> {
 
   render() {
     const { activeIdx, tabs } = this.props;
-    const className = (this.props.className || '') + ' list pa0 ma0 flex items-center';
+    const className =
+      (this.props.className || '') + ' list pa0 ma0 flex items-center';
     return (
       <ul className={className} style={{ position: 'relative', top: '1px' }}>
         {tabs.map((tabText: string, idx: number) => {
