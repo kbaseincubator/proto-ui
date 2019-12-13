@@ -135,7 +135,10 @@ export class NarrativeList extends Component<Props, State> {
         }
       })
       .finally(() => {
-        this.setState({ loading: false, activeIdx: 0 });
+        this.setState({ loading: false });
+        if (searchParams.skip === 0) {
+          this.setState({ activeIdx: 0 });
+        }
       });
     // TODO handle error from server
   }
