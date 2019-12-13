@@ -176,6 +176,7 @@ export class NarrativeList extends Component<Props, State> {
           {/* Narrative listing and side-panel details */}
           <div className="flex">
             <ItemList
+              selectedIdx={this.state.activeIdx}
               items={this.state.items}
               loading={this.state.loading}
               totalItems={this.state.totalItems}
