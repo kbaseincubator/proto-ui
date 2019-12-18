@@ -7,28 +7,18 @@ interface Props {
   totalItems: number;
   onLoadMore?: () => void;
   onSelectItem?: (idx: number) => void;
-}
-
-interface State {
   selectedIdx: number;
 }
 
+interface State {}
+
 // Simple UI for a list of selectable search results
 export class ItemList extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      // Index of which result item the user has activated
-      selectedIdx: 0,
-    };
-  }
-
   selectItem(idx: number) {
     if (idx < 0 || idx >= this.props.items.length) {
       throw new Error(`Invalid index for ItemList: ${idx}.
         Max is ${this.props.items.length - 1} and min is 0.`);
     }
-    this.setState({ selectedIdx: idx });
     if (this.props.onSelectItem) {
       this.props.onSelectItem(idx);
     }
@@ -51,7 +41,7 @@ export class ItemList extends Component<Props, State> {
     // I need this until I figure out what's in item
     let fooItem: any;
     fooItem = item;
-    const status = this.state.selectedIdx === idx ? 'active' : 'inactive';
+    const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
     const data = fooItem._source;
     const upa = `${data.access_group}/${data.obj_id}`;
