@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { getUsername } from '../../utils/auth';
-import { fetchProfileAPI } from '../../utils/userInfo';
+
+// utilities
+import { fetchProfileAPI, Auth2Me } from '../../utils/userInfo';
 import { DeveloperTokens } from './DeveloperTokens';
 
 import { History, UnregisterCallback } from 'history';
-
-import { AccuntNav } from './navigation';
 import { Router, Route } from '../generic/Router';
+
+// components
+import { AccuntNav } from './navigation';
 import { ProfilePlainText, ProfileEdit } from '../Profile';
+import { AccountInfo } from './AccountInfo';
 
 export enum LoadingStates {
   fetching = 'fetching',
@@ -15,6 +18,7 @@ export enum LoadingStates {
   error = 'error',
   none = 'none',
 }
+
 export interface Userdata {
   affiliations?: Array<{}>;
   avatarOption?: string;
@@ -45,6 +49,22 @@ interface Props {
   history: History;
 }
 
+interface Auth2Profile {
+  created: number;
+  customroles: Array<string>;
+  display: string;
+  email: string;
+  idents: Array<{
+    provusername: 'string';
+    provider: 'OrcID or Google or Globus';
+    id: 'string';
+  }>;
+  lastlogin: number;
+  local: boolean;
+  policyids: Array<{ id: 'string'; agreedon: number }>;
+  roles: Array<any>;
+  user: string;
+}
 interface State {
   profileLoading: LoadingStates;
   authUsername?: string;
@@ -55,6 +75,7 @@ interface State {
   profile?: Profile;
   profileFetchErrorText?: string;
   profileFetchStatus?: number;
+  auth2Profile?: Auth2Profile;
 }
 
 export class Account extends Component<Props, State> {
@@ -62,6 +83,9 @@ export class Account extends Component<Props, State> {
   history: History;
   // Callback to stop listening to history
   historyUnlisten?: UnregisterCallback;
+
+  currentPathname: string = '';
+
   constructor(props: Props) {
     super(props);
     this.history = props.history;
@@ -69,26 +93,37 @@ export class Account extends Component<Props, State> {
       profileLoading: LoadingStates.none,
       user: undefined,
       profile: undefined,
+      auth2Profile: undefined,
     };
     this.navOnClick = this.navOnClick.bind(this);
   }
   componentDidMount() {
-    console.log('componentDidMount');
+    this.currentPathname = window.location.pathname;
 
-    getUsername(authUsername => {
-      if (authUsername !== null) {
-        this.setState({ authUsername });
-      }
+    Auth2Me().then(data => {
+      console.log(data, 'datat');
+      this.setState({
+        authUsername: data?.user,
+        auth2Profile: data,
+      });
     });
-    this.historyUnlisten = this.history.listen((location, action) => {
-      console.log('location.pathname', location.pathname);
-    });
+    this.historyUnlisten = this.history.listen((location, action) => {});
   }
 
   componentDidUpdate() {
-    console.log('account index componentDidUpdate', this.state);
+    // if the profile is not loaded yet
+    // check URL to decide which profile to fetch
     if (this.state.authUsername && this.state.profileLoading === 'none') {
-      this.getProfile(this.state.authUsername);
+      const regex = RegExp('/profile/(.+)');
+      let profileID: string = '';
+
+      if (regex.test(this.currentPathname)) {
+        let index = this.currentPathname.indexOf('profile/');
+        profileID = this.currentPathname.slice(index + 'profile/'.length);
+        this.getProfile(profileID);
+      } else {
+        this.getProfile(this.state.authUsername);
+      }
     }
   }
 
@@ -99,10 +134,21 @@ export class Account extends Component<Props, State> {
     }
   }
 
+  isAuthUserID() {
+    this.currentPathname = window.location.pathname;
+    if (this.currentPathname.includes('profile')) {
+      let index = this.currentPathname.indexOf('profile');
+      let profileID = this.currentPathname.slice(index + 'profile'.length);
+    }
+  }
+
+  /**
+   * fetch profile from a usrID
+   * @param profileID
+   */
   async getProfile(profileID: string) {
     this.setState({ profileLoading: LoadingStates.fetching });
     let res = await fetchProfileAPI(profileID);
-    console.log(res);
     if (typeof res !== 'undefined' && res.status === 200) {
       this.setState({
         profile: res.response.profile,
@@ -172,11 +218,19 @@ export class Account extends Component<Props, State> {
                 loading={this.state.profileLoading}
                 profile={this.state.profile}
                 user={this.state.user}
+                displayName={this.state.auth2Profile?.display}
+                email={this.state.auth2Profile?.email}
                 gravatarSrc={this.gravatarSrc()}
               />
             </Route>
             <Route path="/account">
-              <DeveloperTokens text="account" />
+              <AccountInfo
+                username={this.state.authUsername}
+                email={this.state.auth2Profile?.email}
+                accountCreated={this.state.auth2Profile?.created}
+                lastSignin={this.state.auth2Profile?.lastlogin}
+                idents={this.state.auth2Profile?.idents}
+              />
             </Route>
             <Route path="/developer_tokens">
               <DeveloperTokens text="developer_tokens" />

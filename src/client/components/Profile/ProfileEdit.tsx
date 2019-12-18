@@ -5,6 +5,8 @@ import { LoadingSpinner } from '../generic/LoadingSpinner';
 import { Profile, LoadingStates } from '../Account/index';
 import { NotFoundPage } from '../not_found/index';
 
+import { getUsername } from '../../utils/auth';
+
 interface Props {
   loading: LoadingStates;
   profile: Profile | undefined;
@@ -15,6 +17,8 @@ interface Props {
       }
     | undefined;
   gravatarSrc: string | undefined;
+  displayName: string | undefined;
+  email: string | undefined;
 }
 
 interface State {}
@@ -157,7 +161,7 @@ export class ProfileEdit extends Component<Props, State> {
       );
     } else if (this.props.loading === 'error') {
       return (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', margin: 'auto' }}>
           <NotFoundPage />
         </div>
       );
@@ -179,11 +183,12 @@ export class ProfileEdit extends Component<Props, State> {
               </div>
             </div>
           </div>
-          <div className="vw10"></div> {/* gutter */}
+          <div className="mw5"></div> {/* gutter */}
           <div>
             <div className="kbase-card pa3 ma3">
-              <h1>{this.props.user ? this.props.user.realname : undefined}</h1>
+              <h1>{this.props.displayName}</h1>
               <p>{this.props.user ? this.props.user.username : undefined}</p>
+              <p>{this.props.email}</p>
               <p style={{ fontStyle: 'italic' }}>
                 {userdata.jobTitle === 'Other'
                   ? userdata.jobTitleOther
@@ -206,7 +211,7 @@ export class ProfileEdit extends Component<Props, State> {
       );
     } else {
       return (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center', margin: 'auto' }}>
           <NotFoundPage />
         </div>
       );

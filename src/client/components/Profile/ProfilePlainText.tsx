@@ -32,7 +32,11 @@ export class ProfilePlainText extends Component<Props, State> {
 
     this.state = {};
   }
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.props) {
+      console.log('OMG');
+    }
+  }
 
   componentDidUpdate(prevProps: Props, prevState: State) {}
 
@@ -137,7 +141,11 @@ export class ProfilePlainText extends Component<Props, State> {
         </div>
       );
     } else if (this.props.loading === 'error') {
-      return <NotFoundPage />;
+      return (
+        <div style={{ textAlign: 'center', margin: 'auto' }}>
+          <NotFoundPage />
+        </div>
+      );
     } else if (this.props.loading === 'success' && userdata) {
       return (
         <>

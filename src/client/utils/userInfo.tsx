@@ -114,3 +114,48 @@ export async function updateProfileAPI(
     return responseArray;
   }
 }
+
+interface DisplayNameEmail {
+  display: string;
+  email: string;
+}
+
+export function changeNameEmail(data: DisplayNameEmail) {
+  const token = getToken();
+  const headers = { Authorization: token, 'Content-Type': 'application/json' };
+  fetch(window._env.kbase_endpoint + '/auth/api/V2/me', {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data),
+  })
+    .then(resp => console.log('name change', resp))
+    .catch(reason => console.log(reason));
+}
+/**
+ *  Returns user profile from Auth2 service.
+ *  Data Structure -
+ *  { created: number
+    customroles: [string]
+    display: string (display name)
+    email: string
+    idents: Array
+      0: {provusername: "string", provider: "OrcID or Google or Globus", id: "string"}
+    lastlogin: number
+    local: boolean
+    policyids: Array
+      0: {id: "string", agreedon: number}
+    roles: []
+    user: string }
+ */
+export function Auth2Me() {
+  const token = getToken();
+  const headers = { Authorization: token, 'Content-Type': 'application/json' };
+  return fetch(window._env.kbase_endpoint + '/auth/api/V2/me', {
+    method: 'GET',
+    headers,
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(reason => console.log(reason));
+}
