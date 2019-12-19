@@ -148,9 +148,9 @@ export class AppCatalog extends Component<Props, State> {
   }
 
   // Handle a click on a result row to show the app details
-  handleAppClick(ev: React.MouseEvent<HTMLElement>, appId: string) {
+  handleAppClick(ev: React.MouseEvent<HTMLElement>, app: SDKApp) {
     ev.preventDefault();
-    this.history.push('/apps/' + appId);
+    this.history.push('/apps/' + app.id);
   }
 
   render() {
@@ -308,14 +308,13 @@ function rowView(component: AppCatalog, result: SDKApp) {
   if (desc.length > 180) {
     desc = desc.slice(0, 180) + '...';
   }
-  console.log('result', result);
   const appHref = document.location.pathname + '/' + result.id;
   return (
     <div className="mt3 pt3 bt b--black-20" key={result.id}>
       <a
         href={appHref}
         className="db pointer flex justify-between hover-dark-blue link black-80 hover-blue"
-        onClick={ev => component.handleAppClick(ev, result.id)}
+        onClick={ev => component.handleAppClick(ev, result)}
       >
         <div className="w-70 flex">
           <div
