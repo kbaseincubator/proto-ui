@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { History, UnregisterCallback } from 'history';
+import { History } from 'history';
 
 import { fetchApps } from '../../utils/fetchApps';
 
@@ -33,7 +33,7 @@ export class Catalog extends Component<Props, State> {
       <div className="mw8 center pv4">
         <Router history={this.history}>
           <Route path={/^\/apps\/(.+)/}>
-            <AppDetails />
+            <AppDetails history={this.history} />
           </Route>
 
           <Route path={/.*/}>
@@ -41,7 +41,7 @@ export class Catalog extends Component<Props, State> {
 
             <Router history={this.history}>
               <Route path="/apps">
-                <AppCatalog />
+                <AppCatalog history={this.history} />
               </Route>
               <Route path="/modules">
                 <Todo text="modules" />

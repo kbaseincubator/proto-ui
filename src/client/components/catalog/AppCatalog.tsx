@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { History } from 'history';
 
 import {
   fetchApps,
@@ -26,7 +27,9 @@ interface SDKApp {
   icon?: { url: string };
 }
 
-interface Props {}
+interface Props {
+  history: History;
+}
 
 enum Tag {
   Dev = 'dev',
@@ -48,8 +51,9 @@ export class AppCatalog extends Component<Props, State> {
   searchTerm: string = '';
   tag: Tag = Tag.Release;
   runsDesc: boolean = true;
+  history: History;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       loading: false,
@@ -58,6 +62,7 @@ export class AppCatalog extends Component<Props, State> {
       currentPage: 0,
       categories: [],
     };
+    this.history = props.history;
   }
 
   componentDidMount() {
@@ -142,6 +147,12 @@ export class AppCatalog extends Component<Props, State> {
     this.applyResultFilters();
   }
 
+  // Handle a click on a result row to show the app details
+  handleAppClick(ev: React.MouseEvent<HTMLElement>, appId: string) {
+    ev.preventDefault();
+    this.history.push('/apps/' + appId);
+  }
+
   render() {
     const pg = this.state.currentPage;
     const results = this.state.results.slice(0, PAGE_SIZE * pg + PAGE_SIZE);
@@ -189,7 +200,7 @@ export class AppCatalog extends Component<Props, State> {
           className={rowWrapClassName}
           style={{ transition: 'opacity linear 0.1s' }}
         >
-          {results.map(rowView)}
+          {results.map(result => rowView(this, result))}
         </div>
 
         {loadMoreButtonView(this)}
@@ -276,7 +287,7 @@ function loadMoreButtonView(component: AppCatalog) {
   );
 }
 
-function rowView(result: SDKApp) {
+function rowView(component: AppCatalog, result: SDKApp) {
   if (result.hidden) {
     return '';
   }
@@ -297,9 +308,15 @@ function rowView(result: SDKApp) {
   if (desc.length > 180) {
     desc = desc.slice(0, 180) + '...';
   }
+  console.log('result', result);
+  const appHref = document.location.pathname + '/' + result.id;
   return (
     <div className="mt3 pt3 bt b--black-20" key={result.id}>
-      <div className="pointer flex justify-between hover-dark-blue">
+      <a
+        href={appHref}
+        className="db pointer flex justify-between hover-dark-blue link black-80 hover-blue"
+        onClick={ev => component.handleAppClick(ev, result.id)}
+      >
         <div className="w-70 flex">
           <div
             className="mt1 db flex justify-center"
@@ -315,7 +332,7 @@ function rowView(result: SDKApp) {
         </div>
 
         <div className="o-70">{result.runs}</div>
-      </div>
+      </a>
     </div>
   );
 }
