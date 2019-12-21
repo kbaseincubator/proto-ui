@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 // components
 import { Button } from '../generic/Button';
 
+// util
+import { getToken } from '../../utils/auth';
+
 interface AuthProvidorId {
   provusername: string | undefined;
   provider: string | undefined;
@@ -25,9 +28,21 @@ export class AccountInfo extends Component<Props, any> {
     this.state = {};
   }
 
-  unlink(id: string | undefined) {
+  async unlink(id: string | undefined) {
     if (id) {
       console.log(id);
+      const url = window._env.kbase_endpoint + '/auth/me/unlink/' + id;
+      let token = getToken();
+      if (token) {
+        const header = { authorization: token };
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: header,
+        });
+        console.log(response);
+      } else {
+        throw new Error('Tried to modify account info without a token.');
+      }
     }
   }
 
@@ -45,8 +60,8 @@ export class AccountInfo extends Component<Props, any> {
           <h2>linked accounts</h2>
           {this.props?.idents?.map((ident: AuthProvidorId) => {
             return (
-              <>
-                <p key={ident.provider}>
+              <div key={ident.provider} style={{ display: 'flex' }}>
+                <p>
                   {ident.provider}: {ident.provusername}
                 </p>
                 <Button
@@ -54,7 +69,7 @@ export class AccountInfo extends Component<Props, any> {
                   backgoundColor="red"
                   onClick={event => this.unlink(ident.id)}
                 />
-              </>
+              </div>
             );
           })}
         </div>
