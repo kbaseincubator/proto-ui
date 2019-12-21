@@ -1,6 +1,45 @@
 export {};
 import { getToken } from '../utils/auth';
 
+export interface Userdata {
+  affiliations?: Array<{}>;
+  avatarOption?: string;
+  city?: string;
+  country?: string;
+  department?: string;
+  fundingSource?: string;
+  gravatarDefault?: string;
+  jobTitle?: string;
+  jobTitleOther?: string;
+  orgainzation?: string;
+  researchInterests?: Array<string>;
+  researchInterestOther?: string;
+  researchStatement?: string;
+  state?: string;
+}
+
+export interface Profile {
+  metadata: {
+    createdBy: string;
+    created: string;
+  };
+  synced?: { gravatarHash?: string };
+  userdata?: Userdata;
+}
+
+export interface ProfileFetchRes {
+  user: {
+    username: string;
+    realname: string;
+  };
+  profile: Profile;
+}
+
+export interface ProfileFetchError {
+  status: number;
+  statusText: string;
+}
+
 async function getBFFServiceUrl(token: string) {
   // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
   let versionNum: number | null = null;
@@ -54,16 +93,14 @@ export async function fetchProfileAPI(username: string) {
   if (response.status !== 200) {
     console.warn(response.status, response);
     return { status: response.status, statusText: response.statusText };
-    // return [response.status, response.statusText];
   } else {
     try {
-      let res = await response.json();
+      const res: ProfileFetchRes = await response.json();
       console.log(res);
       return { status: response.status, response: res };
     } catch (err) {
       console.error('profile fetch failed', response);
       return { status: response.status, statusText: response.statusText };
-      // return [response.status, response.statusText];
     }
   }
 }

@@ -5,6 +5,8 @@ import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
 import { getUsername, getToken } from '../../utils/auth';
 
+import { ProfileFetchRes } from '../../utils/userInfo';
+
 interface State {
   avatarOption: string | undefined;
   gravatarDefault: string | undefined;
@@ -89,11 +91,12 @@ export class Header extends Component<Props, State> {
     }
     const res = await fetchProfileAPI(username);
     if (res) {
-      const avatarOption = res.profile.userdata.avatarOption;
-      const gravatarHash = res.profile.synced.gravatarHash;
-      const gravatarDefault = res.profile.userdata.gravatarDefault;
-      const username = res.user.username;
-      const realname = res.user.realname;
+      const response = res.response as ProfileFetchRes;
+      const avatarOption = response.profile?.userdata?.avatarOption;
+      const gravatarHash = response.profile?.synced?.gravatarHash || '';
+      const gravatarDefault = response.profile?.userdata?.gravatarDefault;
+      const username = response.user.username;
+      const realname = response.user.realname;
       this.setState({
         avatarOption,
         gravatarDefault,

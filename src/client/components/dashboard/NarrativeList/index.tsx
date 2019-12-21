@@ -69,7 +69,7 @@ export class NarrativeList extends Component<Props, State> {
   handleSearch(searchP: { term: string; sort: string | null }): void {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
-    searchParams.sort = searchP.sort;
+    searchParams.sort = searchP.sort || 'Newest';
     searchParams.skip = 0;
     this.setState({ searchParams });
     this.performSearch();

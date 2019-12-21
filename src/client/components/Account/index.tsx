@@ -101,7 +101,7 @@ export class Account extends Component<Props, State> {
     this.currentPathname = window.location.pathname;
 
     Auth2Me().then(data => {
-      console.log(data, 'datat');
+      console.log(data, 'data');
       this.setState({
         authUsername: data?.user,
         auth2Profile: data,
@@ -151,8 +151,8 @@ export class Account extends Component<Props, State> {
     let res = await fetchProfileAPI(profileID);
     if (typeof res !== 'undefined' && res.status === 200) {
       this.setState({
-        profile: res.response.profile,
-        user: res.response.user,
+        profile: res.response?.profile,
+        user: res.response?.user,
         profileLoading: LoadingStates.success,
       });
     } else {
