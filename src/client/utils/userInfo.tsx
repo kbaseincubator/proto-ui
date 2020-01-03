@@ -196,3 +196,32 @@ export function Auth2Me() {
     })
     .catch(reason => console.log(reason));
 }
+
+/**
+ * unlink 3rd party auth account. 
+ * returns true if unlink is successful
+ * returns false if unlink is unsuccessful 
+ * @param id id number associated with 3rd party auth account (in "indents")
+ */
+export async function unlink(id: string | undefined) {
+  if (id) {
+    const url = window._env.kbase_endpoint + '/auth/me/unlink/' + id;
+    let token = getToken();
+    if (token) {
+      const header = { authorization: token };
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: header,
+      });
+      if (response.status !== 204) {
+        console.error('error during unlinking an auth account');
+        return false;
+      } else {
+        return true;
+      }
+      console.log(response);
+    } else {
+      throw new Error('Tried to modify account info without a token.');
+    }
+  }
+}

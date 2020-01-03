@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Button } from '../generic/Button';
 
 // util
-import { getToken } from '../../utils/auth';
+import { unlink } from '../../utils/userInfo';
 
 interface AuthProvidorId {
   provusername: string | undefined;
@@ -28,23 +28,6 @@ export class AccountInfo extends Component<Props, any> {
     this.state = {};
   }
 
-  async unlink(id: string | undefined) {
-    if (id) {
-      console.log(id);
-      const url = window._env.kbase_endpoint + '/auth/me/unlink/' + id;
-      let token = getToken();
-      if (token) {
-        const header = { authorization: token };
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: header,
-        });
-        console.log(response);
-      } else {
-        throw new Error('Tried to modify account info without a token.');
-      }
-    }
-  }
 
   render() {
     this.created = new Date(this.props.accountCreated!);
@@ -67,7 +50,6 @@ export class AccountInfo extends Component<Props, any> {
                 <Button
                   innerText="unlink"
                   backgoundColor="red"
-                  onClick={event => this.unlink(ident.id)}
                 />
               </div>
             );
