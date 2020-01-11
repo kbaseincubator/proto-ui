@@ -1,0 +1,33 @@
+.fooClass {
+  border: 0.25px solid #f8f9fa;
+}
+.fooClass:hover{
+  background-color: #007bff;
+}
+
+.fooActive{
+  background-color: #007bff;
+}
+.fooClass:hover a{
+  color: white!important;
+}
+.fooClass:active{
+  background-color: #007bff;
+}
+.fooClass:active a{
+  color: white!important;
+}
+
+.NarrativeTabPane-NavLink a{
+  color: black!important;
+}
+
+.mimiTab-active {
+  border-bottom: solid green;
+}
+
+.forcefully-move-button{
+  position: relative;
+  right: calc(-100% + 125px);
+  top: 38px;
+}

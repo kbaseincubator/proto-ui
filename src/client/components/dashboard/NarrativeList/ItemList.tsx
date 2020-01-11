@@ -38,12 +38,12 @@ export class ItemList extends Component<Props, State> {
 
   // view for a single narrative item
   itemView = (item: object, idx: number) => {
-    // I need this until I figure out what's in item
-    let fooItem: any;
-    fooItem = item;
+    // need to set this to "any" otherwise the item type has to be defined.
+    let anyItem: any;
+    anyItem = item;
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = fooItem._source;
+    const data = anyItem._source;
     const upa = `${data.access_group}/${data.obj_id}`;
     // Action to select an item to view details
     return (
