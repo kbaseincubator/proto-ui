@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import './profile.css';
 import { LoadingSpinner } from '../generic/LoadingSpinner';
 import { Profile, LoadingStates } from '../Account/index';
 import { NotFoundPage } from '../not_found/index';

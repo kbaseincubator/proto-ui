@@ -86,7 +86,6 @@ export async function fetchProfileAPI(username: string) {
   }
   const bffServiceUrl = await getBFFServiceUrl(token);
   let url = bffServiceUrl + '/fetchUserProfile/' + username;
-  console.log(url);
   const response = await fetch(url, {
     method: 'GET',
   });
@@ -96,7 +95,6 @@ export async function fetchProfileAPI(username: string) {
   } else {
     try {
       const res: ProfileFetchRes = await response.json();
-      console.log(res);
       return { status: response.status, response: res };
     } catch (err) {
       console.error('profile fetch failed', response);

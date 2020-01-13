@@ -7,9 +7,9 @@ import { Button } from '../generic/Button';
 import { unlink } from '../../utils/userInfo';
 
 interface AuthProvidorId {
-  provusername: string | undefined;
-  provider: string | undefined;
-  id: string | undefined;
+  provusername: string;
+  provider: string;
+  id: string;
 }
 
 interface Props {
@@ -32,7 +32,6 @@ export class AccountInfo extends Component<Props, any> {
   render() {
     this.created = new Date(this.props.accountCreated!);
     this.lastSign = new Date(this.props.lastSignin!);
-    console.log(this.props, this.created, this.lastSign);
     return (
       <div className="ma4">
         <p>Username: {this.props.username}</p>

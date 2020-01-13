@@ -142,7 +142,6 @@ def _render_template(path, args=None, status=200):
     Render a jinja template and return it as a sanic html response.
     Set some default template variables (eg. `app` and `url_for`).
     """
-    print(args, 'args')
     template = jinja_env.get_template(path)
     if not args:
         args = {}
