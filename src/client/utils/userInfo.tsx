@@ -196,9 +196,9 @@ export function Auth2Me() {
 }
 
 /**
- * unlink 3rd party auth account. 
+ * unlink 3rd party auth account.
  * returns true if unlink is successful
- * returns false if unlink is unsuccessful 
+ * returns false if unlink is unsuccessful
  * @param id id number associated with 3rd party auth account (in "indents")
  */
 export async function unlink(id: string | undefined) {

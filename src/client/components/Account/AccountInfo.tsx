@@ -28,7 +28,6 @@ export class AccountInfo extends Component<Props, any> {
     this.state = {};
   }
 
-
   render() {
     this.created = new Date(this.props.accountCreated!);
     this.lastSign = new Date(this.props.lastSignin!);
@@ -46,10 +45,7 @@ export class AccountInfo extends Component<Props, any> {
                 <p>
                   {ident.provider}: {ident.provusername}
                 </p>
-                <Button
-                  innerText="unlink"
-                  backgoundColor="red"
-                />
+                <Button innerText="unlink" backgoundColor="red" />
               </div>
             );
           })}
