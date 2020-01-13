@@ -142,7 +142,7 @@ export class NarrativeTabPane extends Component<Props, State> {
       <Tab.Container id="narrative-list-nav" defaultActiveKey={0}>
         <Row>
           <Col sm={5}>
-            <Nav className="flex-column" onSelect={(selectedKey: number) => { this.handleClickItem(selectedKey) }}>
+            <Nav className="flex-column" onSelect={(eventKey: string) => { this.handleClickItem(parseInt(eventKey)) }}>
               {items.map((item, idx) => this.itemView(item, idx))}
             </Nav>
           </Col>
