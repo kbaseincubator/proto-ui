@@ -167,7 +167,7 @@ export class NarrativeDetails extends Component<Props, State> {
             </a>
           </h4>
           <Tab.Container defaultActiveKey={0}>
-            <Nav>
+            <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey={0}>Overview</Nav.Link>
               </Nav.Item>
