@@ -1,5 +1,3 @@
-
-
 import React, { Component } from 'react';
 const timeago = require('timeago.js');
 
@@ -28,7 +26,6 @@ interface State {
 }
 
 export class NarrativeTabPane extends Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,14 +34,14 @@ export class NarrativeTabPane extends Component<Props, State> {
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
       activeIdx: 0,
-    }
+    };
   }
   componentDidMount() {
-    this.setState({ items: this.props.items })
+    this.setState({ items: this.props.items });
   }
   componentDidUpdate(prevProp: Props) {
     if (prevProp !== this.props) {
-      this.setState({ items: this.props.items })
+      this.setState({ items: this.props.items });
     } else {
       return;
     }
@@ -74,7 +71,9 @@ export class NarrativeTabPane extends Component<Props, State> {
     let anyItem: any;
     anyItem = item;
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
-    let currentActiveIndx = this.state.activeIdx ? this.state.activeIdx : this.props.selectedIdx;
+    let currentActiveIndx = this.state.activeIdx
+      ? this.state.activeIdx
+      : this.props.selectedIdx;
     const activeClass = currentActiveIndx === idx ? 'fooActive' : 'fooClass';
     const data = anyItem._source;
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
@@ -83,7 +82,9 @@ export class NarrativeTabPane extends Component<Props, State> {
       <>
         <Nav.Item key={upa} bsPrefix={activeClass}>
           <Nav.Link key={idx} eventKey={idx}>
-            <h5 style={{ color: 'black' }}>{data.narrative_title || 'Untitled'}</h5>
+            <h5 style={{ color: 'black' }}>
+              {data.narrative_title || 'Untitled'}
+            </h5>
             <h6 style={{ color: 'black' }}>
               Updated {timeago.format(data.timestamp)} by {data.creator}
             </h6>
@@ -138,29 +139,34 @@ export class NarrativeTabPane extends Component<Props, State> {
         );
       }
     }
-    return (<>
-      <Tab.Container id="narrative-list-nav" defaultActiveKey={0}>
-        <Row>
-          <Col sm={5}>
-            <Nav className="flex-column" onSelect={(eventKey: string) => { this.handleClickItem(parseInt(eventKey)) }}>
-              {items.map((item, idx) => this.itemView(item, idx))}
-            </Nav>
-          </Col>
-          <Col sm={7}>
-            <Tab.Content>
+    return (
+      <>
+        <Tab.Container id="narrative-list-nav" defaultActiveKey={0}>
+          <Row>
+            <Col sm={5}>
+              <Nav
+                className="flex-column"
+                onSelect={(eventKey: string) => {
+                  this.handleClickItem(parseInt(eventKey));
+                }}
+              >
+                {items.map((item, idx) => this.itemView(item, idx))}
+              </Nav>
+            </Col>
+            <Col sm={7}>
+              <Tab.Content>
                 <Tab.Pane eventKey={this.state.activeIdx}>
                   <NarrativeDetails
-                    framework = "ReactBS"
+                    framework="ReactBS"
                     activeItem={this.state.items[this.state.activeIdx]}
                   />
                 </Tab.Pane>
-            </Tab.Content>
-          </Col>
-        </Row>
-      </Tab.Container>
-        <div>
-          {this.hasMoreButton()}
-        </div></>
-      );
-    }
+              </Tab.Content>
+            </Col>
+          </Row>
+        </Tab.Container>
+        <div>{this.hasMoreButton()}</div>
+      </>
+    );
   }
+}

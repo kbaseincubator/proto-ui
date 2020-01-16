@@ -33,7 +33,7 @@ export class TabHeader extends Component<Props, State> {
     if (idx >= this.state.tabs.length || idx < 0) {
       throw Error(
         `Invalid tab index ${idx}. Max is ${this.state.tabs.length -
-        1} and min is 0.`
+          1} and min is 0.`
       );
     }
     this.setState({ selectedIdx: idx });

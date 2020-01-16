@@ -25,7 +25,9 @@ export class Dashboard extends Component<Props, {}> {
       <Container fluid>
         <Row>
           <Col></Col>
-          <Col lg={9} xl={8}><NarrativeList /></Col>
+          <Col lg={9} xl={8}>
+            <NarrativeList />
+          </Col>
           <Col></Col>
         </Row>
       </Container>
