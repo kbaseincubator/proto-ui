@@ -37,7 +37,7 @@ export class ItemList extends Component<Props, State> {
   }
 
   // view for a single narrative item
-  itemView (item: any, idx: number) {
+  itemView(item: any, idx: number) {
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
     const data = item.doc;
