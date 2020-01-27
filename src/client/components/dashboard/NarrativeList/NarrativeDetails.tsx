@@ -17,7 +17,7 @@ interface State {
 }
 
 export interface NarrativeData {
-  _source: DetailedData;
+  doc: DetailedData;
 }
 
 interface Cell {
@@ -86,7 +86,7 @@ export class NarrativeDetails extends Component<Props, State> {
     }
 
     const { selectedTabIdx } = this.state;
-    const data = activeItem._source;
+    const data = activeItem.doc;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content: JSX.Element | string = '';
