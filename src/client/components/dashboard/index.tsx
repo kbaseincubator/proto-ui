@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { History } from 'history';
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 // Components
 import { NarrativeList } from './NarrativeList/index';
+import { cpus } from 'os';
 
 interface Props {
   history: History;
@@ -17,9 +22,15 @@ export class Dashboard extends Component<Props, {}> {
 
   render() {
     return (
-      <section className="mt4 mw8 center">
-        <NarrativeList />
-      </section>
+      <Container fluid>
+        <Row>
+          <Col></Col>
+          <Col lg={9} xl={8}>
+            <NarrativeList />
+          </Col>
+          <Col></Col>
+        </Row>
+      </Container>
     );
   }
 }
