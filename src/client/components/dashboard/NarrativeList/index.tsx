@@ -140,13 +140,10 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: any) => {
-        if (!resp.result) {
-          return;
-        }
-        const result = resp.result;
-        if (result.count) {
-          const total = result.count;
-          const items = result.hits;
+        resp = resp.result;
+        if (resp && resp.hits) {
+          const total = resp.count;
+          const items = resp.hits;
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
             this.setState({

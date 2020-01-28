@@ -75,7 +75,7 @@ export class NarrativeTabPane extends Component<Props, State> {
       ? this.state.activeIdx
       : this.props.selectedIdx;
     const activeClass = currentActiveIndx === idx ? 'fooActive' : 'fooClass';
-    const data = anyItem._source;
+    const data = anyItem.doc;
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
     // Action to select an item to view details
     return (
