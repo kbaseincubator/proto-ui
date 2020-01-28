@@ -37,13 +37,10 @@ export class ItemList extends Component<Props, State> {
   }
 
   // view for a single narrative item
-  itemView = (item: object, idx: number) => {
-    // need to set this to "any" otherwise the item type has to be defined.
-    let anyItem: any;
-    anyItem = item;
+  itemView(item: any, idx: number) {
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = anyItem._source;
+    const data = item.doc;
     const upa = `${data.access_group}/${data.obj_id}`;
     // Action to select an item to view details
     return (
@@ -64,7 +61,7 @@ export class ItemList extends Component<Props, State> {
         </div>
       </div>
     );
-  };
+  }
 
   hasMoreButton() {
     const hasMore = this.props.items.length < this.props.totalItems;
