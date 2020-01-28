@@ -37,7 +37,6 @@ export class NarrativeTabPane extends Component<Props, State> {
     };
   }
   componentDidMount() {
-    console.log(this.props.items);
     this.setState({ items: this.props.items });
   }
   componentDidUpdate(prevProp: Props) {
