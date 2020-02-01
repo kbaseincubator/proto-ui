@@ -1,0 +1,75 @@
+@import '../../../node_modules/bootstrap/scss/bootstrap.scss';
+@import '../../../node_modules/bootstrap/scss/root';
+
+
+$theme-colors: (
+  "blue": #007dc3,
+  "bluehover": #00649d,
+  "darkblue":#004266,
+  "midblue": #5aa8b3,
+  "lightblue": #70cbd1,
+  "primary": #007dc3,
+  "secondary":#6c757d,
+  "success": #5d9731, 
+  "green": #5d9731,
+  "lightgreen": #c9d33e,
+  "yellow": #ffd103,
+  "orange": #f78f1d,
+  "info": #5aa8b3,
+  "warning": #ffd103,
+  "white": white,
+  "black": black,
+  "danger": #dc3545,
+  "light": #f8f9fa,
+  "dark": #343a40
+);
+
+
+
+
+// Alternate buttons
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @include button-variant($value, $value);
+  }
+}
+
+// Nav tabs
+
+.nav-tabs {
+  @include hover-focus() {
+    text-decoration: none;
+  }
+  .nav-link {
+    @include hover-focus() {
+      border-color: map-get($theme-colors, "primary");
+      background-color: map-get($theme-colors, "bluehover");
+    }
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom: 3px solid map-get($theme-colors, "primary");
+    color: #6cb4db;
+    background-color: map-get($theme-colors, "primary");
+  }
+  .nav-link.active,
+  .nav-item.show .nav-link {
+    border-color: map-get($theme-colors, "primary");
+    border-bottom: 3px solid white;
+    color: map-get($theme-colors, "white");
+    background-color: map-get($theme-colors, "primary");
+  }
+}
+
+.bg-primary {
+  background-color: map-get($theme-colors, "primary")!important;
+}
+
+.bg-primary > a {
+  color: map-get($theme-colors, "white");
+}
+
+.form-inline
+.narrative-search-input {
+  width: 210px;
+  height: 28px;
+}

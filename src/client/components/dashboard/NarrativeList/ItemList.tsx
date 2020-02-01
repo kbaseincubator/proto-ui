@@ -51,10 +51,10 @@ export class ItemList extends Component<Props, State> {
       >
         <div className={css.outer}>
           <div className={css.inner}>
-            <h4 className="ma0 mb2 pa0 f5">
+            <h6 className="ma0 mb2 pa0">
               {data.narrative_title || 'Untitled'}
-            </h4>
-            <p className="ma0 pa0 f6">
+            </h6>
+            <p className="ma0 pa0">
               Updated {timeago.format(data.timestamp)} by {data.creator}
             </p>
           </div>

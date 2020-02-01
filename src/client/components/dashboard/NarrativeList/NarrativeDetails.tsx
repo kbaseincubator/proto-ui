@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
 //css
-import './foo.css';
+//import './foo.css';
+// import './scss/custom.scss';
+import '../../../scss/custom.scss';
+
 
 //Bootstrap
 import Tab from 'react-bootstrap/Tab';
@@ -167,7 +170,7 @@ export class NarrativeDetails extends Component<Props, State> {
             </a>
           </h4>
           <Tab.Container defaultActiveKey={0}>
-            <Nav variant="tabs">
+            <Nav>
               <Nav.Item>
                 <Nav.Link eventKey={0}>Overview</Nav.Link>
               </Nav.Item>

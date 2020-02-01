@@ -74,7 +74,7 @@ export class NarrativeTabPane extends Component<Props, State> {
     let currentActiveIndx = this.state.activeIdx
       ? this.state.activeIdx
       : this.props.selectedIdx;
-    const activeClass = currentActiveIndx === idx ? 'fooActive' : 'fooClass';
+    const activeClass = currentActiveIndx === idx ? 'alert alert-primary' : 'fooClass';
     const data = anyItem.doc;
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
     // Action to select an item to view details
@@ -82,12 +82,12 @@ export class NarrativeTabPane extends Component<Props, State> {
       <>
         <Nav.Item key={upa} bsPrefix={activeClass}>
           <Nav.Link key={idx} eventKey={idx}>
-            <h5 style={{ color: 'black' }}>
+            <p style={{ color: 'black' }}>
               {data.narrative_title || 'Untitled'}
-            </h5>
-            <h6 style={{ color: 'black' }}>
+            </p>
+            <p style={{ color: 'black' }}>
               Updated {timeago.format(data.timestamp)} by {data.creator}
-            </h6>
+            </p>
           </Nav.Link>
         </Nav.Item>
       </>

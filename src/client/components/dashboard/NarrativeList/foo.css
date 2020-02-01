@@ -7,6 +7,7 @@
 
 .fooActive{
   background-color: #007bff;
+  font-size: 1.3rem;
 }
 .fooClass:hover a{
   color: white!important;
@@ -22,11 +23,19 @@
   color: black!important;
 }
 
+.white-font{
+  color: white;
+}
+.kbase-blue-bg{
+  background-color: #007dc3;
+}
+
 .mimiTab-active {
   border-bottom: solid green;
 }
 
 .forcefully-move-button{
+  background-color: #ffd103;
   position: relative;
   right: calc(-100% + 125px);
   top: 38px;
@@ -38,3 +47,4 @@
   border-radius: 0px 0px 5px 5px;
   padding: 10px;
 }
+
