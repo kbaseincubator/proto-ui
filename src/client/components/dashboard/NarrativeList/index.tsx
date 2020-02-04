@@ -230,19 +230,19 @@ export class NarrativeList extends Component<Props, State> {
         <Tab.Container defaultActiveKey="My narratives" onSelect={(eventKey: string) => this.handleTabChange(eventKey)}>
           <Nav fill variant="tabs">
             <Nav.Item>
-              <Nav.Link className='white-font' eventKey="My narratives">My narratives</Nav.Link>
+              <Nav.Link eventKey="My narratives">My narratives</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className='white-font' eventKey="Shared with me">Shared with me</Nav.Link>
+              <Nav.Link eventKey="Shared with me">Shared with me</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className='white-font' eventKey="Tutorials">Tutorials</Nav.Link>
+              <Nav.Link eventKey="Tutorials">Tutorials</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className='white-font' eventKey="Public">Public</Nav.Link>
+              <Nav.Link eventKey="Public">Public</Nav.Link>
             </Nav.Item>
-            <Nav.Item className='bg-primary'>
-              <Nav.Link className='white-font bg-warning black-font'><i className="black-font fa fa-plus fa-lg"></i>  New Narrative</Nav.Link>
+            <Nav.Item>
+              <Nav.Link className="white-font" style={{height: "44px"}}><button className="fab-add"><i className="fa fa-plus" style={{width:'1rem'}}></i></button><section style={{display: 'inline', paddingBottom: "10px", verticalAlign: "super"}}>Create narrative</section></Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>

@@ -141,13 +141,6 @@ export class NarrativeDetails extends Component<Props, State> {
         </div>
       );
     } else if (this.props.framework === 'ReactBS') {
-      const active = {
-        borderBottom: '3px solid #5d9731'
-      }
-      const inactive = {
-        borderBottom: 'none'
-      }
-      let selectedTabIdx = this.state.selectedTabIdx;
       return (
         <div style={{ width: '100%', position: 'sticky' }}>
           <h4 className="ma0 pa0 pt2 f4">
