@@ -1,3 +1,7 @@
+/**
+ * Not used with React - Bootstrap
+ */
+
 import React, { Component } from 'react';
 const timeago = require('timeago.js');
 

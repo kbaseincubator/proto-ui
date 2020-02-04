@@ -74,18 +74,18 @@ export class NarrativeTabPane extends Component<Props, State> {
     let currentActiveIndx = this.state.activeIdx
       ? this.state.activeIdx
       : this.props.selectedIdx;
-    const activeClass = currentActiveIndx === idx ? 'alert alert-primary' : 'fooClass';
+    const activeClass = currentActiveIndx === idx ? 'bg-white' : 'bg-lightgray';
     const data = anyItem.doc;
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
     // Action to select an item to view details
     return (
       <>
-        <Nav.Item key={upa} bsPrefix={activeClass}>
+        <Nav.Item role="tab" key={upa} style={{borderBottom: "1px solid #dedede"}} bsPrefix={activeClass}>
           <Nav.Link key={idx} eventKey={idx}>
-            <p style={{ color: 'black' }}>
+            <section className={currentActiveIndx === idx ? "fw7 f3 black-font" : "normal f4 dark-font"} style={{ padding: '0.3rem 0'}}>
               {data.narrative_title || 'Untitled'}
-            </p>
-            <p style={{ color: 'black' }}>
+            </section>
+            <p className='midgray-font'>
               Updated {timeago.format(data.timestamp)} by {data.creator}
             </p>
           </Nav.Link>
@@ -154,7 +154,7 @@ export class NarrativeTabPane extends Component<Props, State> {
               </Nav>
             </Col>
             <Col sm={7}>
-              <Tab.Content>
+              <Tab.Content className='sticky-top'>
                 <Tab.Pane eventKey={this.state.activeIdx}>
                   <NarrativeDetails
                     framework="ReactBS"

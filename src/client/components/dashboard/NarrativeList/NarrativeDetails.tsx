@@ -70,6 +70,8 @@ export class NarrativeDetails extends Component<Props, State> {
   // Handle the onSelect callback from MiniTabs
   handleOnTabSelect(idx: number) {
     this.setState({ selectedTabIdx: idx });
+    
+    return 
   }
   // Basic details, such as author, dates, etc.
   // Receives the narrative data from elasticsearch results for a single entry.
@@ -129,28 +131,6 @@ export class NarrativeDetails extends Component<Props, State> {
             </h4>
           </div>
 
-          {/*
-          <div className='flex mb3'>
-           * Left out for now because this functionality is a pain.
-           *  - Share button needs to make a call to the workspace, and we'd have
-           *    to build a UI around searching and selecting users.
-           *  - Copy button needs to make a call to the "Narrative Service"
-           *  dynamic service, which has a copy narrative method. To get the
-           *  dyn service url, we'd need to make a call first to the service
-           *  wizard. Blech.
-           *
-           *  A better way to do all this would be to have narrative urls for
-           *  copy and share that open up their respective modals.
-          <a className='pointer dim ba b--black-30 pa2 br2 dib mr2 black-80'>
-            <i className="mr1 fas fa-share"></i>
-            Share
-          </a>
-          <a className='pointer dim ba b--black-30 pa2 br2 dib mr2 black-80'>
-            <i className="mr1 fas fa-copy"></i>
-            Copy
-          </a>
-          </div>
-        */}
           <MiniTabs
             tabs={['Overview', 'Data', 'Preview']}
             onSelect={this.handleOnTabSelect.bind(this)}
@@ -161,6 +141,13 @@ export class NarrativeDetails extends Component<Props, State> {
         </div>
       );
     } else if (this.props.framework === 'ReactBS') {
+      const active = {
+        borderBottom: '3px solid #5d9731'
+      }
+      const inactive = {
+        borderBottom: 'none'
+      }
+      let selectedTabIdx = this.state.selectedTabIdx;
       return (
         <div style={{ width: '100%', position: 'sticky' }}>
           <h4 className="ma0 pa0 pt2 f4">
@@ -172,13 +159,13 @@ export class NarrativeDetails extends Component<Props, State> {
           <Tab.Container defaultActiveKey={0}>
             <Nav>
               <Nav.Item>
-                <Nav.Link eventKey={0}>Overview</Nav.Link>
+                <Nav.Link className='greenBorder' eventKey={0}>Overview</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey={1}>Data</Nav.Link>
+                <Nav.Link className='greenBorder' eventKey={1}>Data</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey={2}>Preview</Nav.Link>
+                <Nav.Link className='greenBorder' eventKey={2}>Preview</Nav.Link>
               </Nav.Item>
             </Nav>
             <Tab.Content>

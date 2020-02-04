@@ -5,7 +5,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
-import Button from 'react-bootstrap/Button';
 
 // Components
 import { NarrativeData } from './NarrativeDetails';
@@ -137,6 +136,7 @@ export class NarrativeList extends Component<Props, State> {
     return searchNarratives(searchParams)
       .then((resp: any) => {
         resp = resp.result;
+        console.log(resp)
         if (resp && resp.hits) {
           const total = resp.count;
           const items = resp.hits;
@@ -167,7 +167,7 @@ export class NarrativeList extends Component<Props, State> {
             <Nav>
           <Form inline onSubmit={(e: any) => this.bootstrapSubmit(e)}>
             <FormControl
-             className="narrative-search-input"
+              className="narrative-search-input"
               type="text"
               id="narrative-search"
               placeholder="Search narratives"
@@ -227,7 +227,6 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     return (
       <>
-        <Button variant="warning" className="forcefully-move-button">New Narrative</Button>
         <Tab.Container defaultActiveKey="My narratives" onSelect={(eventKey: string) => this.handleTabChange(eventKey)}>
           <Nav fill variant="tabs">
             <Nav.Item>
@@ -241,6 +240,9 @@ export class NarrativeList extends Component<Props, State> {
             </Nav.Item>
             <Nav.Item>
               <Nav.Link className='white-font' eventKey="Public">Public</Nav.Link>
+            </Nav.Item>
+            <Nav.Item className='bg-primary'>
+              <Nav.Link className='white-font bg-warning black-font'><i className="black-font fa fa-plus fa-lg"></i>  New Narrative</Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>

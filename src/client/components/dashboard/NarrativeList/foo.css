@@ -24,22 +24,14 @@
 }
 
 .white-font{
-  color: white;
+  color: white!important;
 }
-.kbase-blue-bg{
-  background-color: #007dc3;
-}
+
 
 .mimiTab-active {
   border-bottom: solid green;
 }
 
-.forcefully-move-button{
-  background-color: #ffd103;
-  position: relative;
-  right: calc(-100% + 125px);
-  top: 38px;
-}
 .tab-pane {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;

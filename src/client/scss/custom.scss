@@ -21,7 +21,10 @@ $theme-colors: (
   "black": black,
   "danger": #dc3545,
   "light": #f8f9fa,
-  "dark": #343a40
+  "dark": #343a40,
+  "midgray":#808080,
+  "lightgray": #e8e8e8,
+  "lightcyan": #f6fffe
 );
 
 
@@ -58,6 +61,20 @@ $theme-colors: (
     color: map-get($theme-colors, "white");
     background-color: map-get($theme-colors, "primary");
   }
+
+}
+
+.nav-item .nav-link.active.greenBorder {
+  border-bottom: 3px solid map-get($theme-colors, "green");
+}
+
+@each $color, $value in $theme-colors {
+  .bg-#{$color} {
+    background-color: map-get($theme-colors, #{$color})!important
+  }
+  .#{$color}-font {
+    color: map-get($theme-colors, #{$color})!important
+  }
 }
 
 .bg-primary {
@@ -68,8 +85,28 @@ $theme-colors: (
   color: map-get($theme-colors, "white");
 }
 
+.bg-warning {
+  background-color: map-get($theme-colors, "warning")!important;
+  border-color: map-get($theme-colors, "warning")!important;
+}
+
+.bg-warning > a {
+  color: map-get($theme-colors, "white");
+}
+
+.white-font{
+  color: white!important;
+}
+.black-font{
+  color: black!important;
+}
 .form-inline
 .narrative-search-input {
   width: 210px;
   height: 28px;
+}
+
+.tab-content.sticky-top {
+  position: sticky;
+  top: 0px;
 }
