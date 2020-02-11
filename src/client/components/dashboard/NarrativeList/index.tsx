@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
@@ -22,15 +23,15 @@ import {
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
 
-// CSS
-//import 'bootstrap/dist/css/bootstrap.min.css';
-import Dropdown from 'react-bootstrap/Dropdown';
+
 
 // Page length of search results
 const PAGE_SIZE = 20;
 const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
 
 interface State {
+  // active Key of Navigation tabs
+  activeKey: string;
   // Whether we are loading data from the server
   loading: boolean;
   // List of objects of narrative details
@@ -52,6 +53,7 @@ export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      activeKey: 'My narratives',
       totalItems: props.items ? props.items.length : 0,
       loading: false,
       // List of narrative data
@@ -78,6 +80,11 @@ export class NarrativeList extends Component<Props, State> {
     });
   }
 
+  componentDidUpdate(prevProp: Props){
+    if (prevProp === this.props) {
+      return;
+    }
+  }
   // Handle an onSetSearch callback from Filters
   handleSearch(searchP: { term: string; sort: string }): void {
     const searchParams = this.state.searchParams;
@@ -107,6 +114,7 @@ export class NarrativeList extends Component<Props, State> {
     searchParams.category = categoryMap[name.toLowerCase()];
     // (leaving the searchParams.sort param alone)
     this.setState({
+      activeKey: name,
       items: [],
       activeIdx: 0,
       searchParams,
@@ -136,7 +144,7 @@ export class NarrativeList extends Component<Props, State> {
     return searchNarratives(searchParams)
       .then((resp: any) => {
         resp = resp.result;
-        console.log(resp)
+        // console.log(resp)
         if (resp && resp.hits) {
           const total = resp.count;
           const items = resp.hits;
@@ -246,9 +254,12 @@ export class NarrativeList extends Component<Props, State> {
             </Nav.Item>
           </Nav>
           <Tab.Content>
-            <Tab.Pane eventKey="My narratives">{this.bootstrapTabContainer()}</Tab.Pane>
+            <Tab.Pane eventKey={this.state.activeKey || "My narratives"}>{this.bootstrapTabContainer()}</Tab.Pane>
           </Tab.Content>
-          <Tab.Content>
+          {/* <Tab.Content>
+            <Tab.Pane eventKey="My narratives">{this.bootstrapTabContainer()}</Tab.Pane>
+          </Tab.Content> */}
+          {/* <Tab.Content>
             <Tab.Pane eventKey="Shared with me">{this.bootstrapTabContainer()}</Tab.Pane>
           </Tab.Content>
           <Tab.Content>
@@ -256,7 +267,7 @@ export class NarrativeList extends Component<Props, State> {
           </Tab.Content>
           <Tab.Content>
             <Tab.Pane eventKey="Public">{this.bootstrapTabContainer()}</Tab.Pane>
-          </Tab.Content>
+          </Tab.Content> */}
         </Tab.Container>
       </>
     );
