@@ -9,6 +9,8 @@ import Col from 'react-bootstrap/Col';
 import { NarrativeList } from './NarrativeList/index';
 import { cpus } from 'os';
 
+import '../../scss/custom.scss';
+
 interface Props {
   history: History;
 }
@@ -23,7 +25,7 @@ export class Dashboard extends Component<Props, {}> {
   render() {
     return (
       <Container fluid>
-        <Row>
+        <Row noGutters>
           <Col></Col>
           <Col lg={9} xl={8}>
             <NarrativeList />

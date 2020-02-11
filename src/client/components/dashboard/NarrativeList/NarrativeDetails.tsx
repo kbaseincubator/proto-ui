@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 //css
-import './foo.css';
+//import './foo.css';
+// import './scss/custom.scss';
+import '../../../scss/custom.scss';
 
 //Bootstrap
 import Tab from 'react-bootstrap/Tab';
@@ -17,7 +19,6 @@ import { getWSTypeName } from '../../../utils/getWSTypeName';
 interface Props {
   activeItem: NarrativeData;
   selectedTabIdx?: number;
-  framework: string;
 }
 
 interface State {
@@ -67,6 +68,7 @@ export class NarrativeDetails extends Component<Props, State> {
   // Handle the onSelect callback from MiniTabs
   handleOnTabSelect(idx: number) {
     this.setState({ selectedTabIdx: idx });
+    return;
   }
   // Basic details, such as author, dates, etc.
   // Receives the narrative data from elasticsearch results for a single entry.
@@ -108,85 +110,41 @@ export class NarrativeDetails extends Component<Props, State> {
     } else if (selectedTabIdx === 2) {
       content = cellPreview(data);
     }
-    if (this.props.framework === 'vanillaJS') {
-      return (
-        <div
-          className="w-60 h-100 bg-white pv2 ph3"
-          style={{
-            top: window._env.legacyNav ? '4.5rem' : '0.75rem',
-            position: 'sticky',
-          }}
-        >
-          <div className="flex justify-between mb3">
-            <h4 className="ma0 pa0 pt2 f4">
-              <a className="blue pointer no-underline dim" href={narrativeHref}>
-                {data.narrative_title || 'Untitled'}
-                <i className="fa fa-external-link-alt ml2 black-20"></i>
-              </a>
-            </h4>
-          </div>
 
-          {/*
-          <div className='flex mb3'>
-           * Left out for now because this functionality is a pain.
-           *  - Share button needs to make a call to the workspace, and we'd have
-           *    to build a UI around searching and selecting users.
-           *  - Copy button needs to make a call to the "Narrative Service"
-           *  dynamic service, which has a copy narrative method. To get the
-           *  dyn service url, we'd need to make a call first to the service
-           *  wizard. Blech.
-           *
-           *  A better way to do all this would be to have narrative urls for
-           *  copy and share that open up their respective modals.
-          <a className='pointer dim ba b--black-30 pa2 br2 dib mr2 black-80'>
-            <i className="mr1 fas fa-share"></i>
-            Share
+    return (
+      <div style={{ width: '100%', position: 'sticky' }}>
+        <h4 className="ma0 pa0 pt2 f4">
+          <a className="blue pointer no-underline dim" href={narrativeHref}>
+            {data.narrative_title || 'Untitled'}
+            <i className="fa fa-external-link-alt ml2 black-20"></i>
           </a>
-          <a className='pointer dim ba b--black-30 pa2 br2 dib mr2 black-80'>
-            <i className="mr1 fas fa-copy"></i>
-            Copy
-          </a>
-          </div>
-        */}
-          <MiniTabs
-            tabs={['Overview', 'Data', 'Preview']}
-            onSelect={this.handleOnTabSelect.bind(this)}
-            activeIdx={selectedTabIdx}
-            className="mb3"
-          />
-          {content}
-        </div>
-      );
-    } else if (this.props.framework === 'ReactBS') {
-      return (
-        <div style={{ width: '100%', position: 'sticky' }}>
-          <h4 className="ma0 pa0 pt2 f4">
-            <a className="blue pointer no-underline dim" href={narrativeHref}>
-              {data.narrative_title || 'Untitled'}
-              <i className="fa fa-external-link-alt ml2 black-20"></i>
-            </a>
-          </h4>
-          <Tab.Container defaultActiveKey={0}>
-            <Nav variant="tabs">
-              <Nav.Item>
-                <Nav.Link eventKey={0}>Overview</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey={1}>Data</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey={2}>Preview</Nav.Link>
-              </Nav.Item>
-            </Nav>
-            <Tab.Content>
-              <Tab.Pane eventKey={0}>{this.basicDetailsView(data)}</Tab.Pane>
-              <Tab.Pane eventKey={1}>{dataView(data)}</Tab.Pane>
-              <Tab.Pane eventKey={2}>{cellPreview(data)}</Tab.Pane>
-            </Tab.Content>
-          </Tab.Container>
-        </div>
-      );
-    }
+        </h4>
+        <Tab.Container defaultActiveKey={0}>
+          <Nav>
+            <Nav.Item>
+              <Nav.Link className="greenBorder" eventKey={0}>
+                Overview
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link className="greenBorder" eventKey={1}>
+                Data
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link className="greenBorder" eventKey={2}>
+                Preview
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <Tab.Content>
+            <Tab.Pane eventKey={0}>{this.basicDetailsView(data)}</Tab.Pane>
+            <Tab.Pane eventKey={1}>{dataView(data)}</Tab.Pane>
+            <Tab.Pane eventKey={2}>{cellPreview(data)}</Tab.Pane>
+          </Tab.Content>
+        </Tab.Container>
+      </div>
+    );
   }
 }
 

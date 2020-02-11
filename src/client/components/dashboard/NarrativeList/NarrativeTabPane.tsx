@@ -10,6 +10,7 @@ import Nav from 'react-bootstrap/Nav';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { NarrativeDetails } from './NarrativeDetails';
+import { LoadingSpinner } from '../../generic/LoadingSpinner';
 
 interface Props {
   items: Array<NarrativeData>;
@@ -40,7 +41,9 @@ export class NarrativeTabPane extends Component<Props, State> {
     this.setState({ items: this.props.items });
   }
   componentDidUpdate(prevProp: Props) {
-    if (prevProp !== this.props) {
+    if (prevProp.selectedIdx !== this.props.selectedIdx) {
+      this.setState({ activeIdx: this.props.selectedIdx });
+    } else if (prevProp.items !== this.props.items) {
       this.setState({ items: this.props.items });
     } else {
       return;
@@ -74,23 +77,33 @@ export class NarrativeTabPane extends Component<Props, State> {
     let currentActiveIndx = this.state.activeIdx
       ? this.state.activeIdx
       : this.props.selectedIdx;
-    const activeClass = currentActiveIndx === idx ? 'fooActive' : 'fooClass';
+    const activeClass = currentActiveIndx === idx ? 'bg-white' : 'bg-lightgray';
     const data = anyItem.doc;
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
     // Action to select an item to view details
     return (
-      <>
-        <Nav.Item key={upa} bsPrefix={activeClass}>
-          <Nav.Link key={idx} eventKey={idx}>
-            <h5 style={{ color: 'black' }}>
-              {data.narrative_title || 'Untitled'}
-            </h5>
-            <h6 style={{ color: 'black' }}>
-              Updated {timeago.format(data.timestamp)} by {data.creator}
-            </h6>
-          </Nav.Link>
-        </Nav.Item>
-      </>
+      <Nav.Item
+        role="tab"
+        key={upa}
+        style={{ borderBottom: '1px solid #dedede' }}
+        bsPrefix={activeClass}
+      >
+        <Nav.Link key={idx} eventKey={idx}>
+          <section
+            className={
+              currentActiveIndx === idx
+                ? 'fw7 f3 black-font'
+                : 'normal f4 dark-font'
+            }
+            style={{ padding: '0.3rem 0' }}
+          >
+            {data.narrative_title || 'Untitled'}
+          </section>
+          <p className="midgray-font">
+            Updated {timeago.format(data.timestamp)} by {data.creator}
+          </p>
+        </Nav.Link>
+      </Nav.Item>
     );
   };
 
@@ -100,13 +113,7 @@ export class NarrativeTabPane extends Component<Props, State> {
       return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
     if (this.props.loading) {
-      return (
-        <>
-          <Spinner animation="grow" size="sm" />
-          <Spinner animation="border" variant="primary" />
-          <Spinner animation="grow" variant="primary" />
-        </>
-      );
+      return <LoadingSpinner loading={true} />;
     }
     return (
       <a
@@ -124,11 +131,11 @@ export class NarrativeTabPane extends Component<Props, State> {
       if (this.props.loading) {
         // No results but still loading:
         return (
-          <>
+          <div style={{ margin: 'auto', textAlign: 'center' }}>
             <Spinner animation="grow" size="sm" />
             <Spinner animation="border" variant="primary" />
             <Spinner animation="grow" variant="primary" />
-          </>
+          </div>
         );
       } else {
         // No results and not loading
@@ -154,10 +161,9 @@ export class NarrativeTabPane extends Component<Props, State> {
               </Nav>
             </Col>
             <Col sm={7}>
-              <Tab.Content>
+              <Tab.Content className="sticky-top">
                 <Tab.Pane eventKey={this.state.activeIdx}>
                   <NarrativeDetails
-                    framework="ReactBS"
                     activeItem={this.state.items[this.state.activeIdx]}
                   />
                 </Tab.Pane>
