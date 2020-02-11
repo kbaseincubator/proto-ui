@@ -15,15 +15,12 @@ import { NarrativeTabPane } from './NarrativeTabPane';
 //import './foo.css';
 import '../../../scss/custom.scss';
 
-
 // Utils
 import {
   searchNarratives,
   SearchParams,
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
-
-
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -80,7 +77,7 @@ export class NarrativeList extends Component<Props, State> {
     });
   }
 
-  componentDidUpdate(prevProp: Props){
+  componentDidUpdate(prevProp: Props) {
     if (prevProp === this.props) {
       return;
     }
@@ -172,36 +169,36 @@ export class NarrativeList extends Component<Props, State> {
     return (
       <div className="boostrap-tab-container">
         <Navbar bg="primary" variant="dark" className="justify-content-between">
-            <Nav>
-          <Form inline onSubmit={(e: any) => this.bootstrapSubmit(e)}>
-            <FormControl
-              className="narrative-search-input"
-              type="text"
-              id="narrative-search"
-              placeholder="Search narratives"
-              size="sm"
-            />
-          </Form>
+          <Nav>
+            <Form inline onSubmit={(e: any) => this.bootstrapSubmit(e)}>
+              <FormControl
+                className="narrative-search-input"
+                type="text"
+                id="narrative-search"
+                placeholder="Search narratives"
+                size="sm"
+              />
+            </Form>
           </Nav>
           <Nav>
-          <DropdownButton
-            className="justify-content-ene"
-            title={`Sorted By: ${this.state.searchParams.sort}`}
-            id="narrative-sort-dropdown"
-            variant='primary'
-            onSelect={(eventKey: string) => {
-              this.bootstrapDropDownChange(eventKey);
-            }}
-          >
-            <Dropdown.Item eventKey="Newest">Newest</Dropdown.Item>
-            <Dropdown.Item eventKey="Oldest">Oldest</Dropdown.Item>
-            <Dropdown.Item eventKey="Recently updated">
-              Recently updated
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="Last recently updated">
-              Last recently updated
-            </Dropdown.Item>
-          </DropdownButton>
+            <DropdownButton
+              className="justify-content-ene"
+              title={`Sorted By: ${this.state.searchParams.sort}`}
+              id="narrative-sort-dropdown"
+              variant="primary"
+              onSelect={(eventKey: string) => {
+                this.bootstrapDropDownChange(eventKey);
+              }}
+            >
+              <Dropdown.Item eventKey="Newest">Newest</Dropdown.Item>
+              <Dropdown.Item eventKey="Oldest">Oldest</Dropdown.Item>
+              <Dropdown.Item eventKey="Recently updated">
+                Recently updated
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="Last recently updated">
+                Last recently updated
+              </Dropdown.Item>
+            </DropdownButton>
           </Nav>
         </Navbar>
         <NarrativeTabPane
@@ -231,11 +228,13 @@ export class NarrativeList extends Component<Props, State> {
     this.handleSearch({ term: this.state.searchParams.term, sort: eventKey });
   }
 
-
   render() {
     return (
       <>
-        <Tab.Container defaultActiveKey="My narratives" onSelect={(eventKey: string) => this.handleTabChange(eventKey)}>
+        <Tab.Container
+          defaultActiveKey="My narratives"
+          onSelect={(eventKey: string) => this.handleTabChange(eventKey)}
+        >
           <Nav fill variant="tabs">
             <Nav.Item>
               <Nav.Link eventKey="My narratives">My narratives</Nav.Link>
@@ -250,11 +249,26 @@ export class NarrativeList extends Component<Props, State> {
               <Nav.Link eventKey="Public">Public</Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className="white-font" style={{height: "44px"}}><button className="fab-add"><i className="fa fa-plus" style={{width:'1rem'}}></i></button><section style={{display: 'inline', paddingBottom: "10px", verticalAlign: "super"}}>Create narrative</section></Nav.Link>
+              <Nav.Link className="white-font" style={{ height: '44px' }}>
+                <button className="fab-add">
+                  <i className="fa fa-plus" style={{ width: '1rem' }}></i>
+                </button>
+                <section
+                  style={{
+                    display: 'inline',
+                    paddingBottom: '10px',
+                    verticalAlign: 'super',
+                  }}
+                >
+                  Create narrative
+                </section>
+              </Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>
-            <Tab.Pane eventKey={this.state.activeKey || "My narratives"}>{this.bootstrapTabContainer()}</Tab.Pane>
+            <Tab.Pane eventKey={this.state.activeKey || 'My narratives'}>
+              {this.bootstrapTabContainer()}
+            </Tab.Pane>
           </Tab.Content>
           {/* <Tab.Content>
             <Tab.Pane eventKey="My narratives">{this.bootstrapTabContainer()}</Tab.Pane>

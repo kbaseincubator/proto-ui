@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 // import './scss/custom.scss';
 import '../../../scss/custom.scss';
 
-
 //Bootstrap
 import Tab from 'react-bootstrap/Tab';
 import Nav from 'react-bootstrap/Nav';
@@ -64,13 +63,12 @@ export class NarrativeDetails extends Component<Props, State> {
       selectedTabIdx: this.props.selectedTabIdx || 0,
     };
   }
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   // Handle the onSelect callback from MiniTabs
   handleOnTabSelect(idx: number) {
     this.setState({ selectedTabIdx: idx });
-    return 
+    return;
   }
   // Basic details, such as author, dates, etc.
   // Receives the narrative data from elasticsearch results for a single entry.
@@ -124,13 +122,19 @@ export class NarrativeDetails extends Component<Props, State> {
         <Tab.Container defaultActiveKey={0}>
           <Nav>
             <Nav.Item>
-              <Nav.Link className='greenBorder' eventKey={0}>Overview</Nav.Link>
+              <Nav.Link className="greenBorder" eventKey={0}>
+                Overview
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className='greenBorder' eventKey={1}>Data</Nav.Link>
+              <Nav.Link className="greenBorder" eventKey={1}>
+                Data
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link className='greenBorder' eventKey={2}>Preview</Nav.Link>
+              <Nav.Link className="greenBorder" eventKey={2}>
+                Preview
+              </Nav.Link>
             </Nav.Item>
           </Nav>
           <Tab.Content>

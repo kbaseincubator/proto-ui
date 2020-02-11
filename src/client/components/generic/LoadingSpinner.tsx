@@ -11,10 +11,8 @@ export function LoadingSpinner(props: Props) {
     return <></>;
   }
   return (
-    <div style={{ margin: "auto", textAlign: "center" }}>
-      <p className="black-60 mt3">
-        Loading...
-      </p>
+    <div style={{ margin: 'auto', textAlign: 'center' }}>
+      <p className="black-60 mt3">Loading...</p>
       <Spinner animation="grow" size="sm" />
       <Spinner animation="border" variant="primary" />
       <Spinner animation="grow" variant="primary" />

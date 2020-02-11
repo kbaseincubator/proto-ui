@@ -42,8 +42,8 @@ export class NarrativeTabPane extends Component<Props, State> {
   }
   componentDidUpdate(prevProp: Props) {
     if (prevProp.selectedIdx !== this.props.selectedIdx) {
-      this.setState({ activeIdx: this.props.selectedIdx})
-    } else if (prevProp.items !== this.props.items){
+      this.setState({ activeIdx: this.props.selectedIdx });
+    } else if (prevProp.items !== this.props.items) {
       this.setState({ items: this.props.items });
     } else {
       return;
@@ -82,12 +82,24 @@ export class NarrativeTabPane extends Component<Props, State> {
     const upa = `${data.access_group}/${data.obj_id}`; //WHAT IS UPA?????
     // Action to select an item to view details
     return (
-      <Nav.Item role="tab" key={upa} style={{ borderBottom: "1px solid #dedede" }} bsPrefix={activeClass}>
+      <Nav.Item
+        role="tab"
+        key={upa}
+        style={{ borderBottom: '1px solid #dedede' }}
+        bsPrefix={activeClass}
+      >
         <Nav.Link key={idx} eventKey={idx}>
-          <section className={currentActiveIndx === idx ? "fw7 f3 black-font" : "normal f4 dark-font"} style={{ padding: '0.3rem 0' }}>
+          <section
+            className={
+              currentActiveIndx === idx
+                ? 'fw7 f3 black-font'
+                : 'normal f4 dark-font'
+            }
+            style={{ padding: '0.3rem 0' }}
+          >
             {data.narrative_title || 'Untitled'}
           </section>
-          <p className='midgray-font'>
+          <p className="midgray-font">
             Updated {timeago.format(data.timestamp)} by {data.creator}
           </p>
         </Nav.Link>
@@ -101,9 +113,7 @@ export class NarrativeTabPane extends Component<Props, State> {
       return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
     if (this.props.loading) {
-      return (
-        <LoadingSpinner loading={true} />
-      );
+      return <LoadingSpinner loading={true} />;
     }
     return (
       <a
@@ -151,7 +161,7 @@ export class NarrativeTabPane extends Component<Props, State> {
               </Nav>
             </Col>
             <Col sm={7}>
-              <Tab.Content className='sticky-top'>
+              <Tab.Content className="sticky-top">
                 <Tab.Pane eventKey={this.state.activeIdx}>
                   <NarrativeDetails
                     activeItem={this.state.items[this.state.activeIdx]}
