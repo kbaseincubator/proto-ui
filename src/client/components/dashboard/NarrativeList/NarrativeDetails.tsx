@@ -8,7 +8,7 @@ import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/getWSTypeName';
 
 // interface 
-import { Item, ItemDoc } from '../../../../models/Interfaces';
+import { Item, ItemDoc, Cell, DataObjects } from '../../../../models/Interfaces';
 
 interface Props {
   activeItem: Item;
@@ -17,35 +17,6 @@ interface Props {
 
 interface State {
   selectedTabIdx: number;
-}
-
-export interface NarrativeData {
-  _source: DetailedData;
-}
-
-interface Cell {
-  cell_type: string;
-  desc: string;
-  count: number;
-}
-
-interface DataObjects {
-  readableType: string;
-  obj_type: string;
-  name: string;
-}
-
-interface DetailedData {
-  access_group: string | number;
-  cells: Array<Cell>;
-  narrative_title: string;
-  shared_users: Array<string>;
-  creator: string;
-  creation_date: number;
-  total_cells: number;
-  data_objects: Array<DataObjects>;
-  is_public: boolean;
-  sharedWith: Array<string>;
 }
 
 // Narrative details side panel in the narrative listing.
@@ -201,7 +172,7 @@ function cellPreviewReducer(all: Array<Cell>, each: Cell): Array<Cell> {
 }
 
 // Preview of all notebook cells in the narrative
-function cellPreview(data: DetailedData) {
+function cellPreview(data: ItemDoc) {
   const leftWidth = 18;
   const maxLength = 16;
   // TODO move this into its own component class
@@ -275,7 +246,7 @@ const cellNames: { [key: string]: string } = {
   data: 'Data',
 };
 
-function viewFullNarrativeLink(data: DetailedData) {
+function viewFullNarrativeLink(data: ItemDoc) {
   const wsid = data.access_group;
   const narrativeHref = window._env.narrative + '/narrative/' + wsid;
   return (
@@ -288,7 +259,7 @@ function viewFullNarrativeLink(data: DetailedData) {
 }
 
 // Overview of data objects in the narrative
-function dataView(data: DetailedData) {
+function dataView(data: ItemDoc) {
   const rows = data.data_objects
     .slice(0, 50)
     .map(obj => {

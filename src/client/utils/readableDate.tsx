@@ -1,4 +1,4 @@
 // Pass in an epoch integer
-export function readableDate(epoch: number): string {
+export function readableDate(epoch: string): string {
   return new Date(epoch).toLocaleDateString();
 }

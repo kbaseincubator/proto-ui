@@ -6,8 +6,8 @@ export interface Item {
 
 export interface ItemDoc {
   narrative_title: string;
-  data_objects: Array<any>;
-  cells: Array<any>;
+  data_objects: Array<DataObjects>;
+  cells: Array<Cell>;
   creator: string;
   total_cells: number;
   access_group: number;
@@ -23,4 +23,15 @@ export interface ItemDoc {
   obj_type_version: string;
   obj_type_module: string;
   obj_type_name: string;
+}
+
+export interface Cell {
+  cell_type: string;
+  desc: string;
+  count: number;
+}
+export interface DataObjects {
+  readableType: string;
+  obj_type: string;
+  name: string;
 }

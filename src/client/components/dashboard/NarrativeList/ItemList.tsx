@@ -5,7 +5,7 @@ import { Item, ItemDoc } from '../../../../models/Interfaces';
 const timeago = require('timeago.js');
 
 interface Props {
-  items: Array<object>;
+  items: Array<Item>;
   loading: boolean;
   totalItems: number;
   onLoadMore?: () => void;
@@ -44,7 +44,7 @@ export class ItemList extends Component<Props, State> {
     // I need this until I figure out what's in item
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = item.doc;
+    const data = item.doc || null;
     const upa = `${data.access_group}/${data.obj_id}`;
     // Action to select an item to view details
     return (

@@ -4,7 +4,10 @@ import React, { Component } from 'react';
 import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
-import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
+import { NarrativeDetails } from '../NarrativeList/NarrativeDetails';
+
+// Interface 
+import { Item } from '../../../../models/Interfaces'
 
 // Utils
 import {
@@ -21,7 +24,7 @@ interface State {
   // Whether we are loading data from the server
   loading: boolean;
   // List of objects of narrative details
-  items: Array<NarrativeData>;
+  items: Array<Item>;
   totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
@@ -120,7 +123,7 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: any) => {
-        console.log(resp)
+        //console.log(resp)
         if (resp) { resp = resp.result }
         if (resp && resp.hits) {
           const total = resp.count;
