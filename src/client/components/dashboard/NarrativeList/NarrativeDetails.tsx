@@ -7,8 +7,11 @@ import { MiniTabs } from '../../generic/MiniTabs';
 import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/getWSTypeName';
 
+// interface 
+import { Item, ItemDoc } from '../../../../models/Interfaces';
+
 interface Props {
-  activeItem: NarrativeData;
+  activeItem: Item;
   selectedTabIdx?: number;
 }
 
@@ -61,7 +64,7 @@ export class NarrativeDetails extends Component<Props, State> {
   }
   // Basic details, such as author, dates, etc.
   // Receives the narrative data from elasticsearch results for a single entry.
-  basicDetailsView(data: DetailedData) {
+  basicDetailsView(data: ItemDoc) {
     const sharedWith = data.shared_users.filter(
       (user: string) => user !== window._env.username
     );
@@ -86,7 +89,7 @@ export class NarrativeDetails extends Component<Props, State> {
     }
 
     const { selectedTabIdx } = this.state;
-    const data = activeItem._source;
+    const data = activeItem.doc;
     const wsid = data.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content: JSX.Element | string = '';
