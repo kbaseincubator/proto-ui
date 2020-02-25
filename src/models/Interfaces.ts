@@ -35,3 +35,26 @@ export interface DataObjects {
   obj_type: string;
   name: string;
 }
+
+export interface SearchParams {
+  term: string;
+  sort: string;
+  category: string;
+  skip: number;
+  pageSize: number;
+  musts?: Array<any>;
+  mustNots?: Array<any>;
+}
+
+export interface Options {
+  query: {
+    bool: {
+      must: Array<object>;
+      must_not?: Array<object>;
+    };
+  };
+  pageSize: number;
+  auth?: boolean;
+  sort?: Array<{ [key: string]: { [key: string]: string } } | string>;
+  skip?: number;
+}

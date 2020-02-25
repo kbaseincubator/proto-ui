@@ -7,12 +7,18 @@ import { MiniTabs } from '../../generic/MiniTabs';
 import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/getWSTypeName';
 
-// interface 
-import { Item, ItemDoc, Cell, DataObjects } from '../../../../models/Interfaces';
+// interface
+import {
+  Item,
+  ItemDoc,
+  Cell,
+  DataObjects,
+} from '../../../../models/Interfaces';
 
 interface Props {
   activeItem: Item;
   selectedTabIdx?: number;
+  searchCounts?: { [key: string]: number };
 }
 
 interface State {

@@ -6,15 +6,13 @@ import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from '../NarrativeList/NarrativeDetails';
 
-// Interface 
-import { Item } from '../../../../models/Interfaces'
+// Interface
+import { Item, SearchParams } from '../../../../models/Interfaces';
 
 // Utils
-import {
-  searchNarratives,
-  SearchParams,
-} from '../../../utils/searchNarratives';
+import { searchNarratives } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
+import { stringify } from 'querystring';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -30,6 +28,7 @@ interface State {
   activeIdx: number;
   // Parameters to send to searchNarratives
   searchParams: SearchParams;
+  searchCounts: { [key: string]: number };
 }
 
 interface Props {
@@ -57,6 +56,12 @@ export class NarrativeList extends Component<Props, State> {
         skip: 0,
         pageSize: PAGE_SIZE,
       },
+      searchCounts: {
+        own: 0,
+        shared: 0,
+        tutorials: 0,
+        public: 0,
+      },
     };
   }
 
@@ -69,7 +74,7 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch(searchP: { term: string; sort: string }): void {
+  handleTermSearch(searchP: { term: string; sort: string }): void {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
@@ -78,11 +83,17 @@ export class NarrativeList extends Component<Props, State> {
     this.performSearch();
   }
 
+  handleSort(sort: string): void {
+    const searchParams = this.state.searchParams;
+    searchParams.sort = sort;
+    this.setState({ searchParams });
+    this.performSearch();
+  }
+
   // Handle an onSelectTab callback from TabHeader
   handleTabChange(idx: number, name: string): void {
     // Reset the search state and results
     const searchParams = this.state.searchParams;
-    searchParams.term = '';
     searchParams.skip = 0;
     const categoryMap: { [key: string]: string } = {
       'my narratives': 'own',
@@ -117,14 +128,59 @@ export class NarrativeList extends Component<Props, State> {
     this.setState({ activeIdx: idx });
   }
 
+  performTermSearch(val: string) {
+    this.setState({ loading: true });
+    let searchCounts: { [key: string]: number } = {
+      own: 0,
+      shared: 0,
+      tutorials: 0,
+      public: 0,
+    };
+
+    for (let [key, value] of Object.entries(this.state.searchCounts)) {
+      if (key === this.state.searchParams.category) {
+        // update state and perform normal search to
+        // populate narratives
+        this.setState(
+          (state, props) => {
+            let searchParams = state.searchParams;
+            searchParams.term = val;
+            return { searchParams };
+          },
+          () => this.performSearch()
+        );
+      }
+      // if new searchParams is not made everytime,
+      // and use const searchParams = this.state.searchParams
+      // searchParams.category = key
+      // updates the state without using this.setState()
+      const searchParams = {
+        term: val,
+        sort: this.state.searchParams.sort,
+        category: key,
+        skip: this.state.searchParams.skip,
+        pageSize: this.state.searchParams.pageSize,
+        musts: this.state.searchParams.musts,
+        mustNots: this.state.searchParams.mustNots,
+      };
+
+      searchNarratives(searchParams).then((resp: any) => {
+        if (searchCounts[key] !== resp.result.count) {
+          searchCounts[key] = resp.result.count;
+          this.setState({ searchCounts });
+        }
+      });
+    }
+  }
   // Perform a search and return the Promise for the fetch
   performSearch() {
     this.setState({ loading: true });
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: any) => {
-        //console.log(resp)
-        if (resp) { resp = resp.result }
+        if (resp) {
+          resp = resp.result;
+        }
         if (resp && resp.hits) {
           const total = resp.count;
           const items = resp.hits;
@@ -158,6 +214,7 @@ export class NarrativeList extends Component<Props, State> {
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
               onSelectTab={this.handleTabChange.bind(this)}
               selectedIdx={0}
+              searchCounts={this.state.searchCounts}
             />
           </div>
 
@@ -174,7 +231,8 @@ export class NarrativeList extends Component<Props, State> {
         <div className="ba b--black-20">
           {/* Search, sort, filter */}
           <Filters
-            onSetSearch={this.handleSearch.bind(this)}
+            onSetSearch={this.performTermSearch.bind(this)}
+            onSelectSort={this.handleSort.bind(this)}
             loading={this.state.loading}
           />
 
@@ -191,6 +249,7 @@ export class NarrativeList extends Component<Props, State> {
 
             <NarrativeDetails
               activeItem={this.state.items[this.state.activeIdx]}
+              searchCounts={this.state.searchCounts}
             />
           </div>
         </div>

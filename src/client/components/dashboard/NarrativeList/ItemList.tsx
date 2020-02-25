@@ -13,7 +13,7 @@ interface Props {
   selectedIdx: number;
 }
 
-interface State { }
+interface State {}
 
 // Simple UI for a list of selectable search results
 export class ItemList extends Component<Props, State> {

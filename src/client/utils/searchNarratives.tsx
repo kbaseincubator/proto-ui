@@ -4,28 +4,8 @@ import { getToken } from '../utils/auth';
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
 const INDEX_NAME = 'narrative';
 
-export interface SearchParams {
-  term: string;
-  sort: string;
-  category: string;
-  skip: number;
-  pageSize: number;
-  musts?: Array<any>;
-  mustNots?: Array<any>;
-}
-
-interface Options {
-  query: {
-    bool: {
-      must: Array<object>;
-      must_not?: Array<object>;
-    };
-  };
-  pageSize: number;
-  auth?: boolean;
-  sort?: Array<{ [key: string]: { [key: string]: string } } | string>;
-  skip?: number;
-}
+//inferfaces
+import { SearchParams, Options } from '../../models/Interfaces';
 
 // Search narratives using elasticsearch
 // `term` is a search term
