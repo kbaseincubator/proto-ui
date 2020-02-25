@@ -18,7 +18,6 @@ import {
 interface Props {
   activeItem: Item;
   selectedTabIdx?: number;
-  searchCounts?: { [key: string]: number };
 }
 
 interface State {

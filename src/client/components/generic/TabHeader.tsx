@@ -6,7 +6,7 @@ interface Props {
   selectedIdx: number;
   tabs: string[];
   onSelectTab?: (idx: number, name: string) => void;
-  searchCounts?: { [key: string]: number };
+  searchCounts?: { [key: string]: number | null };
 }
 
 interface State {
@@ -84,7 +84,9 @@ export class TabHeader extends Component<Props, State> {
                 style={{ userSelect: 'none' }}
               >
                 {tabText}
-                <span style={{ paddingLeft: '10px' }}>{count}</span>
+                <div style={{ display: 'inline', paddingLeft: '10px' }}>
+                  {count}
+                </div>
               </li>
             );
           })}

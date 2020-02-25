@@ -28,7 +28,7 @@ interface State {
   activeIdx: number;
   // Parameters to send to searchNarratives
   searchParams: SearchParams;
-  searchCounts: { [key: string]: number };
+  searchCounts: { [key: string]: number | null };
 }
 
 interface Props {
@@ -57,10 +57,10 @@ export class NarrativeList extends Component<Props, State> {
         pageSize: PAGE_SIZE,
       },
       searchCounts: {
-        own: 0,
-        shared: 0,
-        tutorials: 0,
-        public: 0,
+        own: null,
+        shared: null,
+        tutorials: null,
+        public: null,
       },
     };
   }
@@ -130,11 +130,11 @@ export class NarrativeList extends Component<Props, State> {
 
   performTermSearch(val: string) {
     this.setState({ loading: true });
-    let searchCounts: { [key: string]: number } = {
-      own: 0,
-      shared: 0,
-      tutorials: 0,
-      public: 0,
+    let searchCounts: { [key: string]: number | null } = {
+      own: null,
+      shared: null,
+      tutorials: null,
+      public: null,
     };
 
     for (let [key, value] of Object.entries(this.state.searchCounts)) {
@@ -154,6 +154,10 @@ export class NarrativeList extends Component<Props, State> {
       // and use const searchParams = this.state.searchParams
       // searchParams.category = key
       // updates the state without using this.setState()
+      if (val.length < 1) {
+        this.setState({ searchCounts });
+        return;
+      }
       const searchParams = {
         term: val,
         sort: this.state.searchParams.sort,
@@ -249,7 +253,6 @@ export class NarrativeList extends Component<Props, State> {
 
             <NarrativeDetails
               activeItem={this.state.items[this.state.activeIdx]}
-              searchCounts={this.state.searchCounts}
             />
           </div>
         </div>
