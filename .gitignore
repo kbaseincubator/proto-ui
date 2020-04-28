@@ -1,5 +1,4 @@
 node_modules
-package-lock.json
 
 # JS and CSS bundle/build output
 src/static/build/*
