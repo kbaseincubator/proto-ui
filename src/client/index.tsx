@@ -3,8 +3,6 @@ import { render } from 'react-dom';
 
 // Imports for page-specific components
 import { Router, Route } from '../client/components/generic/Router';
-// path: /Account
-import { ComparisonRBSToVBS } from './components/Account/index';
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
 // path: /object_relations
@@ -116,7 +114,7 @@ class Page extends Component<Props, {}> {
           <Todo text="Notifications" />
         </Route>
         <Route path="/account">
-          <ComparisonRBSToVBS />
+          <Todo text="Account" />
         </Route>
         <Route path={/.*/}>
           <NotFoundPage />

@@ -9,31 +9,25 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/history": "^4.7.4",
-    "@types/node": "^10.17.13",
+    "@types/history": "^4.7.3",
+    "@types/node": "^10.0.3",
     "@types/react": "16.9.5",
     "@types/react-dom": "16.9.1",
-    "compression-webpack-plugin": "^3.1.0",
-    "css-loader": "^3.4.2",
+    "compression-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
     "prettier": "^1.18.2",
-    "style-loader": "^1.1.2",
+    "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.7.4",
-    "webpack": "^4.41.5",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
-    "bootstrap": "^4.4.1",
     "history": "^4.10.1",
-    "jquery": "^3.4.1",
-    "node-sass": "^4.13.1",
-    "popper.js": "^1.16.0",
     "react": "16.11.0",
-    "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "16.11.0",
-    "sass-loader": "^8.0.2",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.0"
   }
 }

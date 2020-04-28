@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { removeCookie } from '../../utils/cookies';
 import { AccountDropdown } from './AccountDropdown';
@@ -148,7 +146,7 @@ export class Header extends Component<Props, State> {
 
   render() {
     return (
-      <div style={{ margin: 'auto' }}>
+      <div>
         <h1 className="roboto-header">{this.props.title}</h1>
         <div
           className="flex top-0 right-0 absolute h-100"
