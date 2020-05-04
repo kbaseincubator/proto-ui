@@ -11,7 +11,7 @@ import { Doc } from '../../../utils/narrativeData';
 import {
   searchNarratives,
   SearchParams,
-  SearchResults
+  SearchResults,
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
 
