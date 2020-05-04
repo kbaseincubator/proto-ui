@@ -115,8 +115,7 @@ export function searchNarratives({
   if (mustNots.length) {
     options.query.bool.must_not = mustNots;
   }
-  return makeRequest(options)
-    .then(resp => resp.result);
+  return makeRequest(options).then(resp => resp.result);
 }
 
 // Make a request to the search API to fetch narratives

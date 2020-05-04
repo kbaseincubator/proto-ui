@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
-import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
+import { NarrativeDetails } from './NarrativeDetails';
 import { Doc } from '../../../utils/narrativeData';
 
 // Utils
