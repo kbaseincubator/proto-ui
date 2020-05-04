@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { Doc } from '../../../utils/narrativeData';
 const timeago = require('timeago.js');
 
 interface Props {
-  items: Array<object>;
+  items: Array<Doc>;
   loading: boolean;
   totalItems: number;
   onLoadMore?: () => void;
@@ -37,14 +38,11 @@ export class ItemList extends Component<Props, State> {
   }
 
   // view for a single narrative item
-  itemView = (item: object, idx: number) => {
+  itemView = (item: Doc, idx: number) => {
     // I need this until I figure out what's in item
-    let fooItem: any;
-    fooItem = item;
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = fooItem._source;
-    const upa = `${data.access_group}/${data.obj_id}`;
+    const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
     // Action to select an item to view details
     return (
       <div
@@ -55,10 +53,10 @@ export class ItemList extends Component<Props, State> {
         <div className={css.outer}>
           <div className={css.inner}>
             <h4 className="ma0 mb2 pa0 f5">
-              {data.narrative_title || 'Untitled'}
+              {item.narrative_title || 'Untitled'}
             </h4>
             <p className="ma0 pa0 f6">
-              Updated {timeago.format(data.timestamp)} by {data.creator}
+              Updated {timeago.format(item.timestamp)} by {item.creator}
             </p>
           </div>
         </div>

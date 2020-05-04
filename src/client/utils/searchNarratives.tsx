@@ -1,4 +1,5 @@
 import { getToken } from '../utils/auth';
+import { Doc } from '../utils/narrativeData';
 
 // Constants
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
@@ -27,16 +28,32 @@ interface Options {
   skip?: number;
 }
 
-// Search narratives using elasticsearch
-// `term` is a search term
-// `sortBy` can be one of "Newest" or "Oldest"
-// `category` can be one of:
-//   - 'own' - narratives created by the current user
-//   - 'shared' - narratives shared with the current user
-//   - 'tutorials' - public narratives that are tutorials
-//   - 'public' - all public narratives
-//   - 'pageSize' - page length for search results
-// returns a fetch Promise
+interface SearchHit {
+  id: string;
+  index: string;
+  doc: Doc;
+}
+
+export interface SearchResults {
+  count: number;
+  search_time: number;
+  aggregations: Object;
+  hits: Array<SearchHit>;
+}
+
+/**
+ * Search narratives using ElasticSearch.
+ * `term` is a search term
+ * `sortBy` can be one of "Newest" or "Oldest"
+ * `category` can be one of:
+ *   - 'own' - narratives created by the current user
+ *   - 'shared' - narratives shared with the current user
+ *   - 'tutorials' - public narratives that are tutorials
+ *   - 'public' - all public narratives
+ *   - 'pageSize' - page length for search results
+ * returns a fetch Promise that results in SearchResults
+ * @param param0
+ */
 export function searchNarratives({
   term,
   category,
@@ -98,7 +115,8 @@ export function searchNarratives({
   if (mustNots.length) {
     options.query.bool.must_not = mustNots;
   }
-  return makeRequest(options);
+  return makeRequest(options)
+    .then(resp => resp.result);
 }
 
 // Make a request to the search API to fetch narratives
