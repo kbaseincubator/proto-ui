@@ -4,26 +4,20 @@ import React, { Component } from 'react';
 import { MiniTabs } from '../../generic/MiniTabs';
 
 // Utils
-import { readableDate } from '../../../utils/readableDate';
+import {
+  readableEpochDate,
+  readableISODate,
+} from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/getWSTypeName';
+import { Cell, Doc } from '../../../utils/narrativeData';
 
 interface Props {
-  activeItem: NarrativeData;
+  activeItem: Doc;
   selectedTabIdx?: number;
 }
 
 interface State {
   selectedTabIdx: number;
-}
-
-export interface NarrativeData {
-  _source: DetailedData;
-}
-
-interface Cell {
-  cell_type: string;
-  desc: string;
-  count: number;
 }
 
 interface DataObjects {
@@ -32,18 +26,18 @@ interface DataObjects {
   name: string;
 }
 
-interface DetailedData {
-  access_group: string | number;
-  cells: Array<Cell>;
-  narrative_title: string;
-  shared_users: Array<string>;
-  creator: string;
-  creation_date: number;
-  total_cells: number;
-  data_objects: Array<DataObjects>;
-  is_public: boolean;
-  sharedWith: Array<string>;
-}
+// interface DetailedData {
+//   access_group: string | number;
+//   cells: Array<Cell>;
+//   narrative_title: string;
+//   shared_users: Array<string>;
+//   creator: string;
+//   creation_date: number;
+//   total_cells: number;
+//   data_objects: Array<DataObjects>;
+//   is_public: boolean;
+//   sharedWith: Array<string>;
+// }
 
 // Narrative details side panel in the narrative listing.
 export class NarrativeDetails extends Component<Props, State> {
@@ -61,14 +55,14 @@ export class NarrativeDetails extends Component<Props, State> {
   }
   // Basic details, such as author, dates, etc.
   // Receives the narrative data from elasticsearch results for a single entry.
-  basicDetailsView(data: DetailedData) {
+  basicDetailsView(data: Doc) {
     const sharedWith = data.shared_users.filter(
       (user: string) => user !== window._env.username
     );
     return (
       <div className="mb3">
         {descriptionList('Author', data.creator)}
-        {descriptionList('Created on', readableDate(data.creation_date))}
+        {descriptionList('Created on', readableISODate(data.creation_date))}
         {descriptionList('Total cells', data.total_cells)}
         {descriptionList('Data objects', data.data_objects.length)}
         {descriptionList('Visibility', data.is_public ? 'Public' : 'Private')}
@@ -86,18 +80,17 @@ export class NarrativeDetails extends Component<Props, State> {
     }
 
     const { selectedTabIdx } = this.state;
-    const data = activeItem._source;
-    const wsid = data.access_group;
+    const wsid = activeItem.access_group;
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     if (selectedTabIdx === 0) {
       // Show overview
-      content = this.basicDetailsView(data);
+      content = this.basicDetailsView(activeItem);
     } else if (selectedTabIdx === 1) {
-      content = dataView(data);
+      content = dataView(activeItem);
     } else if (selectedTabIdx === 2) {
-      content = cellPreview(data);
+      content = cellPreview(activeItem);
     }
     return (
       <div
@@ -110,7 +103,7 @@ export class NarrativeDetails extends Component<Props, State> {
         <div className="flex justify-between mb3">
           <h4 className="ma0 pa0 pt2 f4">
             <a className="blue pointer no-underline dim" href={narrativeHref}>
-              {data.narrative_title || 'Untitled'}
+              {activeItem.narrative_title || 'Untitled'}
               <i className="fa fa-external-link-alt ml2 black-20"></i>
             </a>
           </h4>
@@ -198,7 +191,7 @@ function cellPreviewReducer(all: Array<Cell>, each: Cell): Array<Cell> {
 }
 
 // Preview of all notebook cells in the narrative
-function cellPreview(data: DetailedData) {
+function cellPreview(data: Doc) {
   const leftWidth = 18;
   const maxLength = 16;
   // TODO move this into its own component class
@@ -272,7 +265,7 @@ const cellNames: { [key: string]: string } = {
   data: 'Data',
 };
 
-function viewFullNarrativeLink(data: DetailedData) {
+function viewFullNarrativeLink(data: Doc) {
   const wsid = data.access_group;
   const narrativeHref = window._env.narrative + '/narrative/' + wsid;
   return (
@@ -285,7 +278,7 @@ function viewFullNarrativeLink(data: DetailedData) {
 }
 
 // Overview of data objects in the narrative
-function dataView(data: DetailedData) {
+function dataView(data: Doc) {
   const rows = data.data_objects
     .slice(0, 50)
     .map(obj => {

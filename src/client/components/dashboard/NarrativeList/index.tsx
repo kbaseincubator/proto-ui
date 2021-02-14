@@ -4,12 +4,14 @@ import React, { Component } from 'react';
 import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
-import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
+import { NarrativeDetails } from './NarrativeDetails';
+import { Doc } from '../../../utils/narrativeData';
 
 // Utils
 import {
   searchNarratives,
   SearchParams,
+  SearchResults,
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
 
@@ -21,7 +23,7 @@ interface State {
   // Whether we are loading data from the server
   loading: boolean;
   // List of objects of narrative details
-  items: Array<NarrativeData>;
+  items: Array<Doc>;
   totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
@@ -119,10 +121,11 @@ export class NarrativeList extends Component<Props, State> {
     this.setState({ loading: true });
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
-      .then((resp: any) => {
+      .then((resp: SearchResults) => {
+        console.log(resp);
         if (resp && resp.hits) {
-          const total = resp.hits.total;
-          const items = resp.hits.hits;
+          const total = resp.count;
+          const items = resp.hits.map(hit => hit.doc);
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
             this.setState({
