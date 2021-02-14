@@ -15,7 +15,7 @@ const exp = {
   module: {
     rules: [
       {
-        test: /\.tsx$/i,
+        test: /\.(tsx|ts)$/,
         exclude: /node_modules/,
         use: {loader: 'ts-loader'}
       },

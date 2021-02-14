@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { Router, Route } from '../client/components/generic/Router';
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
+import { Account } from './components/Account/index';
 // path: /object_relations
 import { ObjectRelations } from './components/object_relations/index';
 // path: /catalog
@@ -113,8 +114,8 @@ class Page extends Component<Props, {}> {
         <Route path="/notifications">
           <Todo text="Notifications" />
         </Route>
-        <Route path="/account">
-          <Todo text="Account" />
+        <Route path="/account.*">
+          <Account history={this.nestedHistory} />
         </Route>
         <Route path={/.*/}>
           <NotFoundPage />
