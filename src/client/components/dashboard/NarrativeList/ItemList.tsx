@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+
+import { Item, ItemDoc } from '../../../../models/Interfaces';
+
 const timeago = require('timeago.js');
 
 interface Props {
-  items: Array<object>;
+  items: Array<Item>;
   loading: boolean;
   totalItems: number;
   onLoadMore?: () => void;
@@ -37,13 +40,11 @@ export class ItemList extends Component<Props, State> {
   }
 
   // view for a single narrative item
-  itemView = (item: object, idx: number) => {
+  itemView = (item: Item, idx: number) => {
     // I need this until I figure out what's in item
-    let fooItem: any;
-    fooItem = item;
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const data = fooItem._source;
+    const data = item.doc || null;
     const upa = `${data.access_group}/${data.obj_id}`;
     // Action to select an item to view details
     return (

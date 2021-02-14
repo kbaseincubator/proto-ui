@@ -12,7 +12,9 @@ interface State {
 }
 
 interface Props {
-  onSetSearch: (searchParams: State['searchParams']) => void;
+  // onSetSearch: (searchParams: State['searchParams']) => void;
+  onSetSearch: (term: string) => void;
+  onSelectSort: (sort: string) => void;
   loading: boolean;
 }
 
@@ -34,7 +36,7 @@ export class Filters extends Component<Props, State> {
     searchParams.term = val;
     this.setState({ searchParams });
     if (this.props.onSetSearch) {
-      this.props.onSetSearch(searchParams);
+      this.props.onSetSearch(val);
     }
   }
 
@@ -43,8 +45,8 @@ export class Filters extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({ searchParams });
-    if (this.props.onSetSearch) {
-      this.props.onSetSearch(searchParams);
+    if (this.props.onSelectSort) {
+      this.props.onSelectSort(val);
     }
   }
 

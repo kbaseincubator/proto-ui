@@ -4,14 +4,15 @@ import React, { Component } from 'react';
 import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
-import { NarrativeDetails, NarrativeData } from './NarrativeDetails';
+import { NarrativeDetails } from '../NarrativeList/NarrativeDetails';
+
+// Interface
+import { Item, SearchParams } from '../../../../models/Interfaces';
 
 // Utils
-import {
-  searchNarratives,
-  SearchParams,
-} from '../../../utils/searchNarratives';
+import { searchNarratives } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
+import { stringify } from 'querystring';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -21,12 +22,13 @@ interface State {
   // Whether we are loading data from the server
   loading: boolean;
   // List of objects of narrative details
-  items: Array<NarrativeData>;
+  items: Array<Item>;
   totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
   // Parameters to send to searchNarratives
   searchParams: SearchParams;
+  searchCounts: { [key: string]: number | null };
 }
 
 interface Props {
@@ -54,6 +56,12 @@ export class NarrativeList extends Component<Props, State> {
         skip: 0,
         pageSize: PAGE_SIZE,
       },
+      searchCounts: {
+        own: null,
+        shared: null,
+        tutorials: null,
+        public: null,
+      },
     };
   }
 
@@ -66,7 +74,7 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch(searchP: { term: string; sort: string }): void {
+  handleTermSearch(searchP: { term: string; sort: string }): void {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
@@ -75,11 +83,17 @@ export class NarrativeList extends Component<Props, State> {
     this.performSearch();
   }
 
+  handleSort(sort: string): void {
+    const searchParams = this.state.searchParams;
+    searchParams.sort = sort;
+    this.setState({ searchParams });
+    this.performSearch();
+  }
+
   // Handle an onSelectTab callback from TabHeader
   handleTabChange(idx: number, name: string): void {
     // Reset the search state and results
     const searchParams = this.state.searchParams;
-    searchParams.term = '';
     searchParams.skip = 0;
     const categoryMap: { [key: string]: string } = {
       'my narratives': 'own',
@@ -114,15 +128,66 @@ export class NarrativeList extends Component<Props, State> {
     this.setState({ activeIdx: idx });
   }
 
+  performTermSearch(val: string) {
+    this.setState({ loading: true });
+    let searchCounts: { [key: string]: number | null } = {
+      own: null,
+      shared: null,
+      tutorials: null,
+      public: null,
+    };
+
+    for (let [key, value] of Object.entries(this.state.searchCounts)) {
+      if (key === this.state.searchParams.category) {
+        // update state and perform normal search to
+        // populate narratives
+        this.setState(
+          (state, props) => {
+            let searchParams = state.searchParams;
+            searchParams.term = val;
+            return { searchParams };
+          },
+          () => this.performSearch()
+        );
+      }
+      // if new searchParams is not made everytime,
+      // and use const searchParams = this.state.searchParams
+      // searchParams.category = key
+      // updates the state without using this.setState()
+      if (val.length < 1) {
+        this.setState({ searchCounts });
+        return;
+      }
+      const searchParams = {
+        term: val,
+        sort: this.state.searchParams.sort,
+        category: key,
+        skip: this.state.searchParams.skip,
+        pageSize: this.state.searchParams.pageSize,
+        musts: this.state.searchParams.musts,
+        mustNots: this.state.searchParams.mustNots,
+      };
+
+      searchNarratives(searchParams).then((resp: any) => {
+        if (searchCounts[key] !== resp.result.count) {
+          searchCounts[key] = resp.result.count;
+          this.setState({ searchCounts });
+        }
+      });
+    }
+  }
   // Perform a search and return the Promise for the fetch
   performSearch() {
     this.setState({ loading: true });
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: any) => {
+        if (resp) {
+          resp = resp.result;
+        }
         if (resp && resp.hits) {
-          const total = resp.hits.total;
-          const items = resp.hits.hits;
+          const total = resp.count;
+          const items = resp.hits;
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
             this.setState({
@@ -153,6 +218,7 @@ export class NarrativeList extends Component<Props, State> {
               tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
               onSelectTab={this.handleTabChange.bind(this)}
               selectedIdx={0}
+              searchCounts={this.state.searchCounts}
             />
           </div>
 
@@ -169,7 +235,8 @@ export class NarrativeList extends Component<Props, State> {
         <div className="ba b--black-20">
           {/* Search, sort, filter */}
           <Filters
-            onSetSearch={this.handleSearch.bind(this)}
+            onSetSearch={this.performTermSearch.bind(this)}
+            onSelectSort={this.handleSort.bind(this)}
             loading={this.state.loading}
           />
 

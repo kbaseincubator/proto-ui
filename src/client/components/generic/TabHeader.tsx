@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
+import { AppConsts } from '../../../models/appConsts';
+
 interface Props {
   selectedIdx: number;
   tabs: string[];
   onSelectTab?: (idx: number, name: string) => void;
+  searchCounts?: { [key: string]: number | null };
 }
 
 interface State {
@@ -27,7 +30,14 @@ export class TabHeader extends Component<Props, State> {
       selectedIdx: selectedIdxProps,
     };
   }
-
+  reMapCategory(tabText: string) {
+    if (this.props.searchCounts) {
+      const categories1 = AppConsts.categoryMap1;
+      let text = tabText.toLocaleLowerCase();
+      const category = categories1[text];
+      return this.props.searchCounts[category];
+    }
+  }
   // Select a new tab to activate
   select(idx: number) {
     if (idx >= this.state.tabs.length || idx < 0) {
@@ -61,6 +71,9 @@ export class TabHeader extends Component<Props, State> {
           style={{ position: 'relative', top: '1px' }}
         >
           {tabs.map((tabText, idx) => {
+            const count = this.props.searchCounts
+              ? this.reMapCategory(tabText)
+              : null;
             const className =
               selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
             return (
@@ -71,6 +84,9 @@ export class TabHeader extends Component<Props, State> {
                 style={{ userSelect: 'none' }}
               >
                 {tabText}
+                <div style={{ display: 'inline', paddingLeft: '10px' }}>
+                  {count}
+                </div>
               </li>
             );
           })}
